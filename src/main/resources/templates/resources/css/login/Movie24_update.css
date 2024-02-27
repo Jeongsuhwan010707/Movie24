@@ -1,0 +1,360 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+a{
+    text-decoration: none;
+    
+}
+a:hover{
+    text-decoration: 1px solid black;
+}
+ul li{
+    list-style: none;
+}
+/* ----------------------헤더--------------------------- */
+header{
+    width: 1300px;
+    height: 150px;
+    /* background-color: aqua; */
+    margin: 0 auto;
+    /* background-color: red; */
+}
+    header a:visited{
+        color: black;
+    }
+    
+    #title{
+        width: 180px;
+        height: 150px;
+        float: left;
+        padding-top: 45px;
+        padding-right: 0;
+        /* background-color: red; */
+        font-family: 'PyeongChangPeace-Bold';
+        font-size: 45px;
+        text-align: center;
+    }
+        #title_num{
+            width: 70px;
+            color: #362FD9;
+            font-family: 'PyeongChangPeace-Bold';
+            padding-top: 45px;
+            font-size: 45px;
+            float: left;
+        }
+    #small_title{
+        width: 300px;
+        height: 150px;
+        float: left;
+        font-family: 'S-CoreDream-3Light';
+        padding: 70px 25px;
+        /* background-color: blue; */
+        font-size: 20px;
+        font-weight: 200;
+        color: grey;
+        line-height: 30px;
+    }
+    caption{
+        caption-side: bottom;
+    }
+    #title_right{
+        float: right;
+        width: 500px;
+        height: 100px;
+        /* background-color: yellow; */
+        
+    }
+         header ul img{
+            float: left;
+            width: 40px;
+            height: 40px;
+            margin-top: 30px;
+        }
+        #title_right ul li{
+            float: right;
+            padding: 30px 30px;
+            margin-right: 3px;
+            margin-top: 20px;
+        }
+   
+/* -----------------네비게이터-------------------------- */
+nav{
+    width: 100%;
+    height: 65px;
+    background: linear-gradient(to right, #362FD9, #85CDFD);
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    padding-left: 308px;
+    margin: 0 auto;
+    position : relative;
+}  
+#navigator_tag{
+    width: 1300px;
+    height: 65px;
+    margin: 0 auto;
+}
+    nav input{
+        border: 0px;
+        margin: 12px 10px;
+        margin-left: 145px;
+        width: 300px;
+        height: 40px;
+        float: left;
+        font-size: 15px;
+        
+    }
+    nav button{
+        border: 0px solid black;
+        width: 40px;
+        height: 40px;
+        margin: 12px 0px;
+        background-color: transparent;
+    }
+    nav img{
+        width: 40px;
+        height: 40px;
+        float: left;
+        margin: auto;
+    }
+    #nav_ul li{
+        margin-top: 6px;
+        margin-right: 30px;
+        padding: 16px;
+        font-size: 20px;
+        float: left;
+        font-weight: 400;
+    }
+    #nav_ul a:link{
+        color: white;
+    }
+    #nav_ul a:visited{
+        color: white;
+    }
+    
+        #menu_text{
+            position: absolute;
+            transform: translateX(-50%);
+            left: 50%;
+            border: 0px solid black;
+            background-color: white;
+            float: left;
+            width: 1300px;
+            height: 250px;
+            font-size: 20px;
+            z-index: 1500;
+            max-height : 0px;
+            opacity: 0;
+            transition: opacity 0.7s ease, max-height 0.7s ease-out;
+            text-align: center;
+        }
+        #menu_text.active {
+            max-height: 250px;
+            opacity: 1;
+          }
+        
+        #menu_text a:link, #menu_text a:visited{
+            color: grey;
+        }
+            #movie, #theater, #reservation, #store, #event{
+                float: left;
+                border-right: 2px solid gainsboro;
+                width: 215px;
+                /* padding: 10px 40px; */
+                line-height: 50px;
+                height: 220px;
+                margin-top: 5px;
+                transition: opacity 0.7s ease;
+            }
+            #benefit{
+                float: left;
+                width: 215px;
+                /* padding: 10px 15px; */
+                line-height: 50px;
+                margin-top: 5px;
+                height: 220px;
+                transition: opacity 0.7s ease;
+            }
+            /* -----------------------------------메인-------------------- */
+main{
+    margin: 0 auto;
+    width: 1050px;
+    height: 1020px;
+    /* background-color: red; */
+    position: relative;
+}
+    #main_logo{
+        width: 100%;
+        height: 15%;
+        /* background-color: green; */
+        border-bottom: 1px solid #ccc;
+    }
+        #main_logo h1{
+            text-align: center;
+            font-family: 'S-CoreDream-3Light';
+            font-size: 35px;
+            font-weight: 700;
+            padding-top: 50px;
+        }
+    #main_content{
+        width: 100%;
+        height: 85%;
+        /* background-color: blue; */
+    }
+    #content_area{
+        width: 800px;
+        height: 600px;
+        margin: 0 auto;
+        margin-top: 30px;
+        text-align: center;
+/*         background-color: blue; */
+    }
+    #content_area ul {
+	list-style-type : none;
+	padding-left : 0;
+	}
+	#content_area li {
+		margin : 10px;
+	}
+	#content_area ul label {
+		width: 130px;
+/*         text-align : center; */
+        float: left;
+        margin-left: 100px;
+        margin-top: 25px;
+        font-size: 20px;
+        /* font-family: 'LINESeedKR-Bd'; */
+        font-weight: 500;
+        
+	}
+	#content_area span{
+		position: absolute;
+        top: 370px;
+        left: 68%
+	}
+    #content_area input{
+    	float: left;
+    }
+    #content_area input:not([type=checkbox]){
+        width: 300px;
+        height: 40px;
+        margin: 20px 30px;
+        font-size: 15px;
+    }
+    #content_area input[type=checkbox]{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        bottom: 180px;
+        left: 42%
+    }
+    #content_area p{
+    	position: absolute;
+        bottom: 180px;
+        left: 46%
+    }
+    #delete{
+        position: absolute;
+        border: 1px solid #4E4FEB;
+        bottom: 70px;
+        right: 35%;
+        width: 130px;
+        height: 50px;
+        background-color: #4E4FEB;
+        text-align: center;
+        color: white;
+        border-radius: 15px;
+        font-family: 'LINESeedKR-Bd';
+        font-size: 20px;
+        padding-top: 12px;
+        padding-bottom: 8px;
+    }
+    #submit{
+        position: absolute;
+        border: 1px solid #068FFF;
+        bottom: 70px;
+        left: 35%;
+        width: 130px;
+        height: 50px;
+        background-color: #068FFF;
+        text-align: center;
+        color: white;
+        border-radius: 15px;
+        font-family: 'LINESeedKR-Bd';
+        font-size: 20px;
+        padding-top: 12px;
+        padding-bottom: 8px;
+    }
+    
+    /* ----------푸터------------------------- */
+    .footer {
+        width: 100%;
+        height: 250px;
+        background-color: #f2f2f2;
+        padding: 50px 50px;
+      }
+      
+      .footer-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .footer-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .footer-list li {
+        display: inline-block;
+        margin-right: 10px;
+        border-right: 1px solid #ccc;
+        padding-right: 10px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      
+      .footer-content {
+        text-align: right;
+      }
+      
+      .footer-line {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 20px 0;
+      }
+      
+      .footer p {
+        margin: 10px 0px;
+        font-size: 15px;
+      }
+      a:link, a:visited{
+        color: black;
+      }

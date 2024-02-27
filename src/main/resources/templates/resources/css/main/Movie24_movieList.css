@@ -1,0 +1,145 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+     main{
+        margin: 0 auto;
+        width: 1300px;
+/*         height: 2500px; */
+        /* background-color: red; */
+        position: relative;
+    }
+        #main_logo{
+            width: 100%;
+            height: 150px;
+            /* background-color: green; */
+            border-bottom: 1px solid #ccc;
+        }
+            #main_logo h1{
+                font-family: 'S-CoreDream-3Light';
+                font-size: 35px;
+                font-weight: 700;
+                padding-top: 50px;
+                padding-left: 25px;
+            }
+       .popular_title{
+            width: 100%;
+            height: 100px;
+       	}
+     .popular{
+            width: 100%;
+            margin: 0 auto;
+            display: block;
+        }
+      .popular2{
+          width: 100%;
+          margin: 0 auto;
+          display: none;
+      }
+	        .popular_image{
+	            width: 100%;
+	            height: 450px;
+	        }
+            .popular_title button{
+                margin-top: 28px;
+                margin-left: 25px;
+                border: 1px soild #ccc;
+                float: left;
+                width: 150px;
+                height: 50px;
+                font-size: 20px;
+                background-color: transparent;
+                font-family: 'S-CoreDream-3Light';
+                border-radius: 5px;
+            }
+        .popularPoster1{
+            width: 210px;
+        }
+        .popularPoster2{
+            width: 210px;
+        }
+        .age{
+        	position: absolute;
+		    top: 10px;
+		    left: 10px;
+		    width: 30px;
+        }
+        .lookDetail{
+            position: absolute;
+            width: 150px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: #FF6666;
+            border: 3px solid #f04343;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 18px;
+            color: white;
+            display: none;
+            top: 125px;
+    		left: 30px;
+        }
+        .preLookDetail{
+        	position: absolute;
+            width: 150px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: #FF6666;
+            border: 3px solid #f04343;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 18px;
+            color: white;
+            display: none;
+            top: 130px;
+    		left: 30px;
+        }
+/*         상영예정작 */
+        .popular_image ul li{
+            float: left;
+            margin: 10px 25px;
+        }
+        .popular_image h4{
+            font-size: 22px;
+            text-align: center;
+            font-family: 'S-CoreDream-3Light';
+            font-weight: 600;
+            margin: 15px 0px;
+        }
+        .popular_image p{
+            font-family: 'S-CoreDream-3Light';
+            text-align: center;
+            font-weight: 300;
+            margin: 15px 0px;
+        }
+        .active1{
+            display: block;
+        }
+        .movieImgs{
+        	position: relative;
+        }
+    /* ----------푸터------------------------- */
+    footer{
+    	float: left;
+    }

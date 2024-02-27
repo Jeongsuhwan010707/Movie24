@@ -1,0 +1,123 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+            /* -----------------------------------메인-------------------- */
+main{
+    width: 1000px;
+    height: 500px;
+    /* background-color: red; */
+    margin: 0 auto;
+    position: relative;
+}
+#login_area{
+    width: 50%;
+    height: 100%;
+    /* background-color: black; */
+    float: left;
+}
+    /* #login_area hr{
+        background-color: #ccc;
+        color: #ccc;
+    } */
+    #login_logo{
+        width: 100%;
+        height: 20%;
+        /* background-color: #362FD9; */
+        border-bottom: 1px solid #ccc;
+    }
+    #login_logo h1{
+        font-family: 'LINESeedKR-Bd';
+        font-weight: 100;
+        font-size: 35px;
+        padding: 30px 30px;
+
+    }
+    #login_form{
+        width: 100%;
+        height: 80%;
+        /* background-color: greenyellow; */
+    }
+        .login{
+            width: 430px;
+            height: 50px;
+            margin: 10px 30px;
+            font-size: 16px;
+        }
+        .id{
+            margin-top: 30px;
+        }
+        #login_form img{
+            width: 50px;
+           margin-top: 35px;
+           margin-left: 55px;
+           margin-right: 55px;
+        }
+        #empty{
+            border-bottom: 1px solid #ccc;
+            height: 1px;
+        }
+        #login_button{
+            width: 200px;
+            height: 40px;
+            margin: 0px 150px;
+            margin-top: 20px;
+            font-family: 'S-CoreDream-3Light';
+            font-weight: 700;
+            font-size: 20px;
+            background-color: #362FD9;
+            color: white;
+            border: 2px solid #362FD9;
+        }
+        #login_text{
+            width: 150px;
+            height: 30px;
+            margin-left: 5px;
+            margin-top: 10px;
+            text-align: center;
+            float: left;
+            /* background-color: red; */
+        }
+        #login_text2{
+            margin-top: 10px;
+            height: 30px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+            #login_text2 a:visited, #login_text2 a:link{
+                color: black;
+            }
+#ad{
+    width: 50%;
+    height: 100%;
+    /* background-color: red; */
+    float: right;
+    text-align: center;
+}
+    #ad img {
+        margin-top: 50px;
+        width: 400px;
+    }
+   

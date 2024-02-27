@@ -1,0 +1,528 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TheJamsil5Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        position: relative;
+    }
+       section{
+        width: 100%;
+        height: 360px;
+        /* background-color: red; */
+        margin-top: 50px;
+       }
+       #img_area{
+        height: 100%;
+        width: 25%;
+        /* background-color: blue; */
+        float: left;
+       }
+       #img_area img{
+        width: 250px;
+        margin-left: 37px;
+       }
+       #image_left{
+        width: 75%;
+        height: 100%;
+        float: left;
+       }
+       #main_title{
+        width: 100%;
+        height: 130px;
+       }
+       #main_title h2{
+        font-family: 'LINESeedKR-Bd';
+        font-size: 30px;
+        padding: 20px 0;
+        display: flex;
+	    align-content: center;
+	    flex-direction: row;
+	    flex-wrap: nowrap;
+	    align-items: flex-start;
+       }
+       #main_title span{
+        width: 50px;
+        height: 30px;
+        padding: 10px 10px;
+        margin-right: 10px;
+       }
+       #span1{
+        border: 2px solid #a16423;
+        color: #a16423;
+        font-size: 17px;
+        font-weight: 550;
+       }
+       #span2{
+        border: 2px solid #362FD9;
+        color: #362FD9;
+        font-size: 17px;
+        font-weight: 550;
+       }
+       #main_text1{
+        width: 100%;
+        height: 50px;
+        /* background-color: green; */
+        padding-top: 12px;
+        border-bottom: 1px solid #ccc;
+        font-weight: 600;
+        color: #9b9999;
+       }
+       #main_text1 p{
+        font-size: 18px;
+       }
+       #main_text2 p {
+        line-height: 1.8;
+        font-size: 17px;
+        font-weight: 600;
+        padding-top: 20px;
+        padding-bottom: 20px;
+       }
+       section button{
+        width: 120px;
+        height: 45px;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 5px;
+       }
+       section #btn2:hover{
+       	background-color: #FFB319;
+       	color : white;
+       }
+       #btn1{
+        background-color: white;
+        border: 3px solid #FF9292;
+        color: #f44a4a;
+       }
+       #btn1:hover{
+        color: white;
+    	border: 3px solid #f44a4a;
+        background-color: #f44a4a;
+       }
+       #btn1-1{
+		color: white;
+    	border: 3px solid #f44a4a;
+        background-color: #f44a4a;
+       }
+/*        #btn1-1:hover{ */
+/* 		background-color: white; */
+/*         border: 3px solid #FF9292; */
+/*         color: #f44a4a; */
+/*        } */
+       #btn2{
+        background-color: white;
+        color: #d79208;
+        border: 3px solid #FFB319;
+       }
+       #main_menu{
+        width: 650px;
+        height: 70px;
+        margin: auto;
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 13px;
+       }
+       #main_menu ul{
+        margin-top: 10px;
+        padding-top: 3px;
+       }
+       #main_menu li{
+        display: inline;
+        font-size: 20px;
+        border: 2px dashed #362FD9;
+        padding: 8px 20px;
+        padding-top: 10px;
+        font-family: 'LINESeedKR-Bd';
+        background-color: #537FE7;
+       }
+       #main_menu a:link, #main_menu a:visited{
+        color: white;
+       }
+
+    .title_movie{
+        width: 100%;
+        height: 100px;
+        /* background-color: red; */
+        border-bottom: 3px solid #b3b2b2;
+        font-size: 27px;
+        font-family: 'S-CoreDream-3Light';
+        font-weight: 400;
+        padding-top: 30px;
+    }
+    #title_text{
+        width: 100%;
+        font-size: 17px;
+        line-height: 1.5;
+        padding-top: 60px;
+        text-align: center;
+    }
+    #img_area2{
+        width: 100%;
+        padding-top: 50px;
+        text-align: center;
+    }
+    #video_area{
+        width: 100%;
+        padding-top: 50px;
+        margin: 0 auto;
+        text-align: center;
+        height: 740px;
+        /* background-color: red; */
+    }
+    #video_area video{
+        width: 1200px;
+        margin: auto;
+    }
+    #review{
+        width: 90%;
+        height: 150px;
+        /* background-color: red; */
+        padding-top: 40px;
+        font-family: 'LINESeedKR-Bd';
+        color: rgb(74, 73, 73);
+        line-height: 1.6;
+        float: left;
+    }
+    .review_btn{
+        width: 10%;
+        height: 150px;
+        float: left;
+        width: 100px;
+        height: 40px;
+        font-size: 19px;
+        margin-top: 52px;
+        font-family: 'LINESeedKR-Bd';
+        color: #ffffff;
+        font-weight: 700;
+        background-color: #222;
+        border-radius: 5px;
+        border: 0px;
+        padding-top: 4.5px;
+    }
+    #img_area3{
+        text-align: center;
+    }
+    #img_area3 img{
+        margin-top: 30px;
+    }
+
+        #next{
+            position: fixed;
+            top: 750px;
+            right: 18%;
+            width: 130px;
+            height: 50px;
+            background-color: #362FD9;
+            text-align: center;
+            color: white;
+            border-radius: 15px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 14px;
+        }
+        #next:hover{
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+        }
+        #bottomBlank{
+        	width: 100%;
+        	height: 100px;
+        }
+        #status{
+        	width: 93%;
+        }
+        #movieExpl{
+        	line-height:2;
+        }
+        .movie-age{
+        	width: 27px;
+    		padding-bottom: 6px;
+    		display: flex;
+    		text-align: center;
+		    height: 33px;
+		    margin-top: 3.2px;
+		    margin-right: 8px;
+        }
+/*         신고기능 모달 */
+		.report-modal-background {
+		  display: none;
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  background-color: rgba(0, 0, 0, 0.7);
+		  align-items: center;
+		  justify-content: center;
+		}
+		
+		.report-modal {
+		  	background-color: white;
+		    padding: 20px;
+		    border-radius: 8px;
+		    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+		    width: 500px;
+		    height: 300px;
+		    position: relative;
+		}
+		
+		.report-modal h2 {
+		  margin-top: 0;
+		}
+		
+		.close-report-modal {
+		  	position: absolute;
+		    right: 11px;
+		    top: 11px;
+		    background-color: white;
+		    border: 0px;
+		    cursor: pointer;
+		    font-size: 15px;
+		    font-family: 'S-CoreDream-3Light';
+		    width: 20px;
+		}
+		.report-modal-btn{
+			font-size: 16px;
+		    border: 1px solid #9b9999;
+		    background-color: #ccc;
+		    position: absolute;
+		    bottom: 35px;
+		    right: 25px;
+		    width: 42px;
+		    height: 26px;
+		}
+		
+		/*///////////////////////////////모달 /////////////////////////////////*/
+        .modal {
+			  display: none;
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+			  background-color: rgba(0,0,0,0.5);
+			}
+			.modal-content {
+			  	background-color: white;
+			    padding: 20px;
+			    border-radius: 5px;
+			    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+			    position: absolute;
+			    top: 47%;
+			    left: 50%;
+			    transform: translate(-50%, -50%);
+			    width: 600px;
+			    height: 432px;
+			}
+			.close-btn {
+			  float: right;
+			  cursor: pointer;
+			  font-size: 20px;
+			}
+/* 			댓글 폼 */
+			.reviewTable {
+			  width: 100%;
+			  font-family: 'S-CoreDream-3Light';
+			  border-collapse: collapse;
+			}
+			
+			.reviewRow {
+			  border-bottom: 1px solid #ccc;
+			}
+			
+			.reviewCell {
+			  padding: 20px;
+			}
+			
+			.reviewImg img {
+			  width: 100px;
+			  max-height: 200px;
+			}
+			.reviewImg{
+				float: left;
+				height: 100%;
+			}
+			.review {
+			  padding: 15px;
+			  padding-left: 20px;
+			  float: left;
+			  width: 70%;
+			}
+			
+			.review p {
+			  height: 60px; 
+			  overflow: hidden;
+			  margin-top: 5px;
+			}
+			.review a{
+				font-family: 'LINESeedKR-Bd';
+				color : #362FD9;
+			}
+			.review .modifyReview{
+				margin-left: 10px;
+			}
+			.starArea{
+				padding-bottom: 8px;
+			}
+			.review h4{
+				font-family: 'LINESeedKR-Bd';
+			}
+
+			#reviewTitle {
+			  width: 100%;
+			  height: 100px;
+			  font-size: 27px;
+			  font-family: 'S-CoreDream-3Light';
+			  font-weight: 400;
+			  padding-top: 30px;
+			  border-bottom: 3px solid #b3b2b2;
+			}
+			.review_blank{
+				width: 100%;
+				height: 150px;
+			}
+/* 			좋아요 기능 */
+			/* Add this to your existing CSS */
+.likeArea {
+  float: right;
+  text-align: right;
+  padding-top: 15px;
+}
+
+.likeArea img {
+  width: 45px;
+  margin-right: 5px;
+}
+
+.likeCount {
+  	font-size: 20px;
+    float: right;
+    font-family: 'LINESeedKR-Bd';
+    color: #362FD9;
+    padding-left: 5px;
+    padding-top: 18px;
+}
+			
+			
+			/* 기존 CSS 코드 */
+
+			.contentTextarea {
+			  width: 50%;
+			  height: 150px;
+			  resize: none;
+			  font-family: 'S-CoreDream-3Light';
+			  border: 1px solid #ccc;
+			  padding: 5px;
+			  resize: none;
+			  float: left;
+			}
+			
+			/* 별점 스타일 */
+  .modal h2{
+  	font-family: 'LINESeedKR-Bd';
+  }
+  .modal p{
+  	font-family: 'S-CoreDream-3Light';
+  }
+  .stars {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+
+  .star {
+    color: gray;
+  }
+
+  .star.active {
+    color: gold;
+  }
+  .starBlank{
+  	width: 30px;
+  }
+
+  /* 댓글 입력 스타일 */
+  #comment {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    resize: none;
+    height: 180px;
+    font-family: 'S-CoreDream-3Light';
+    font-size: 15px;
+  }
+
+  /* 버튼 스타일 */
+  #submitBtn {
+    padding-bottom: 3px;
+    padding-top: 11px;
+    background-color: #337CCF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    float: right;
+    width: 83px;
+    font-family: 'LINESeedKR-Bd';
+    margin-top: 9px;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+  #submitBtn:hover{
+  	background-color: #1450A3;
+  }
+  #reviewBackBtn{
+  padding-bottom: 4px;
+    padding-top: 10px;
+    border: 2px solid #9b9999;
+    color: #9b9999;
+    cursor: pointer;
+    float: right;
+    width: 83px;
+    font-family: 'LINESeedKR-Bd';
+    margin-top: 9px;
+    font-size: 18px;
+    border-radius: 5px;
+    margin-right: 10px;
+    height: 37px;
+    background-color: white;
+  }
+  #reviewBackBtn:hover{
+  	background-color: #eee;
+  }
+    /* ----------푸터------------------------- */
+    footer{
+    	float: left;
+    }

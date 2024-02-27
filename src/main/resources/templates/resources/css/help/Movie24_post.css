@@ -1,0 +1,218 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        height: 1300px;
+        /* background-color: red; */
+        position: relative;
+        margin-top: 20px auto;
+
+    }
+            #main_menu{
+                width: 18%;
+                height: 100%;
+                float: left;
+                /* background-color: red; */
+                border-top: 2px solid #ccc;
+        }
+            #blank_1{
+                width: 100%;
+                height: 50px;
+            }
+        #main_menu h3{
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding: 20px 20px;
+            width: 200px;
+            height: 70px;
+        }
+        main li a:link, main li a:visited{
+            color: grey;
+            font-weight: 500;
+        }
+        #main_menu a{
+            line-height: 1.7;
+            margin-left: 20px;
+        }
+        #main_menu a:hover{
+            background-color: #eee;
+        }
+        #member{
+            float: left;
+        }
+        #main_blank{
+            height: 90%;
+            width: 4%;
+            /* background-color: red; */
+            float: left;
+        }
+        #h2{
+            float: left;
+            width: 1000px;
+            height: 100px;
+            font-family: 'S-CoreDream-3Light';
+            font-weight: 600;
+            font-size: 23px;
+            padding-top: 27px;
+            border-bottom: 1px solid #222;
+        }
+        #post-text{
+            width: 1000px;
+            height: 70px;
+            float: left;
+            padding-top: 19px;
+        }
+        #post-text input{
+            width: 400px;
+            height: 40px;
+            font-size: 18px;
+            line-height: 40px;
+        }
+        #post-text select{
+            width: 100px;
+            height: 40px;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        #post-text #searchPost{
+        	border-radius: 2.5px;
+		    font-size: 18px;
+		    width: 120px;
+		    height: 40px;
+		    font-family: 'LINESeedKR-Bd';
+		    color: white;
+		    background-color: #222;
+		    border: none;
+		    padding-top: 4px;     
+        }
+        #table{
+            width: 1000px;
+            height: 50px;
+            float: left;
+            /* background-color: red; */
+            text-align: center;
+            background-color: #eee;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        .tr{
+            width: 150px;
+            height: 50px;
+            font-size: 18px;
+            padding-bottom: 6px;
+        }
+        #tr{
+            width: 400px;
+            font-size: 18px;
+            padding-bottom: 6px;
+        }
+        #table-1{
+            width: 1000px;
+            height: 785px;
+            float: left;
+            /* background-color: red; */
+            text-align: center;
+            padding-top: 2px;
+            border-bottom: 1px solid #ccc;
+        }
+        #table-1 a:link, #table-1 a:visited{
+            color: black;
+        }
+        #number{
+            width: 1000px;
+            margin: 88px auto;
+            height: 50px;
+            float: left;
+            text-align: center;
+            padding-top: 9px;
+        }
+        #number a:link, #number a:visited{
+            color: #9c9b9b;
+        }
+        #number a{
+            font-size: 25px;
+            padding: 10px 10px;
+            font-family: 'LINESeedKR-Bd';
+        }
+        #number button{
+            width: 80px;
+            height: 35px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 2px;
+            background-color: transparent;
+            border-radius: 5px;
+        }
+        #number img{
+            width: 15px;
+            margin-top: 3px;
+        }
+        #nextButton{
+        	position: absolute;
+        	bottom: 200px;
+        	right: 280px;
+        	padding-top: 10px;
+        }
+        #postInsert{
+        	width: 100px;
+            height: 40px;
+            color: white;
+            float:right;
+            text-align: center;
+            border-radius: 5px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 9px; 
+            background-color: #362FD9;
+            margin-left: 20px;
+            padding-bottom: 4px;
+            margin-top: 4px;
+        }
+        #postNum{
+        	 font-family: 'S-CoreDream-3Light';
+        	 font-size: 17px;
+        	 color: #222;
+        }
+        #postMain a:link, #postMain a:visited{
+        	color: #362FD9;
+        	font-weight: 600;
+        }
+        #postMain #tr:hover{
+        	text-decoration: underLine;
+        	color: #362FD9;
+        }
+        #postMain{
+        	font-weight: 600;
+        }
+        #postList #tr:hover{
+        	text-decoration: underLine;
+        	font-weight: 600;
+        }
+  

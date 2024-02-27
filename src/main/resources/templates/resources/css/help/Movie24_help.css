@@ -1,0 +1,136 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        height: 1030px;
+        /* background-color: red; */
+        position: relative;
+        margin-top: 20px auto;
+
+    }
+            #main_menu{
+                width: 18%;
+                height: 100%;
+                float: left;
+                /* background-color: red; */
+                border-top: 2px solid #ccc;
+        }
+            #blank_1{
+                width: 100%;
+                height: 50px;
+            }
+        #main_menu h3{
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding: 20px 20px;
+            width: 200px;
+            height: 70px;
+        }
+        main li a:link, main li a:visited{
+            color: grey;
+            font-weight: 500;
+        }
+        #main_menu a{
+            line-height: 1.7;
+            margin-left: 20px;
+        }
+        #main_menu a:hover{
+            background-color: #eee;
+        }
+        #member{
+            float: left;
+        }
+        #main_blank{
+            height: 500px;
+            width: 4%;
+            /* background-color: red; */
+            display: inline-block;
+        }
+        #main_area{
+            width: 78%;
+            float: right;
+            height: 700px;
+            /* background-color: blue; */
+        }
+            #main_area img{
+                width: 70px;
+            }
+        .area1{
+            width: 100%;
+            height: 300px;
+            /* background-color: red; */
+            border-collapse: collapse;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .area1_1, .area1_2{
+            margin-right: 30px;
+        }
+            .area1_1, .area1_2, .area1_3{
+                width: 30%;
+                height: 100%;
+                float: left;
+                padding: 100px 20px;
+                border-radius: 10px;
+                background-color: #f2f4f5;
+                border: 1px solid #ccc;
+            }
+        #area2{
+            width: 973px;
+            height: 100px;
+            /* background-color: green; */
+            margin: 30px 0px;
+            border: 1px solid #ccc;
+            padding-top: 35px;
+            border-radius: 7px;
+        }
+        #next{
+            position: fixed;
+            top: 750px;
+            left: auto;
+            right: 22%;
+            width: 130px;
+            height: 50px;
+            background-color: #362FD9;
+            text-align: center;
+            color: white;
+            border-radius: 15px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 12px;
+        }
+        #next:hover{
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+        }
+        #blankmini{
+        	width: 100%;
+        	height: 30px;
+        }
+  

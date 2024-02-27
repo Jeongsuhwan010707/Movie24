@@ -1,0 +1,248 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        height: 1500px;
+        /* background-color: red; */
+        position: relative;
+        margin-top: 20px auto;
+
+    }
+    #up_area{
+        width: 1300px;
+        height: 550px;
+        background: linear-gradient(to bottom, #e1eff8, #a6d9fa);
+        border-radius: 15px;
+        margin: 20px auto;
+    }
+    #myPage_up{
+        width: 100%;
+        height: 50%;
+        /* background-color: red; */
+    }
+    #myPage_blank{
+        width: 100%;
+        height: 10%;
+    }
+        #myPage_up_1{
+            height: 100%;
+            width: 25%;
+            /* background-color: red; */
+            float: left;
+            /* display: inline; */
+            padding-top: 38px;
+            padding-left: 80px;
+        }
+            #myPage_up_1 img{
+                width: 200px;
+               
+            }
+        #myPage_up_2{
+            height: 100%;
+            width: 40%;
+            /* background-color: green; */
+            float: left;
+            /* display: inline; */
+            padding: 100px 0px 0px 40px;
+        }
+            #myPage_up_2 h1{
+                padding: 20px 0px;
+                color: #352fd9a9;
+                font-family: 'LINESeedKR-Bd';
+                font-weight: 400;
+                letter-spacing: 2px;
+                word-spacing: 5px
+            }
+            #myPage_up_2 p{
+                font-family: 'S-CoreDream-3Light';
+                font-weight: 500;
+                padding-left: 5px;
+            }
+        #myPage_up_3{
+            height: 80%;
+            width: 20%;
+            /* background-color: cyan; */
+            float: left;
+            border-left: 2px solid white;
+            padding: 20px 0px;
+        }
+        #myPage_blank2{
+            width: 100%;
+            height: 10%;
+            /* background-color: red; */
+            border-top: 1px solid white;
+        }
+        #myPage_blank3{
+            width: 5%;
+            height: 80%;
+            float: left;
+            border-right: 1px solid white;
+            /* background-color: red; */
+        }
+        #myPage_blank4{
+            width: 5%;
+            height: 80%;
+            float: left;
+            border-right: 1px solid white;
+            /* background-color: red; */
+        }
+    #myPage_down{
+        width: 100%;
+        height: 40%;
+        /* background-color: blue; */
+        
+    }
+    #myPage_down h1{
+        font-family: 'LINESeedKR-Bd';
+        margin: 30px 0px;
+        text-align: center;
+        color: #352fd9;
+    }
+    #myPage_down p{
+        font-family: 'S-CoreDream-3Light';
+        text-align: center;
+        font-weight: 400;
+        line-height: 1.8;
+    }
+    
+        #myPage_down_1, #myPage_down_2{
+            width: 30%;
+            height: 100%;
+            /* background-color: red; */
+            float: left;
+        }
+        #myPage_down_3{
+            width: 30%;
+            height: 100%;
+            float: left;
+            text-align: center;
+        }
+            #myPage_down_3 img{
+                width: 250px;
+                height: 40px;
+                text-align: center;
+            }
+            
+            #main_menu{
+                width: 18%;
+                height: 100%;
+                float: left;
+                /* background-color: red; */
+                border-top: 2px solid #ccc;
+        }
+            #blank_1{
+                width: 100%;
+                height: 300px;
+            }
+        #main_menu h3{
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding: 20px 20px;
+            width: 200px;
+            height: 70px;
+        }
+        main li a:link, main li a:visited{
+            color: grey;
+            font-weight: 500;
+        }
+        #main_menu a{
+            line-height: 1.7;
+            margin-left: 20px;
+        }
+        #main_menu a:hover{
+            background-color: #eee;
+        }
+        #member{
+            float: left;
+        }
+        #main_blank{
+            height: 500px;
+            width: 4%;
+            /* background-color: red; */
+            display: inline-block;
+        }
+        #main_area{
+            width: 78%;
+            float: right;
+            height: 700px;
+            /* background-color: blue; */
+        }
+            #main_area img{
+                width: 50px;
+            }
+        #area1{
+            width: 100%;
+            height: 150px;
+            /* background-color: red; */
+            border: 1px solid #222;
+            border-collapse: collapse;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #area1_1, #area1_2{
+            border-right: 1px dotted #ccc;
+        }
+            #area1_1, #area1_2, #area1_3{
+                width: 33.3%;
+                height: 100%;
+                float: left;
+                padding: 20px 20px;
+            }
+        #area2{
+            width: 100%;
+            height: 100px;
+            /* background-color: green; */
+            margin: 30px 0px;
+            border: 1px solid #222;
+            padding-top: 35px;
+        }
+        #area3{
+            width: 100%;
+            height: 150px;
+            /* background-color: cyan; */
+            margin: 30px 0px;
+            border: 1px solid #222;
+            padding-top: 60px;
+        }
+        #next{
+            position: fixed;
+            top: 750px;
+            right: 22%;
+            width: 130px;
+            height: 50px;
+            background-color: #362FD9;
+            text-align: center;
+            color: white;
+            border-radius: 15px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 12px;
+        }
+        
+    /* ----------푸터------------------------- */
