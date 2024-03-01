@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 페이지</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/main/Movie24.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <style>
+        nav .animatedNav {
+            width: 100%;
+            height: 0;
+            border-bottom: 2px solid #ccc;
+            overflow: hidden;
+            transition: height 0.8s, visibility 0.6s; /* 높이와 가시성에 대한 애니메이션 적용 */
+            visibility: hidden; /* 초기에는 숨김 상태로 설정 */
+            position: absolute;
+            /*margin: 0 auto;*/
+            text-align: center;
+            background-color: white;
+        }
+        nav .animatedNav ul {
+            float: left;
+            width: 215px;
+            height: 220px;
+            font-size: 19px;
+            line-height: 33px;
+            text-align: center;
+        }
+
+        nav .show {
+            height: 200px; /* 나타날 높이 */
+            visibility: visible; /* 나타날 때 가시성 변경 */
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+                <main>
+                    <div class="trailer">
+                        <h1 id="h1-1">[트랜스포머] : 비스트의 서막</h1>
+                        <h2 id="h2-1">트랜스포머 시리즈 중 역대급 스케일! <br>2023년 6월 6일 대개봉!</h2>
+                        <h1 id="h1-2">[마블] : 플래시</h1>
+                        <h2 id="h2-2">초광속 액션 블록버스터!<br>차원이 다른 히어로가 온다!</h2>
+                        <video id="trailer-video1" class="video" th:src="@{/resources/videos/트렌스포머.mp4}"></video>
+                        <video id="trailer-video2" class="video" th:src="@{/resources/videos/플래시.mp4}"></video>
+                    </div>
+                    <div id="stop_area"><a href="javascript:void(0)" onclick="playPause()"><img src="/resources/images/stop.png" alt=""></a></div>
+                    <div id="next2"><a href="#" onclick="nextVideo();"><img src="/resources/images/next2.png" alt=""></a></div>
+                    <div id="next1"><a href="#" onclick="nextVideo();"><img src="/resources/images/next1.png" alt=""></a></div>
+                    <div class="dot"></div>
+                    <div class="popular_title">
+                        <button class="popularBtn" onclick="showPopular();" style="cursor:pointer">인기차트</button>
+                        <button class="trailerMovieBtn" onclick="showComing();" style="cursor:pointer">상영예정작</button>
+                        <a href="/movie/List.do" style="cursor:pointer"><img src="/resources/images/더하기.png" alt=""></a>
+                    </div>
+                    <div class="popular">
+                        <div class="popular_image">
+                            <ul>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=1">
+                                            <img id="mainImg1" class="popularPoster"  src="/resources/images/플래시.jpg" alt="">
+                                            <button id="lookDetail1" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">1) </span><img class="age" src="/resources/images/12세이상관람가.png" alt=""> 플래시</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=2">
+                                            <img id="mainImg2" class="popularPoster" src="/resources/images/범죄도시3.png" alt="" >
+                                            <button id="lookDetail2" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">2) </span><img class="age" src="/resources/images/15세이상관람가.png" alt=""> 범죄도시3</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=3">
+                                            <img id="mainImg3" class="popularPoster" src="/resources/images/분노의질주.png" alt="" >
+                                            <button id="lookDetail3" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">3)<img class="age" src="/resources/images/15세이상관람가.png" alt=""> </span> 분노의 질주</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=4">
+                                            <img id="mainImg4" class="popularPoster" src="/resources/images/가디언즈오브갤럭시.png" alt="" >
+                                            <button id="lookDetail4" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">4) </span><img class="age" src="/resources/images/12세이상관람가.png" alt=""> 가디언즈 오브 ...</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=5">
+                                            <img id="mainImg5" class="popularPoster" src="/resources/images/위대한쇼맨.jpg" alt="" >
+                                            <button id="lookDetail5" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">5) </span><img class="age" src="/resources/images/12세이상관람가.png" alt=""> 위대한쇼맨</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="popular2">
+                        <div class="popular_image">
+                            <ul>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=6">
+                                            <img id="mainImg6" class="popularPoster" src="/resources/images/엘리멘탈.jpg" alt="">
+                                            <button id="lookDetail6" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">1) </span><img class="age" src="/resources/images/전체관람가.png" alt=""> 엘리멘탈</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=7">
+                                            <img id="mainImg7" class="popularPoster" src="/resources/images/바비.jpg" alt="">
+                                            <button id="lookDetail7" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">2) </span><img class="age" src="/resources/images/12세이상관람가.png" alt=""> 바비</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=8">
+                                            <img id="mainImg8" class="popularPoster" src="/resources/images/콘크리트 유토피아.jpg" alt="">
+                                            <button id="lookDetail8" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">3) </span><img class="age" src="/resources/images/15세이상관람가.png" alt=""> 콘크리트 유토...</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=9">
+                                            <img id="mainImg9" class="popularPoster" src="/resources/images/밀수.jpg" alt="">
+                                            <button id="lookDetail9" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">4) </span><img class="age" src="/resources/images/15세이상관람가.png" alt=""> 밀수</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="movieImgs">
+                                        <a href="/movie/info.do?movieNo=10">
+                                            <img id="mainImg10" class="popularPoster" src="/resources/images/인어공주.png" alt="">
+                                            <button id="lookDetail10" class="lookDetail" style="cursor:pointer">상세보기</button>
+                                        </a>
+                                        <h4><span class="popularSpan">5) </span><img class="age" src="/resources/images/전체관람가.png" alt=""> 인어공주</h4>
+                                        <p>예매율 : 99% | 평점 4.5</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- 이벤트----------------------------------------------------------------------------------- -->
+                    <div id="event_area">
+                        <div id="event_main">
+                            <h2>이벤트</h2>
+                            <a href="/movie24/eventList.do" id="plus"><img src="/resources/images/더하기.png" alt=""></a>
+                        </div>
+                        <div id="event_left">
+                            <div id="event_up">
+                                <ul>
+                                    <li>
+                                        <a href="/movie24/event.do?eventSrcNum=1"><img src="/resources/images/이벤트1열1번.jpg" alt=""></a>
+                                    </li>
+                                    <li>
+                                        <a href="/movie24/event.do?eventSrcNum=2"><img src="/resources/images/이벤트1열2번.jpg" alt=""></a>
+                                    </li>
+                                    <li>
+                                        <a href="/movie24/event.do?eventSrcNum=3"><img src="/resources/images/이벤트1열3번.jpg" alt=""></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="event_down">
+                                <ul>
+                                    <li>
+                                        <a href="/movie24/event.do?eventSrcNum=5"><img id="downImg1" src="/resources/images/이벤트2열1번.jpg" alt=""></a>
+                                    </li>
+                                    <li>
+                                        <a href="/movie24/event.do?eventSrcNum=6"><img id="downImg2" src="/resources/images/이벤트2열2번.jpg" alt=""></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="event_right">
+                            <ul>
+                                <li>
+                                    <a href="/movie24/event.do?eventSrcNum=4"><img src="/resources/images/이벤트맨끝.jpg" alt=""></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="blue"></div>
+                    <!-- ----------------빠른 메뉴------------------- -->
+                    <div id="blue_area">
+                        <div id="blue_image">
+                            <a href="/movie24/movieReservation/Movie24_time.html"><img src="/resources/images/시간표.png" alt=""></a>
+                            <a href="/movie24/store/Movie24_store.html"><img src="/resources/images/free-icon-shopping-cart-5381441.png" alt=""></a>
+                            <a href=""><img src="/resources/images/근처영화관.png" alt=""></a>
+                            <a href=""><img src="/resources/images/이벤트.png" alt=""></a>
+                            <a href=""><img src="/resources/images/VIP.png" alt=""></a>
+                        </div>
+                        <div id="blue_text">
+                            <p id="time_text"><a href="/movie24/movieReservation/Movie24_time.html">상영시간표</a></p>
+                            <p id="store_text"><a href="/movie24/store/Movie24_store.html">스토어</a></p>
+                            <p id="near_text"><a href="">근처영화관</a></p>
+                            <p id="event_text"><a href="">이벤트</a></p>
+                            <p id="vip_text"><a href="">VIP혜택</a></p>
+                        </div>
+                    </div>
+                </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+        <script th:src="@{/resources/js/nav.js}"></script>
+<!-- 스크립트 -->
+        <script>
+
+
+        </script>
+</body>
+</html>
