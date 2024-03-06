@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>본인인증</title>
+  <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/users/authentication.css}">
+</head>
+<body>
+<div>
+  <div th:replace="fragment/header.html :: header"></div>
+  <!-- 네비게이터 영역 -->
+  <div th:replace="fragment/nav.html :: nav"></div>
+  <!-- -----------------메인--------------------------- -->
+  <main>
+    <div id="main_logo">
+      <h1>회원가입</h1>
+    </div>
+    <div id="main_content">
+      <div id="login_li">
+        <ul>
+          <li>약관동의</li>
+          <li><strong>본인인증</strong></li>
+          <li>정보입력</li>
+          <li>가입완료</li>
+        </ul>
+      </div>
+      <div id="empty"></div>
+      <div id="main_image1">
+        <img src="/resources/images/휴대폰인증.png" alt="">
+        <div id="main_image1_text"><p>휴대폰 인증</p></div>
+      </div>
+      <div id="main_image2">
+        <img src="/resources/images/아이핀인증.png" alt="">
+        <div id="main_image2_text"><p>아이핀 인증</p></div>
+      </div>
+      <a href="/users/new">다음 단계</a>
+    </div>
+  </main>
+  <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<!-- 스크립트 -->
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

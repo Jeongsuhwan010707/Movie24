@@ -123,20 +123,22 @@ main{
         left: 46%
     }
     #checkIdBtn{
+        font-family: 'Pretendard-Regular';
         width: 100px;
 	    height: 40px;
 	    position: absolute;
 	    top: 277.5px;
 	    right: 23%;
-	    font-size: 15px;
+	    font-size: 16px;
     }
     #searchAddrBtn{
-    	width: 100px;
+        font-family: 'Pretendard-Regular';
+        width: 100px;
 	    height: 40px;
 	    position: absolute;
 	    bottom: 332.5px;
 	    right: 23%;
-	    font-size: 15px;
+	    font-size: 16px;
     }
     #sm{
         position: absolute;

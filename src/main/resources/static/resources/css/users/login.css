@@ -38,10 +38,6 @@ main{
     /* background-color: black; */
     float: left;
 }
-    /* #login_area hr{
-        background-color: #ccc;
-        color: #ccc;
-    } */
     #login_logo{
         width: 100%;
         height: 20%;
@@ -82,14 +78,14 @@ main{
         #login_button{
             width: 200px;
             height: 40px;
-            margin: 0px 150px;
-            margin-top: 20px;
-            font-family: 'S-CoreDream-3Light';
+            margin: 10px 150px 10px 150px;
+            font-family: 'LINESeedKR-Bd';
             font-weight: 700;
-            font-size: 20px;
             background-color: #362FD9;
             color: white;
             border: 2px solid #362FD9;
+            font-size: 22px;
+            padding-top: 4px;
         }
         #login_text{
             width: 150px;

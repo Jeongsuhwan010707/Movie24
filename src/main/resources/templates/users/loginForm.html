@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인</title>
+  <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/users/login.css}">
+</head>
+<body>
+<div>
+  <div th:replace="fragment/header.html :: header"></div>
+  <!-- 네비게이터 영역 -->
+  <div th:replace="fragment/nav.html :: nav"></div>
+  <!-- -----------------메인--------------------------- -->
+  <main>
+    <div id="login_area">
+      <div id="login_logo">
+        <h1>로그인</h1>
+      </div>
+      <div id="login_form">
+        <form action="/member/login.do" method="post">
+          <input type="text" class="login id" name="member-id" placeholder=" 아이디를 입력해주세요.">
+          <input type="password" name="member-pw" class="login password" placeholder=" 비밀번호를 입력해주세요.">
+          <button type="submit" id="login_button" style="cursor:pointer">로그인</button>
+          <!--                     <a href=""><input type="submit" value="로그인" id="login_button"></a> -->
+          <div id="login_text">
+            <input type="checkbox" name="" id="" value="아이디저장"> 로그인 상태 유지
+          </div>
+          <div id="login_text2">
+            <a href="/users/terms">회원가입</a>d
+            <a href="/member/searchId.do">ID / PW 찾기</a>
+          </div>
+        </form>
+        <!-- <hr> -->
+        <div id="empty"></div>
+        <a href=""><img src="/resources/images/kakao-talk.png" alt=""></a>
+        <a href=""><img src="/resources/images/facebook.png" alt=""></a>
+        <a href=""><img src="/resources/images/google.png" alt=""></a>
+      </div>
+    </div>
+    <div id="ad">
+      <a href="#"><img src="/resources/images/ad.png" alt=""></a>
+    </div>
+  </main>
+  <!-- --------------------푸터---------------------------------- -->
+  <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<!-- 스크립트 -->
+<script th:src="@{/resources/js/nav.js}"></script>
+<script>
+
+</script>
+</body>
+</html>
