@@ -44,21 +44,18 @@ document.addEventListener("DOMContentLoaded", function() {
 // -----------------------test
 
 function myCheck(){
-    const memberId = "${memberId}";
-    if(memberId === ""){
-        alert("로그인 후 이용가능한 기능입니다.");
-        if(confirm("로그인 페이지로 이동하시겠습니까?")){
-            location.href="/member/login.do";
-        }
-    }else{
-        modal.style.display = "block";
+    alert("로그인 후 이용 가능한 기능입니다.");
+    if(confirm("로그인 페이지로 이동하시겠습니까?")){
+        location.href="/login";
     }
 }
+
 function outCheck(){
     if(confirm("로그아웃 하시겠습니까?")){
-        location.href="/member/logout.do";
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/logout';
+        document.body.appendChild(form);
+        form.submit();
     }
-}
-function myCheck(){
-    alert("로그인이 되어있지 않습니다.");
 }

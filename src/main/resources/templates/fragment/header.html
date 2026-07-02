@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,13 +21,13 @@
                     <li><a th:href="@{/notice/help.do}"><img src="/resources/images/free-icon-operator-8111794.png" alt=""></a></li>
                     <li><a href=""><img src="/resources/images/free-icon-help-round-button-61079.png" alt=""></a></li>
 
-                    <div id="login" th:unless="${session.memberId == null}">
-                        <li><a th:href="@{/member/myPage.do(member-id=${memberId})}"><img src="/resources/images/free-icon-user-5264565.png" alt=""></a></li>
-                        <li><a href="#" onclick="outCheck();"><img src="/resources/images/free-icon-lock-483412.png" alt="로그아웃"></a></li>
+                    <div id="login" sec:authorize="isAuthenticated()">
+                        <li><a href="#"><img src="/resources/images/free-icon-user-5264565.png" alt="마이페이지"></a></li>
+                        <li><a href="#" onclick="outCheck(); return false;"><img src="/resources/images/free-icon-lock-483412.png" alt="로그아웃"></a></li>
                     </div>
-                    <div id="login" th:if="${session.memberId == null}">
-                        <li><a href="#" onclick="myCheck();"><img src="/resources/images/free-icon-user-5264565.png" alt=""></a></li>
-                        <li><a th:href="@{/users}"><img src="/resources/images/free-icon-lock-2089784.png" alt="로그인"></a></li>
+                    <div id="login" sec:authorize="!isAuthenticated()">
+                        <li><a href="#" onclick="myCheck(); return false;"><img src="/resources/images/free-icon-user-5264565.png" alt=""></a></li>
+                        <li><a th:href="@{/login}"><img src="/resources/images/free-icon-lock-2089784.png" alt="로그인"></a></li>
                     </div>
                 </ul>
             </div>

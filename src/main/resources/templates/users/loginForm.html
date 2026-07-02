@@ -22,19 +22,22 @@
         <h1>로그인</h1>
       </div>
       <div id="login_form">
-        <form action="/member/login.do" method="post">
-          <input type="text" class="login id" name="member-id" placeholder=" 아이디를 입력해주세요.">
-          <input type="password" name="member-pw" class="login password" placeholder=" 비밀번호를 입력해주세요.">
+        <form action="/login" th:object="${loginForm}" method="post">
+          <input type="hidden" name="redirectURL" th:value="${param.redirectURL != null ? param.redirectURL[0] : '/'}">
+          <input type="text" th:field="*{loginId}" class="login id" placeholder=" 아이디를 입력해주세요.">
+          <input type="password" th:field="*{password}" class="login password" placeholder=" 비밀번호를 입력해주세요.">
+          <p th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="color:red;"></p>
           <button type="submit" id="login_button" style="cursor:pointer">로그인</button>
+        </form>
           <!--                     <a href=""><input type="submit" value="로그인" id="login_button"></a> -->
           <div id="login_text">
             <input type="checkbox" name="" id="" value="아이디저장"> 로그인 상태 유지
           </div>
           <div id="login_text2">
-            <a href="/users/terms">회원가입</a>d
+            <a href="/users/terms">회원가입</a>
             <a href="/member/searchId.do">ID / PW 찾기</a>
           </div>
-        </form>
+
         <!-- <hr> -->
         <div id="empty"></div>
         <a href=""><img src="/resources/images/kakao-talk.png" alt=""></a>
