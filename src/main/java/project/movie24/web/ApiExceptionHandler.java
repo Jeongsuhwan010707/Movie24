@@ -16,7 +16,9 @@ import java.util.Map;
         "project.movie24.movie.controller",
         "project.movie24.theater.controller",
         "project.movie24.screen.controller",
-        "project.movie24.showtime.controller"
+        "project.movie24.showtime.controller",
+        "project.movie24.seat.controller",
+        "project.movie24.reservation.controller"
 })
 public class ApiExceptionHandler {
 
@@ -32,12 +34,18 @@ public class ApiExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDuplicate(DataIntegrityViolationException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of("message", "이미 사용 중인 아이디입니다."));
+                .body(Map.of("message", "이미 존재하거나 중복된 데이터입니다."));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleConflict(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("message", e.getMessage()));
     }
 }

@@ -53,7 +53,9 @@ public class SecurityConfig {
                                 "/api/movies", "/api/movies/**",
                                 "/api/theaters", "/api/theaters/**",
                                 "/api/screens", "/api/screens/**",
-                                "/api/showtimes", "/api/showtimes/**"
+                                "/api/showtimes", "/api/showtimes/**",
+                                "/api/seats", "/api/seats/**",
+                                "/api/reservations/showtimes/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
