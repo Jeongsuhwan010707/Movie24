@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/help/postInsert.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+      
+            <div id="blank_1"></div>
+            <div id="main_menu">
+                <div id="member">
+                    <h3>1:1 문의사항</h3>
+                    <ul>
+                        <li><a href="#">문의하기</a></li>
+                        <li><a href="/myPage">문의내역보기</a></li>
+                        <li><a href="#">약관 확인</a></li>
+                    </ul>
+                    <h3>공지사항</h3>
+                    <ul>
+                        <li><a href="/help/post">공지사항목록</a></li>
+                    </ul>
+                    <h3>자주 찾는 질문</h3>
+                    <ul>
+                        <li><a href="#">자주 찾는 질문</a></li>
+                    </ul>
+
+                    <h3>건의사항</h3>
+                    <ul>
+                        <li><a href="#">건의사항</a></li>
+                        <li><a href="#">개선사항</a></li>
+                        <li><a href="#">도움말</a></li>
+                    </ul>
+                    <h3>검색</h3>
+                    <ul>
+                        <li><a href="#">검색하기</a></li>
+                    </ul>
+
+                    <h3>환불문의</h3>
+                    <ul>
+                        <li><a href="#">환불문의하기</a></li>
+                        <li><a href="/myPage">환불문의 내역보기</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="main_blank"></div>
+        <div id="h2">
+            <h2>공지사항</h2>
+        </div>
+        <div id="titleArea">
+            <input type="text" id="postTitle" placeholder=" (작성글) 제목을 입력해주세요.">
+        </div>
+        <div id="imgArea">
+            <img src="/resources/images/postInfo.png" id="postImg" alt="">
+        </div>
+        <div id="contentArea">
+            <textarea name="" id="" cols="139.5" rows="30" id="postContent" placeholder=" 내용을 입력해주세요."></textarea>
+        </div>
+        <button id="smbtn">목록으로</button>
+       <div id="postLast"><p></p></div>
+       
+        <div id="main_button">
+            <a href="/help/post" onclick="checkInsert();">등록하기</a>
+        </div>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

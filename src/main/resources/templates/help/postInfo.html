@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/help/postInfo.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+      
+            <div id="blank_1"></div>
+            <div id="main_menu">
+                <div id="member">
+                    <h3>1:1 문의사항</h3>
+                    <ul>
+                        <li><a href="#">문의하기</a></li>
+                        <li><a href="/myPage">문의내역보기</a></li>
+                        <li><a href="#">약관 확인</a></li>
+                    </ul>
+                    <h3>공지사항</h3>
+                    <ul>
+                        <li><a href="/help/post">공지사항목록</a></li>
+                    </ul>
+                    <h3>자주 찾는 질문</h3>
+                    <ul>
+                        <li><a href="#">자주 찾는 질문</a></li>
+                    </ul>
+
+                    <h3>건의사항</h3>
+                    <ul>
+                        <li><a href="#">건의사항</a></li>
+                        <li><a href="#">개선사항</a></li>
+                        <li><a href="#">도움말</a></li>
+                    </ul>
+                    <h3>검색</h3>
+                    <ul>
+                        <li><a href="#">검색하기</a></li>
+                    </ul>
+
+                    <h3>환불문의</h3>
+                    <ul>
+                        <li><a href="#">환불문의하기</a></li>
+                        <li><a href="/myPage">환불문의 내역보기</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="main_blank"></div>
+        <div id="h2">
+            <h2>공지사항</h2>
+        </div>
+        
+        <div id="table">
+            <table>
+                <tr id="tr1">
+                    <th id="tr">제목 : 개인정보처리방침 약관개정안내</th>
+                    <td class="tr">등록일 : 2023.05.19</td>
+                    <td class="tr1">조회수 : 130000</td>
+                </tr>
+                </table>
+            </div>
+        <div id="blank">
+            <p>공지사항입니다.</p>
+        </div>
+        <div id="back">
+            <p class="b1"><strong>이전글 ▲</strong></p> 
+            <p id="b2"><a href="/help/postInfo"><strong>개인정보처리방침 약관개정안내</strong></a></p>
+            <p class="b3">등록일 : 2023.05.19</p>
+        </div>
+        <div id="next">
+            <p class="b1"><strong>다음글 ▼</strong></p> 
+            <p id="b2"><a href="/help/postInfo"><strong>애플 pay 실시매장 안내</strong></a></p>
+            <p class="b3">등록일 : 2023.05.29</p>
+        </div>
+        <div id="main_button">
+            <a href="/help/post">목록으로</a>
+        </div>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

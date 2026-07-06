@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/movieReservation/pay.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+    <div id="main-left">
+        <div id="main_text">
+            <p>관람권 및 포인트 할인적용</p>
+        </div>
+        <div class="main select1">
+            <p>Movie24 관람권/기프티콘</p><img src="/resources/images/down-arrow.png" alt="">
+        </div>
+        <div class="main select2">
+            <p>Movie24 포인트/쿠폰</p><img src="/resources/images/down-arrow.png" alt="">
+        </div>
+        <div class="main select3"><img src="/resources/images/down-arrow.png" alt="">
+            <p>Vip 할인</p>
+        </div>
+        <div id="main_text2">
+            <p>관람권 및 포인트 할인적용</p>
+        </div>
+        <div id="purchase">
+            <ul>
+                <li><input type="radio" name="purchase">신용/체크카드</li>
+                <li><input type="radio" name="purchase">휴대폰결제</li>
+                <li><input type="radio" name="purchase">간편결제</li>
+                <li><input type="radio" name="purchase">내통장결제</li>
+            </ul>
+        </div>
+        <div id="purchase2">
+            <p>카드사 선택</p><select name="" id="">
+                <option value="">비씨카드</option>
+                <option value="">국민카드</option>
+                <option value="">신한카드</option>
+                <option value="">삼성카드</option>
+                <option value="">롯데카드</option>
+                <option value="">농협카드</option>
+                <option value="">현대카드</option>
+                <option value="">하나카드</option>
+                <option value="">우리카드</option>
+                <option value="">신협카드</option>
+            </select>
+        </div>
+    </div>
+    <div id="main-right">
+        <div id="price1">
+            <img src="/resources/images/15.png" alt="">
+            <h3>범죄도시3(2D)</h3>
+        </div>
+        <div id="price2">
+            <div id="price2-1">
+                <p>강남</p><p>3관</p><p>2023.06.09</p><p>17:30~19:15</p> 
+            </div>
+            <div id="price2-2">
+                <img src="/resources/images/범죄도시3.png" alt="">
+            </div>
+        </div>
+        <div id="price3">
+            <div id="price3-1">
+                <p id="adult">성인1</p>
+                <p>14000</p>
+            </div>
+            <div id="price3-2">
+                <h3 id="real_price">금액</h3>
+                <h3>14,000원</h3>
+                <img src="/resources/images/minus (1).png" alt="">
+            </div>
+            <div id="price3-3">
+                <h3 id="disCount">할인적용</h3>
+                <h3>0원</h3>
+            </div>
+        </div>
+        <div class="price4 price-new">
+            <p class="price4-1 price4-1-new">VIP 할인</p>
+            <p class="price4-2 price4-2-new">0원</p>
+        </div>
+        <div class="price4 price_4">
+            <div class="price4-1">
+                최종결제금액
+            </div>
+            <div class="price4-2">
+                <p class="price-number2">원</p>
+                <p id="price-number1">14,000</p>
+            </div>
+        </div>
+        <div class="price4 price-new">
+            <p class="price4-1">결제수단</p>
+            <p class="price4-2 price4-3-new">신용/체크카드</p>
+        </div>
+        <div id="price5">
+            <div id="price5-1-1"><a id="price5-1" href="/movieReservation/seat">이전</a></div>
+            <div id="price5-2-2"><a id="price5-2" href="/movieReservation/payDone">다음</a></div>
+        </div>
+    </div>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

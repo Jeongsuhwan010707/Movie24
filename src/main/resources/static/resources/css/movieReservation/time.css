@@ -1,0 +1,241 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        /* background-color: red; */
+        position: relative;
+    }
+    #main_select{
+        width: 1300px;
+        height: 400px;
+        /* background-color: red; */
+        margin: 50px auto;
+        border-radius: 13px;
+        border: 5px solid grey;
+        margin-top: 100px;
+    }
+        #main_select_left{
+            width: 20%;
+            height: 100%;
+            float: left;
+            /* background-color: blue; */
+            text-align: center;
+        }
+            #main_select_left a:visited, #main_select_left a:link{
+                color: #222222d2;
+            }
+            #main_select_left img{
+                width: 30px;
+                margin-right: 5px;
+            }
+            #main_select_left a{
+                font-size: 30px;
+                font-family: 'S-CoreDream-3Light';
+                font-weight: 400;
+            }
+            #main_select_left1{
+                width: 100%;
+                height: 50%;
+                border-bottom: 2px dotted #ccc;
+                padding-top: 75px;
+            }
+            #main_select_left2{
+                width: 100%;
+                height: 50%;
+                padding-top: 70px;
+                background-color: #e6e4e4;
+            }
+        #main_select_right{
+            width: 72%;
+            height: 100%;
+            /* background-color: red; */
+            float: left;
+            margin-left: 50px;
+        }
+
+            #main_select_right1{
+                width: 100%;
+                height: 20%;
+                /* background-color: blue; */
+                padding: 25px 25px;
+                font-size: 17px;
+                font-family: 'S-CoreDream-3Light';
+                border-bottom: 1px solid #ccc;
+            }
+                .span2{
+                    padding-left: 20px;
+                }
+            #main_select_blank{
+            	float: left;
+            	height: 100%;
+            	width: 100px;
+            }    
+            #main_select_right2{
+                width: 100%;
+                height: 80%;
+                float: left;
+            }
+            #main_select_right2 li:hover{
+                text-decoration: underline;
+            }
+            .ul{
+            	width: 100%;
+            	height: 100%;
+            	padding-top: 20px;
+            }
+            .ul li{
+                float: left;
+                width: 33.3%;
+                text-align: center;
+                height: 100%;
+                line-height: 1.9;
+            }
+                .ul a:link, .ul a:visited{
+                    color: #201d85d2;
+                    font-size: 19px;
+                    font-family: 'S-CoreDream-3Light';
+                    font-weight: 600;
+                }
+    /* -------------------- 선택창 밑 메인-----------------------*/
+        #banner{
+            width: 100%;
+            height: 100px;
+            padding-top: 30px;
+        }
+            #banner span{
+                font-family: 'S-CoreDream-3Light';
+                font-size: 30px;
+                padding: 0px 20px;
+            }
+            #span_banner{
+                border-right: 1px solid #ccc;
+                padding-right: 100px;
+            }
+        #number{
+            width: 100%;
+            height: 90px;
+            /* background-color: red; */
+            font-size: 25px;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        main a:link:not(.sat,.sun), main a:visited:not(.sat,.sun){
+            color: #222;
+        }
+        .sat:link, .sat:visited{
+            color: rgb(84, 84, 226);
+        }
+        .sun:link, .sun:visited{
+            color: rgb(241, 69, 69);
+        }
+        .img{
+            float: left;
+            width: 25px;
+            padding-top: 33px;
+        }
+        .cal{
+            width: 30px;
+            padding-top: 30px;
+            margin-left: 30px;
+        }
+        #number ul li{
+            text-align: center;
+            float: left;
+            width: 18px;
+            padding: 12px 20px;
+            margin: 0 25px;
+            display: flex;
+        }
+        #country{
+            width: 90%;
+            margin: 20px 0px;
+        }
+        #country span{
+            margin: 20px 0px;
+            padding: 0px 30px;
+            font-size: 20px;
+            font-family: 'S-CoreDream-3Light';
+            border: 1px solid #ccc;
+        }
+        #country span:hover{
+            background-color: rgb(179, 177, 177);
+        }
+        .country_text{
+            width: 100%;
+            height: 60px;
+            padding-top: 5px;
+            margin-top: 20px;
+            color: #362FD9;
+            float: left;
+        }
+            .country_text span{
+                font-size: 22px;
+                font-weight: 550;
+                padding: 0px 20px;
+            }
+        .seat{
+            width: 100%;
+            height: 120px;
+/*             border-top: 1px solid #ccc; */
+            /* background-color: red; */
+        }
+        .last{
+            border-bottom: 1px solid #ccc;
+        }
+            .tNum{
+                font-size: 20px;
+                padding: 30px 25px;
+                float: left;
+            }
+            .d2{
+                width: 120px;
+                height: 90px;
+                margin-top: 14px;
+                float: left;
+                background-color: #e6e4e4;
+                text-align: center;
+                font-size: 25px;
+                font-family: 'LINESeedKR-Bd';
+                padding-top: 30px;
+                margin-left: 90px;
+            }
+            .seat_text{
+                width: 120px;
+                height: 90px;
+                float: left;
+                text-align: center;
+                font-size: 22px;
+                padding-top: 14px;
+                border: 1px solid #ccc;
+                margin: 14px 0 0 20px;
+            }
+            .seat_text:hover{
+                background-color: #eee;
+            }
+    /* ----------푸터------------------------- */

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/movieReservation/seat.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div id="main_button">
+            <button>ENGLISH</button>
+            <a href="/movieReservation/time"><button>상영시간표</button></a>
+            <a href="/movieReservation/time"><button>취소하기</button></a>
+        </div>
+        <h1>예매하기</h1>
+        <div id="select">
+            <div id="select_logo"><p>관람인원선택</p></div>
+            <div id="select_per">
+                <div>
+                    <p>성인</p>
+                    <ul>
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>7</li>
+                        <li>8</li>
+                    </ul>
+                    <p>청소년</p>
+                    <ul>
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>7</li>
+                        <li>8</li>
+                    </ul>
+                </div>
+            </div>
+                <div id="select_img">
+                    <img src="/resources/images/좌석배치.png" alt="">
+                </div>
+        </div>
+        <div id="price">
+            <div id="price1">
+                <img src="/resources/images/15.png" alt="">
+                <h3>범죄도시3(2D)</h3>
+            </div>
+            <div id="price2">
+                <div id="price2-1">
+                    <p>강남</p><p>3관</p><p>2023.06.09</p><p>17:30~19:15</p> 
+                </div>
+                <div id="price2-2">
+                    <img src="/resources/images/범죄도시3.png" alt="">
+                </div>
+            </div>
+            <div id="price3"><img src="/resources/images/스크린샷(99).png" alt=""></div>
+            <div id="price4">
+                <div id="price4-1">
+                    최종결제금액
+                </div>
+                <div id="price4-2">
+                    <p id="price-number2">원</p>
+                    <p id="price-number1">0</p>
+                </div>
+            </div>
+            <div id="price5">
+                <div id="price5-1-1"><a id="price5-1" href="/movieReservation/time">이전</a></div>
+                <div id="price5-2-2"><a id="price5-2" href="/movieReservation/pay">다음</a></div>
+            </div>
+        </div>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

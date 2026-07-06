@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/store/index.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+    <div id="main_logo">
+        <h1>스토어</h1>
+    </div>
+    <div id="main_content">
+        <div id="login_li">
+            <ul>
+                <li><a href="#">패키지</a></li>
+                <li><a href="#">영화관람권</a></li>
+                <li><a id="li-last" href="#">기프트카드</a></li>
+                <li><a href="#">장바구니</a>
+                <span>0</span></li>
+            </ul>
+        </div>
+    </div>
+        <div id="package">
+            <div class="title_store">
+                <h1>패키지</h1>
+            </div>
+            <div class="product">
+                <ul>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/cgv팝콘-removebg-preview.png" alt="">
+                        <p>팝콘 패키지1</p>
+                        <p>10,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/cgv팝콘2-removebg-preview.png" alt="">
+                        <p>팝콘 패키지2</p>
+                        <p>10,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가박스팝콘.png" alt="">
+                        <p>팝콘 패키지3</p>
+                        <p>10,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가박스팝콘2.png" alt="">
+                        <p>팝콘 패키지4</p>
+                        <p>10,000원</p>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="movie-ticket">
+            <div class="title_store">
+                <h1>영화관람권</h1>
+            </div>
+            <div class="product">
+                <ul>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가티켓1.png" alt="">
+                        <p>영화관람권 1</p>
+                        <p>20,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가티켓2.png" alt="">
+                        <p>영화관람권 2</p>
+                        <p>30,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가티켓3.png" alt="">
+                        <p>영화관람권 3</p>
+                        <p>10,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가티켓4.png" alt="">
+                        <p>영화관람권 4</p>
+                        <p>15,000원</p>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="gift">
+            <div class="title_store">
+                <h1>기프트카드</h1>
+            </div>
+            <div class="product">
+                <ul>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가카드1.png" alt="">
+                        <p>기프트카드 1</p>
+                        <p>11,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가카드2.png" alt="">
+                        <p>기프트카드 2</p>
+                        <p>12,000원</p>
+                    </a></li>
+                    <li><a href="/store/bag">
+                        <img src="/resources/images/메가카드3.png" alt="">
+                        <p>기프트카드 3</p>
+                        <p>20,000원</p>
+                    </a></li>
+                    <li><a href="#">
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        <a id="next" href="/store/bag">장바구니</a>
+    </main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>
