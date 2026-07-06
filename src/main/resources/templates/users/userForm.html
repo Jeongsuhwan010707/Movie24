@@ -30,6 +30,7 @@
         </ul>
       </div>
       <form name="enrollForm" action="/users/new" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <div id="content_area">
           <ul>
             <li>

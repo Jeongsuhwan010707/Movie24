@@ -37,9 +37,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 아직 브라우저 프론트가 없는 API 서버 단계라 CSRF는 비활성화한다.
-                // 세션 쿠키를 쓰는 브라우저 프론트가 붙는 시점에 다시 검토한다.
-                .csrf(csrf -> csrf.disable())
+                // 세션 쿠키 기반 인증(뷰 로그인 + /api 로그인 공용)이라 CSRF는 기본 설정(세션에 토큰 저장)으로 켜둔다.
+                // 타임리프 폼에는 _csrf 히든 필드를 직접 추가했다. 이후 /api를 JS에서 fetch로 호출하게 되면
+                // 토큰을 meta 태그 등으로 노출해 헤더에 실어 보내야 한다.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/users/**", "/login", "/logout",
