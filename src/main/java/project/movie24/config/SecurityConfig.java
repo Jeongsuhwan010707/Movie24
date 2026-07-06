@@ -44,7 +44,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/users/**", "/login", "/logout",
                                 "/api/users", "/api/login", "/api/logout",
-                                "/resources/**", "/*.ico", "/error"
+                                "/resources/**", "/*.ico", "/error",
+                                "/help", "/help/**", "/store", "/store/**",
+                                "/movieReservation/**", "/main/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

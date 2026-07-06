@@ -88,32 +88,36 @@
                 font-family: 'S-CoreDream-3Light';
                 border-bottom: 1px solid #ccc;
             }
-                .span2{
+                #span1{
+                    border-right: 1px solid #ccc;
+                    padding-right: 20px;
+                }
+                #span2{
                     padding-left: 20px;
                 }
             #main_select_blank{
             	float: left;
             	height: 100%;
             	width: 100px;
-            }    
+            }
             #main_select_right2{
                 width: 100%;
                 height: 80%;
                 float: left;
+                overflow: hidden;
             }
             #main_select_right2 li:hover{
                 text-decoration: underline;
             }
             .ul{
             	width: 100%;
-            	height: 100%;
             	padding-top: 20px;
+            	overflow: hidden;
             }
             .ul li{
                 float: left;
                 width: 33.3%;
                 text-align: center;
-                height: 100%;
                 line-height: 1.9;
             }
                 .ul a:link, .ul a:visited{
@@ -192,7 +196,7 @@
             padding-top: 5px;
             margin-top: 20px;
             color: #362FD9;
-            float: left;
+            clear: both;
         }
             .country_text span{
                 font-size: 22px;
@@ -202,6 +206,8 @@
         .seat{
             width: 100%;
             height: 120px;
+            clear: both;
+            overflow: hidden;
 /*             border-top: 1px solid #ccc; */
             /* background-color: red; */
         }
