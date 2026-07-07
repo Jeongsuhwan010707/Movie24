@@ -31,125 +31,71 @@
                 <span id="span2">상영종료</span>
             </div>
             <div id="main_select_right2">
-                <div class="ul"><ul>
-                    <li><a href="#">범죄도시3</a></li>
-                    <li><a href="#">더 마블즈</a></li>
-                    <li><a href="#">인어공주</a></li>
-                    <li><a href="#">트랜스포머</a></li>
-                    <li><a href="#">슈퍼마리오</a></li>
-                    <li><a href="#">신세계</a></li>
-                    <li><a href="#">라라랜드</a></li>
-                    <li><a href="#">베테랑</a></li>
-                    <li><a href="#">리틀 포레스트</a></li>
-                    <li><a href="#">닥터 스트레인지</a></li>
-                    <li><a href="#">스파이더맨</a></li>
-                    <li><a href="#">신데렐라</a></li>
-                    <li><a href="#">짱구는 못말려</a></li>
-                    <li><a href="#">스즈메의 문단속</a></li>
-                    <li><a href="#">너의 이름은</a></li>
-                </ul></div>
+                <div class="ul">
+                    <ul>
+                        <li th:if="${#lists.isEmpty(movies)}">현재 상영중인 영화가 없습니다.</li>
+                        <li th:each="movie : ${movies}">
+                            <a th:href="@{/movieReservation/time(movieId=${movie.id}, region=${selectedRegion}, date=${selectedDate})}"
+                               th:text="${movie.title}"
+                               th:style="${selectedMovie != null and selectedMovie.id == movie.id} ? 'font-weight:700;text-decoration:underline;' : ''">영화제목</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
     <!-------------------- 선택창 밑 메인----------------------------->
     <div id="banner">
-        <span id="span_banner">영화이름</span>
+        <span id="span_banner" th:text="${selectedMovie != null ? selectedMovie.title : '영화이름'}">영화이름</span>
         <span>상영시간표</span>
     </div>
     <div id="number">
         <img class="img" src="/resources/images/back.png" alt="">
         <ul>
-            <li><a class="sat" href="#">10토</a></li>
-            <li><a class="sun" href="#">11일</a></li>
-            <li><a href="#">12월</a></li>
-            <li><a href="#">13화</a></li>
-            <li><a href="#">14수</a></li>
-            <li><a href="#">15목</a></li>
-            <li><a href="#">16금</a></li>
-            <li><a class="sat" href="#">17토</a></li>
-            <li><a class="sun" href="#">18일</a></li>
-            <li><a href="#">19월</a></li>
-            <li><a href="#">20화</a></li>
-            <li><a href="#">21수</a></li>
-            <li><a href="#">22목</a></li>
+            <li th:each="opt : ${dateOptions}">
+                <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${selectedRegion}, date=${opt.date})}"
+                   th:class="${opt.weekendClass}">
+                    <span class="dayNum" th:text="${opt.dayLabel}"
+                          th:style="${opt.date == selectedDate} ? 'text-decoration:underline;' : ''">10</span>
+                    <span class="dayWeek" th:text="${opt.weekdayLabel}">토</span>
+                </a>
+            </li>
         </ul>
         <img class="img" src="/resources/images/next.png" alt="">
         <img class="cal" src="/resources/images/calendar (1).png" alt="">
     </div>
     <div id="country">
-        <span id="seoul"><a href="#">서울</a></span>
-        <span><a href="#">경기</a></span>
-        <span><a href="#">인천</a></span>
-        <span><a href="#">대전/충청/세종</a></span>
-        <span><a href="#">부산/대구/경상</a></span>
-        <span><a href="#">광주/전라</a></span>
-        <span><a href="#">강원</a></span>
+        <span th:each="r : ${regions}" th:id="${r == selectedRegion} ? 'selectedRegion' : null">
+            <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${r}, date=${selectedDate})}"
+               th:text="${r}"
+               th:style="${r == selectedRegion} ? 'font-weight:700;' : ''">지역</a>
+        </span>
+        <span th:if="${#lists.isEmpty(regions)}">등록된 극장이 없습니다.</span>
     </div>
-    <div class="country_text">
-        <span>강남</span>
-    </div>
-    <div class="seat">
-        <div class="tNum"><h4>1관</h4>총200석
+
+    <th:block th:if="${#lists.isEmpty(theaterSchedules)}">
+        <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
+    </th:block>
+
+    <th:block th:each="ts : ${theaterSchedules}">
+        <div class="country_text">
+            <span th:text="${ts.theater.name}">극장명</span>
         </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-    </div>
-    <div class="seat">
-        <div class="tNum"><h4>2관</h4>총220석
+        <div th:each="ss, ssStat : ${ts.screens}"
+             th:class="${ssStat.last} ? 'seat last' : 'seat'">
+            <div class="tNum">
+                <h4 th:text="${ss.screen.name}">1관</h4>총<span th:text="${ss.screen.totalSeats}">200</span>석
+            </div>
+            <div class="d2" th:text="${ss.screen.screenType}">2D</div>
+            <div class="seat_text" th:each="st : ${ss.showtimes}">
+                <a th:href="@{/movieReservation/seat(showtimeId=${st.id})}">
+                    <span th:text="${#temporals.format(st.startTime, 'HH:mm')}">17:50</span>
+                    <br>
+                    <span th:text="${ss.screen.totalSeats}">200</span>석
+                </a>
+            </div>
         </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">21:00<br>200석</a></div>
-    </div>
-    <div class="seat last">
-        <div class="tNum"><h4>3관</h4>총210석
-        </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">21:00<br>200석</a></div>
-    </div>
-    <div class="country_text">
-        <span>종로</span>
-    </div>
-    <div class="seat">
-        <div class="tNum"><h4>1관</h4>총200석
-        </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-    </div>
-    <div class="seat last">
-        <div class="tNum"><h4>2관</h4>총220석
-        </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-    </div>
-    <div class="country_text">
-        <span>강동</span>
-    </div>
-    <div class="seat">
-        <div class="tNum"><h4>1관</h4>총200석
-        </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-    </div>
-    <div class="seat last">
-        <div class="tNum"><h4>2관</h4>총220석
-        </div>
-        <div class="d2">2D</div>
-        <div class="seat_text"><a href="/movieReservation/seat">17:50<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-        <div class="seat_text"><a href="/movieReservation/seat">19:00<br>200석</a></div>
-    </div>
-        <!-- <div id="main_button">
-            <a href="#">다음 단계</a>
-        </div> -->
+    </th:block>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>

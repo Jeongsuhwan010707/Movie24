@@ -145,10 +145,12 @@
         width: 100%;
         height: 50px;
     }
-    #price1 img{
+    .ageBadge{
         float: left;
-        padding: 10px 10px;
-        width: 50px;
+        margin: 12px 10px;
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
     }
     #price1 h3{
         font-size: 20px;
@@ -175,7 +177,8 @@
     }
     #price2-2 img{
         width: 80px;
-        float: left;
+        height: 100px;
+        object-fit: cover;
     }
     #price3{
         width: 100%;
@@ -194,12 +197,12 @@
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
         font-size: 15px;
-        padding-top: 8px;
+        padding: 0 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         border-bottom: 1px solid #787777;
         color: #ccc;
-    }
-    #adult{
-        padding-right: 170px;
     }
     #price3-2{
         margin: 0 auto;
@@ -210,6 +213,7 @@
         border-bottom-right-radius: 5px;
         font-size: 15px;
         padding-top: 17px;
+        position: relative;
     }
     #price3 h3{
         display: inline;
@@ -221,8 +225,9 @@
     #price3-2 img{
         width: 30px;
         position: absolute;
-        top: 295px;
-        right: 180px;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
     }
     #price3-3{
         margin: 0 auto;

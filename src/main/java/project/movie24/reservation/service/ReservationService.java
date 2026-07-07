@@ -75,11 +75,23 @@ public class ReservationService {
             throw new IllegalStateException("본인의 예매만 취소할 수 있습니다.");
         }
         reservation.cancel();
+        // 좌석 점유 기록 자체를 지워야 (showtime_id, seat_id) 유니크 제약에 다시 걸리지 않고
+        // 같은 좌석을 재예매할 수 있다.
+        reservationSeatRepository.deleteAll(reservationSeatRepository.findByReservationId(reservationId));
     }
 
     @Transactional(readOnly = true)
     public List<Reservation> findMyReservations(Long userId) {
         return reservationRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Reservation findOwned(Long reservationId, Long userId) {
+        Reservation reservation = getOrThrow(reservationId);
+        if (!reservation.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("본인의 예매만 조회할 수 있습니다.");
+        }
+        return reservation;
     }
 
     @Transactional(readOnly = true)

@@ -23,51 +23,60 @@
         </div>
         <h1>예매하기</h1>
         <div id="select">
-            <div id="select_logo"><p>관람인원선택</p></div>
+            <div id="select_logo"><p>좌석선택</p></div>
             <div id="select_per">
-                <div>
-                    <p>성인</p>
-                    <ul>
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li>4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>7</li>
-                        <li>8</li>
-                    </ul>
-                    <p>청소년</p>
-                    <ul>
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li>4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>7</li>
-                        <li>8</li>
-                    </ul>
-                </div>
+                <p>성인</p>
+                <ul id="adultCountList">
+                    <li th:each="n : ${#numbers.sequence(1,8)}" th:text="${n}" th:attr="data-count=${n}" onclick="setCount('adult', this)">1</li>
+                </ul>
+                <p>청소년</p>
+                <ul id="teenCountList">
+                    <li th:each="n : ${#numbers.sequence(1,8)}" th:text="${n}" th:attr="data-count=${n}" onclick="setCount('teen', this)">1</li>
+                </ul>
             </div>
-                <div id="select_img">
-                    <img src="/resources/images/좌석배치.png" alt="">
+            <div id="select_img">
+                <div id="screenCurve">SCREEN</div>
+                <div th:each="rowEntry : ${seatsByRow}" class="seatR">
+                    <span style="width:20px;display:inline-block;text-align:center;margin-right:5px;" th:text="${rowEntry.key}">A</span>
+                    <div th:each="seat : ${rowEntry.value}"
+                         class="seat"
+                         th:classappend="${#lists.contains(reservedSeatIds, seat.id)} ? ' taken' : ''"
+                         th:attr="data-seat-id=${seat.id},data-seat-label=${seat.seatLabel}"
+                         th:text="${seat.seatNumber}"
+                         onclick="toggleSeat(this)">1</div>
                 </div>
+                <p th:if="${#maps.isEmpty(seatsByRow)}">등록된 좌석이 없습니다.</p>
+            </div>
         </div>
         <div id="price">
             <div id="price1">
-                <img src="/resources/images/15.png" alt="">
-                <h3>범죄도시3(2D)</h3>
+                <img class="ageBadge" th:src="@{'/resources/images/' + ${showtime.movie.ageRating.imageFileName}}" alt="">
+                <h3 th:text="${showtime.movie.title} + ' (' + ${showtime.screen.screenType} + ')'">영화 (2D)</h3>
             </div>
             <div id="price2">
                 <div id="price2-1">
-                    <p>강남</p><p>3관</p><p>2023.06.09</p><p>17:30~19:15</p> 
+                    <p th:text="${showtime.screen.theater.name}">극장</p>
+                    <p th:text="${showtime.screen.name}">관</p>
+                    <p th:text="${#temporals.format(showtime.startTime, 'yyyy.MM.dd')}">날짜</p>
+                    <p th:text="${#temporals.format(showtime.startTime, 'HH:mm')}">시간</p>
                 </div>
                 <div id="price2-2">
-                    <img src="/resources/images/범죄도시3.png" alt="">
+                    <img th:src="${showtime.movie.posterImageUrl}" alt="">
                 </div>
             </div>
-            <div id="price3"><img src="/resources/images/스크린샷(99).png" alt=""></div>
+            <div id="seatSummary">
+                <div id="seatLegend">
+                    <div class="seat-shape"><div class="shape-menu shape-A"></div><div class="shape-text">선택</div></div>
+                    <div class="seat-shape"><div class="shape-menu shape-B"></div><div class="shape-text">예매완료</div></div>
+                    <div class="seat-shape"><div class="shape-menu shape-C"></div><div class="shape-text">선택불가</div></div>
+                    <div class="seat-shape"><div class="shape-menu shape-D"></div><div class="shape-text">일반</div></div>
+                    <div class="seat-shape"><div class="shape-menu shape-E"></div><div class="shape-text">장애인석</div></div>
+                </div>
+                <div id="selectedSeatWrap">
+                    <p id="selectedSeatLabel">선택좌석</p>
+                    <div id="selectedSeatBoxes"></div>
+                </div>
+            </div>
             <div id="price4">
                 <div id="price4-1">
                     최종결제금액
@@ -79,7 +88,7 @@
             </div>
             <div id="price5">
                 <div id="price5-1-1"><a id="price5-1" href="/movieReservation/time">이전</a></div>
-                <div id="price5-2-2"><a id="price5-2" href="/movieReservation/pay">다음</a></div>
+                <div id="price5-2-2"><a id="price5-2" href="#" onclick="goNext(); return false;">다음</a></div>
             </div>
         </div>
 </main>
@@ -87,5 +96,94 @@
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:inline="javascript">
+    var basePrice = /*[[${showtime.basePrice}]]*/ 0;
+    var showtimeId = /*[[${showtime.id}]]*/ 0;
+    var selectedSeats = [];
+    var adultCount = 0;
+    var teenCount = 0;
+
+    function setCount(type, el) {
+        var val = parseInt(el.getAttribute('data-count'), 10);
+        var current = type === 'adult' ? adultCount : teenCount;
+        var next = current === val ? 0 : val;
+        if (type === 'adult') {
+            adultCount = next;
+        } else {
+            teenCount = next;
+        }
+        var list = document.getElementById(type === 'adult' ? 'adultCountList' : 'teenCountList');
+        Array.prototype.forEach.call(list.children, function (li) {
+            li.classList.toggle('active', parseInt(li.getAttribute('data-count'), 10) === next);
+        });
+        var limit = adultCount + teenCount;
+        while (selectedSeats.length > limit) {
+            var lastId = selectedSeats.pop();
+            var seatEl = document.querySelector('.seat[data-seat-id="' + lastId + '"]');
+            if (seatEl) seatEl.classList.remove('selected');
+        }
+        renderSelectedSeatBoxes();
+        document.getElementById('price-number1').textContent = (basePrice * selectedSeats.length).toLocaleString();
+    }
+
+    var SEAT_BOX_SLOTS = 8;
+
+    function renderSelectedSeatBoxes() {
+        var container = document.getElementById('selectedSeatBoxes');
+        container.innerHTML = '';
+        for (var i = 0; i < SEAT_BOX_SLOTS; i++) {
+            var seatId = selectedSeats[i];
+            var box = document.createElement('div');
+            box.className = 'seatbox';
+            if (seatId) {
+                var seatEl = document.querySelector('.seat[data-seat-id="' + seatId + '"]');
+                box.textContent = seatEl ? seatEl.getAttribute('data-seat-label') : '-';
+            } else {
+                box.textContent = '-';
+            }
+            container.appendChild(box);
+        }
+    }
+
+    function toggleSeat(el) {
+        if (el.classList.contains('taken')) return;
+        var seatId = el.getAttribute('data-seat-id');
+        var idx = selectedSeats.indexOf(seatId);
+        if (idx === -1) {
+            var limit = adultCount + teenCount;
+            if (limit === 0) {
+                alert('관람 인원을 먼저 선택해주세요.');
+                return;
+            }
+            if (selectedSeats.length >= limit) {
+                alert('선택한 인원 수(' + limit + '명)만큼만 좌석을 선택할 수 있습니다.');
+                return;
+            }
+            selectedSeats.push(seatId);
+            el.classList.add('selected');
+        } else {
+            selectedSeats.splice(idx, 1);
+            el.classList.remove('selected');
+        }
+        renderSelectedSeatBoxes();
+        document.getElementById('price-number1').textContent = (basePrice * selectedSeats.length).toLocaleString();
+    }
+
+    function goNext() {
+        var limit = adultCount + teenCount;
+        if (limit === 0) {
+            alert('관람 인원을 선택해주세요.');
+            return;
+        }
+        if (selectedSeats.length !== limit) {
+            alert('선택한 인원 수(' + limit + '명)만큼 좌석을 선택해주세요.');
+            return;
+        }
+        location.href = '/movieReservation/pay?showtimeId=' + showtimeId + '&seatIds=' + selectedSeats.join(',')
+            + '&adultCount=' + adultCount + '&teenCount=' + teenCount;
+    }
+
+    renderSelectedSeatBoxes();
+</script>
 </body>
 </html>

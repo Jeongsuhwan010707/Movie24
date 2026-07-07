@@ -23,6 +23,15 @@
             <h1>감사합니다!
                 <br>결제가 완료되었습니다.
             </h1>
+            <p th:if="${reservation != null}">
+                <span th:text="${reservation.showtime.movie.title}">영화</span> ·
+                <span th:text="${reservation.showtime.screen.theater.name}">극장</span>
+                <span th:text="${reservation.showtime.screen.name}">관</span> ·
+                <span th:text="${#temporals.format(reservation.showtime.startTime, 'yyyy.MM.dd HH:mm')}">일시</span>
+                <br>
+                좌석: <span th:each="label, stat : ${seatLabels}" th:text="${label} + (${stat.last} ? '' : ', ')">A1</span>
+                · 결제금액: <span th:text="${#numbers.formatInteger(reservation.totalPrice, 0, 'COMMA')}">14,000</span>원
+            </p>
             <p>마이페이지에서 구매내역을 확인해보세요~</p>
         </div>
         <div id="button">

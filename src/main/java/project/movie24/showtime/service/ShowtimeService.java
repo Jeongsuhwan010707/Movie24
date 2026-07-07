@@ -11,6 +11,7 @@ import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.dto.ShowtimeRequest;
 import project.movie24.showtime.repository.ShowtimeRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -64,6 +65,11 @@ public class ShowtimeService {
     @Transactional(readOnly = true)
     public List<Showtime> findByScreenId(Long screenId) {
         return showtimeRepository.findByScreenId(screenId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Showtime> findByMovieIdAndDateRange(Long movieId, LocalDateTime start, LocalDateTime end) {
+        return showtimeRepository.findByMovieIdAndStartTimeBetween(movieId, start, end);
     }
 
     private Showtime getOrThrow(Long showtimeId) {
