@@ -1,0 +1,218 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        height: 1500px;
+        /* background-color: red; */
+        position: relative;
+        margin-top: 20px auto;
+
+    }
+            #main_menu{
+                width: 18%;
+                height: 100%;
+                float: left;
+                /* background-color: red; */
+                border-top: 2px solid #ccc;
+        }
+            #blank_1{
+                width: 100%;
+                height: 50px;
+            }
+        #main_menu h3{
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding: 20px 20px;
+            width: 200px;
+            height: 70px;
+        }
+        main li a:link, main li a:visited{
+            color: grey;
+            font-weight: 500;
+        }
+        #main_menu a{
+            line-height: 1.7;
+            margin-left: 20px;
+        }
+        #main_menu a:hover{
+            background-color: #eee;
+        }
+        #member{
+            float: left;
+        }
+        #main_blank{
+            height: 90%;
+            width: 4%;
+            /* background-color: red; */
+            float: left;
+        }
+        #h2{
+            float: left;
+            width: 1000px;
+            height: 100px;
+            font-family: 'S-CoreDream-3Light';
+            font-weight: 600;
+            font-size: 23px;
+            padding-top: 27px;
+            /* border-bottom: 1px solid #222; */
+        }
+        
+        #table{
+            width: 1000px;
+            height: 50px;
+            float: left;
+            /* background-color: red; */
+            text-align: center;
+            background-color: #eee;
+            border-top: 1px solid #ccc;
+            /* border-bottom: 1px solid #ccc; */
+            /* margin-top: 50px; */
+        }
+        .tr{
+            padding-bottom: 6px;
+            width: 150px;
+            height: 50px;
+            font-size: 15px;
+            padding-left: 10px;
+            text-align: left;
+        }
+        .tr1{
+            padding-bottom: 6px;
+            width: 180px;
+            height: 50px;
+            font-size: 15px;
+            text-align: left;
+        }
+        .tr2{
+            padding-bottom: 6px;
+            width: 250px;
+            height: 50px;
+            font-size: 15px;
+            text-align: left;
+        }
+        #tr{
+        	padding-bottom: 6px;
+		    width: 600px;
+		    font-size: 15px;
+		    padding-left: 11px;
+		    text-align: left;
+        }
+        #blank{
+            width: 1000px;
+            float: left;
+            border-bottom: 1px solid #ccc;
+            padding: 30px 30px;
+        }
+       	#blankmsg{
+       		margin-bottom: 30px;
+      	}
+      	#back-btn{
+            width: 100px;
+            height: 40px;
+            text-align: center;
+            color: white;
+            border-radius: 5px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 9px;
+            background-color: #362FD9;
+            float: right;
+    		margin: 30px 20px;
+   	   	}
+        #main_button a{
+            position: absolute;
+            width: 100px;
+            height: 40px;
+            text-align: center;
+            color: white;
+            border-radius: 5px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 9px;
+        }
+        #main_button #modify{
+            top: 90px;
+            right: 10.5%;
+            background-color: #62CDFF;
+        }#main_button #delete{
+            top: 90px;
+            right: 2%;
+            background-color: #537FE7;
+        }
+        #main_button a:hover{
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        #back{
+            width: 1000px;
+            height: 60px;
+            border-top: 1px solid #adacac;
+            border-bottom: 1px solid #d8d5d5;
+            float: left;
+        }
+        #back a:link, #back a:visited{
+            color: black;
+        }
+        #next{
+            width: 1000px;
+            height: 60px;
+            border-bottom: 1px solid #adacac;
+            float: left;
+        }
+        #next a:link, #next a:visited{
+            color: black;
+        }
+        .b1{
+        	float: left;
+            padding: 20px 20px;
+        }
+        #b2{
+            width: 400px;
+            padding: 20px 20px;
+            float: left;
+        }
+        #b2-1{
+            width: 300px;
+            padding: 20px 20px;
+        }
+        .b3{
+        	float: right;
+            padding: 20px 20px;
+        }
+        #blank-img{
+        	height: 30px;
+        }
+        #blankblank{
+        	height: 360px;
+        }
+        #noticeConImg{
+        	max-width: 1000px;
+        }
+    /* ----------푸터------------------------- */

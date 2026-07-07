@@ -1,0 +1,85 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1000px;
+        height: 850px;
+        /* background-color: red; */
+        position: relative;
+    }
+   
+       
+    #congret{
+        width: 1000px;
+        height: 350px;
+        margin: 50px auto;
+        /* background-color: red; */
+        text-align: center;
+    }
+        #congret img{
+            margin-top: 100px;
+            width: 200px;
+        }
+    #main_text{
+        width: 100%;
+        height: 370px;
+        margin: 0 auto;
+        text-align: center;
+        /* background-color: blue; */
+    }
+    #main_text h1{
+        font-family: 'S-CoreDream-3Light';
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.8;
+    }
+    #main_text p{
+        font-family: 'S-CoreDream-3Light';
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 1.8;
+        margin-top: 30px;
+    }
+        main a{
+            position: absolute;
+            top: 700px;
+            right: 45%;
+            width: 130px;
+            height: 50px;
+            background-color: #362FD9;
+            text-align: center;
+            border-radius: 15px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 14px;
+            padding-left: 2px;
+        }
+        main a:link, main a:visited{
+        	color:white;
+        }
+    /* ----------푸터------------------------- */

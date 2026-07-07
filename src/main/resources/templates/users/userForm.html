@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/users/userForm.css}">
+</head>
+<body>
+<div>
+  <div th:replace="fragment/header.html :: header"></div>
+  <!-- 네비게이터 영역 -->
+  <div th:replace="fragment/nav.html :: nav"></div>
+  <!-- -----------------메인--------------------------- -->
+  <main>
+    <div id="main_logo">
+      <h1>회원가입</h1>
+    </div>
+    <div id="main_content">
+      <div id="login_li">
+        <ul>
+          <li>약관동의</li>
+          <li>본인인증</li>
+          <li><strong>정보입력</strong></li>
+          <li>가입완료</li>
+        </ul>
+      </div>
+      <form name="enrollForm" action="/users/new" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <div id="content_area">
+          <ul>
+            <li>
+              <label for="loginId">아이디</label>
+              <input type="text" class="inputs" name="loginId" id="loginId" placeholder=" 아이디를 입력해주세요.">
+            </li>
+            <button type="button" onclick="checkId();" id="checkIdBtn">중복확인</button>
+            <li>
+              <label for="password">비밀번호</label>
+              <input class="inputs" type="password" id="password" onchange="check_pw()" name="password" placeholder=" 비밀번호를 입력해주세요.">
+            </li>
+            <li>
+              <label for="password-check">비밀번호 확인</label>
+              <input class="inputs" type="password" id="password-check" onchange="check_pw()" name="password-check" placeholder=" 비밀번호를 다시 한 번 입력해주세요."><span id="check"></span>
+            </li>
+            <li>
+              <label for="name">이름</label>
+              <input class="inputs" type="text" id="name" name="name" placeholder=" ex) 홍길동">
+            </li>
+            <li>
+              <label for="nickName">닉네임</label>
+              <input class="inputs" type="text" id="nickName" name="nickName" placeholder=" ex) cuty11, ...">
+            </li>
+            <li>
+              <label>주소</label>
+              <input class="inputs" type="text" name="address" id="address" placeholder=" 주소 입력" readonly>
+              <input id="searchAddrBtn" type="button" value="주소검색" onclick="sample4_exeDaumPostcode();">
+            </li>
+            <li>
+              <label for="phone">전화번호</label>
+              <input class="inputs" type="tel" name="phone" id="phone" placeholder=" 010-XXXX-XXXX">
+            </li>
+            <li>
+              <label for="email">이메일</label>
+              <input class="inputs" type="email" name="email" id="email" placeholder=" 이메일을 입력해주세요.">
+            </li>
+            <li>
+              <input type="checkbox" name="emailYn" value="Y">
+              <p>이메일 수신동의 (선택)</p></li>
+          </ul>
+        </div>
+        <button type="button" id="sm" onclick="checkNext();" style="cursor:pointer">회원 가입</button>
+      </form>
+    </div>
+  </main>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script type="text/javascript">
+    function sample4_exeDaumPostcode() {
+      new daum.Postcode({
+        oncomplete: function (data) {
+          var addr = data.address; // 최종 주소 변수
+          var postCode = data.zonecode;
+          // 주소 정보를 해당 필드에 넣는다.
+          document.getElementById("address").value = addr;
+        }
+      }).open();
+    }
+  </script>
+  <!-- --------------------푸터---------------------------------- -->
+  <!-- <footer> ----------------------------</footer> -->
+  <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<!-- 스크립트 -->
+<script th:src="@{/resources/js/nav.js}"></script>
+<script>
+
+  function check_pw(){
+
+    var pw = document.getElementById('password').value;
+    var pwc = document.getElementById('password-check').value;
+    var SC = ["?","!","@","#","$","%"];
+    var check_SC = 0;
+
+    if(pw.length < 6 || pw.length>16){
+      window.alert('비밀번호는 6글자 이상, 16글자 이하만 이용 가능합니다.');
+      document.getElementById('pw').value='';
+    }
+    for(var i=0;i<SC.length;i++){
+      if(pw.indexOf(SC[i]) !== -1){
+        check_SC = 1;
+      }
+    }
+    if(check_SC === 0){
+      window.alert('?,!,@,#,$,% 의 특수문자가 들어가 있지 않습니다.')
+      document.getElementById('pw').value='';
+    }
+    if(pw !== '' && pwc !== ''){
+      if(pw === pwc){
+        document.getElementById('check').innerHTML='비밀번호가 일치합니다.'
+        document.getElementById('check').style.color='blue';
+      }
+      else{
+        document.getElementById('check').innerHTML='비밀번호가 일치하지 않습니다.';
+        document.getElementById('check').style.color='red';
+      }
+    }
+  }
+  // var on = false;
+  function checkNext() {
+    // location.href= "/users/complete";
+    if(confirm("회원가입을 완료하시겠습니까?")) {
+      // if(on == false ){
+      //   window.alert('중복 확인 테스트를 해주세요.');
+      //   return false;
+      // }
+      if(document.getElementById('password').value !== document.getElementById('password-check').value){
+        window.alert('비밀번호와 비밀번호확인의 값이 다릅니다.')
+        return false;
+      }
+      const form = document.enrollForm;
+      form.submit();
+    }
+  }
+  // function checkId(){
+  //   const memberId = document.querySelector("#member-id").value;
+  //   if(confirm("아이디 중복확인을 하시겠습니까?")) {
+  //     on = true;
+  //     location.href="/member/checkId.do?member-id="+memberId;
+  //   }
+  // }
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* -----------------------------------메인-------------------- */
+    main{
+        margin: 0 auto;
+        width: 1300px;
+        height: 2050px;
+        /* background-color: red; */
+        position: relative;
+    }
+        #main_logo{
+            width: 100%;
+            height: 150px;
+            /* background-color: green; */
+            border-bottom: 1px solid #222;
+        }
+            #main_logo h1{
+                font-family: 'S-CoreDream-3Light';
+                font-size: 35px;
+                font-weight: 700;
+                padding-top: 50px;
+            }
+        #main_content{
+            width: 100%;
+            height: 70px;
+            border-bottom: 1px solid #dddcdc;
+        }
+    #login_li{
+        text-align: center;
+        width: 100%;
+        height: 70px;
+        margin: 0 auto;
+        /* background-color: red; */
+        display: flex;
+        justify-content: center;
+    }
+        #login_li li{
+            float: left;
+            padding: 0px 20px;
+            height: 25px;
+            margin-top: 23px;
+            font-family: 'LINESeedKR-Bd';
+            font-weight: 400;
+            font-size: 23px;
+        }
+        #login_li a:link, #login_li a:visited{
+            color: #666666;
+        }
+        #li-last{
+            padding-right: 650px;
+        }
+        #login_li span{
+            /* padding: 5px 5px; */
+            border-radius: 100%;
+            background-color: #fb4357;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            /* padding-top: 5px; */
+            padding-top: 5px;
+            width: 35px;
+            height: 35px;
+            color: white;
+        }
+        #package{
+            width: 100%;
+            height: 500px;
+            margin-top: 100px;
+        }
+        .title_store{
+            width: 100%;
+            height: 100px;
+            padding-top: 30px;
+            font-family: 'S-CoreDream-3Light';
+            font-weight: 300;
+            border-bottom: 1px solid #ccc;
+        }
+        .product{
+            width: 100%;
+            height: 400px;
+            text-align: center;
+            /* background-color: blue; */
+            padding-top: 30px;
+        }
+        .product a:visited, .product a:link{
+            color: black;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        .product li{
+            float: left;
+            width: 25%;
+            height: 100%;
+
+        }
+        .product img{
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .product img:hover{
+            background-color: rgba(0, 0, 0, 0.1);
+            transition-duration: 0.4s;
+        }
+        #movie-ticket{
+            width: 100%;
+            height: 500px;
+            margin-top: 50px;
+        }
+        #gift{
+            width: 100%;
+            height: 500px;
+            margin-top: 50px;
+        }
+
+        #next{
+            position: fixed;
+            top: 750px;
+            left: auto;
+            right: 20%;
+            width: 130px;
+            height: 50px;
+            background-color: #362FD9;
+            text-align: center;
+            color: white;
+            border-radius: 15px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            padding-top: 12px;
+        }
+        #next:hover{
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+        }
+    /* ----------푸터------------------------- */

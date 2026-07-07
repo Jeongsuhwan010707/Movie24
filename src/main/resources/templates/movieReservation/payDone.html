@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/movieReservation/payDone.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div id="congret">
+            <img src="/resources/images/cinema (1).png" alt="">
+        </div>
+        <div id="main_text">
+            <h1>감사합니다!
+                <br>결제가 완료되었습니다.
+            </h1>
+            <p th:if="${reservation != null}">
+                <span th:text="${reservation.showtime.movie.title}">영화</span> ·
+                <span th:text="${reservation.showtime.screen.theater.name}">극장</span>
+                <span th:text="${reservation.showtime.screen.name}">관</span> ·
+                <span th:text="${#temporals.format(reservation.showtime.startTime, 'yyyy.MM.dd HH:mm')}">일시</span>
+                <br>
+                좌석: <span th:each="label, stat : ${seatLabels}" th:text="${label} + (${stat.last} ? '' : ', ')">A1</span>
+                · 결제금액: <span th:text="${#numbers.formatInteger(reservation.totalPrice, 0, 'COMMA')}">14,000</span>원
+            </p>
+            <p>마이페이지에서 구매내역을 확인해보세요~</p>
+        </div>
+        <div id="button">
+            <a href="/">Home</a>
+        </div>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/movieReservation/time.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+    <div id="main_select">
+        <div id="main_select_left">
+            <div id="main_select_left1">
+                <a href="#"><img src="/resources/images/영화별grey.png" alt="">영화별</a>
+            </div>
+            <div id="main_select_left2">
+                <a href="#"><img src="/resources/images/극장별.png" alt="">극장별</a>
+            </div>
+        </div>
+        <div id="main_select_right">
+            <div id="main_select_right1">
+                <span id="span1">상영중</span>
+                <span id="span2">상영종료</span>
+            </div>
+            <div id="main_select_right2">
+                <div class="ul">
+                    <ul>
+                        <li th:if="${#lists.isEmpty(movies)}">현재 상영중인 영화가 없습니다.</li>
+                        <li th:each="movie : ${movies}">
+                            <a th:href="@{/movieReservation/time(movieId=${movie.id}, region=${selectedRegion}, date=${selectedDate})}"
+                               th:text="${movie.title}"
+                               th:style="${selectedMovie != null and selectedMovie.id == movie.id} ? 'font-weight:700;text-decoration:underline;' : ''">영화제목</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------- 선택창 밑 메인----------------------------->
+    <div id="banner">
+        <span id="span_banner" th:text="${selectedMovie != null ? selectedMovie.title : '영화이름'}">영화이름</span>
+        <span>상영시간표</span>
+    </div>
+    <div id="number">
+        <img class="img" src="/resources/images/back.png" alt="">
+        <ul>
+            <li th:each="opt : ${dateOptions}">
+                <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${selectedRegion}, date=${opt.date})}"
+                   th:class="${opt.weekendClass}">
+                    <span class="dayNum" th:text="${opt.dayLabel}"
+                          th:style="${opt.date == selectedDate} ? 'text-decoration:underline;' : ''">10</span>
+                    <span class="dayWeek" th:text="${opt.weekdayLabel}">토</span>
+                </a>
+            </li>
+        </ul>
+        <img class="img" src="/resources/images/next.png" alt="">
+        <img class="cal" src="/resources/images/calendar (1).png" alt="">
+    </div>
+    <div id="country">
+        <span th:each="r : ${regions}" th:id="${r == selectedRegion} ? 'selectedRegion' : null">
+            <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${r}, date=${selectedDate})}"
+               th:text="${r}"
+               th:style="${r == selectedRegion} ? 'font-weight:700;' : ''">지역</a>
+        </span>
+        <span th:if="${#lists.isEmpty(regions)}">등록된 극장이 없습니다.</span>
+    </div>
+
+    <th:block th:if="${#lists.isEmpty(theaterSchedules)}">
+        <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
+    </th:block>
+
+    <th:block th:each="ts : ${theaterSchedules}">
+        <div class="country_text">
+            <span th:text="${ts.theater.name}">극장명</span>
+        </div>
+        <div th:each="ss, ssStat : ${ts.screens}"
+             th:class="${ssStat.last} ? 'seat last' : 'seat'">
+            <div class="tNum">
+                <h4 th:text="${ss.screen.name}">1관</h4>총<span th:text="${ss.screen.totalSeats}">200</span>석
+            </div>
+            <div class="d2" th:text="${ss.screen.screenType}">2D</div>
+            <div class="seat_text" th:each="st : ${ss.showtimes}">
+                <a th:href="@{/movieReservation/seat(showtimeId=${st.id})}">
+                    <span th:text="${#temporals.format(st.startTime, 'HH:mm')}">17:50</span>
+                    <br>
+                    <span th:text="${ss.screen.totalSeats}">200</span>석
+                </a>
+            </div>
+        </div>
+    </th:block>
+</main>
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

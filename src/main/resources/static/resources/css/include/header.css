@@ -1,0 +1,104 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: 1px solid black;
+}
+ul li{
+    list-style: none;
+}
+/* ----------------------헤더--------------------------- */
+header{
+    width: 1300px;
+    height: 150px;
+    /* background-color: aqua; */
+    margin: 0 auto;
+    /* background-color: red; */
+}
+    header a:visited{
+        color: black;
+    }
+    
+    #title{
+        width: 180px;
+        height: 150px;
+        float: left;
+        padding-top: 45px;
+        padding-right: 0;
+        /* background-color: red; */
+        font-family: 'PyeongChangPeace-Bold';
+        font-size: 45px;
+        text-align: center;
+    }
+        #title_num{
+            width: 70px;
+            color: #362FD9;
+            font-family: 'PyeongChangPeace-Bold';
+            padding-top: 45px;
+            font-size: 45px;
+            float: left;
+        }
+    #small_title{
+        width: 300px;
+        height: 150px;
+        float: left;
+        font-family: 'S-CoreDream-3Light';
+        padding: 70px 25px;
+        /* background-color: blue; */
+        font-size: 20px;
+        font-weight: 200;
+        color: grey;
+        line-height: 30px;
+    }
+    caption{
+        caption-side: bottom;
+    }
+    #title_right{
+        float: right;
+        width: 500px;
+        height: 100px;
+        /* background-color: yellow; */
+        
+    }
+         header ul img{
+            float: left;
+            width: 40px;
+            height: 40px;
+            margin-top: 30px;
+        }
+        #title_right ul li{
+            float: right;
+            padding: 30px 30px;
+            margin-right: 3px;
+            margin-top: 20px;
+        }

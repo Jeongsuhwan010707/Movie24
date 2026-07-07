@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>가입완료</title>
+  <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+  <link rel="stylesheet" th:href="@{/resources/css/users/complete.css}">
+</head>
+<body>
+<div>
+  <div th:replace="fragment/header.html :: header"></div>
+  <!-- 네비게이터 영역 -->
+  <div th:replace="fragment/nav.html :: nav"></div>
+  <!-- -----------------메인--------------------------- -->
+  <main>
+    <div id="main_logo">
+      <h1>회원가입</h1>
+    </div>
+    <div id="main_content">
+      <div id="login_li">
+        <ul>
+          <li>약관동의</li>
+          <li>본인인증</li>
+          <li>정보입력</li>
+          <li><strong>가입완료</strong></li>
+        </ul>
+      </div>
+      <div id="congret">
+        <img src="/resources/images/moon.png" alt="">
+      </div>
+      <div id="main_text">
+        <h1>축하합니다!
+          <br>가입이 완료되었습니다.
+        </h1>
+        <p>앞으로도 Movie24와 함께해요</p>
+      </div>
+      <a href="/users">로그인</a>
+    </div>
+  </main>
+  <!-- --------------------푸터---------------------------------- -->
+  <!-- <footer> ----------------------------</footer> -->
+  <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<!-- 스크립트 -->
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>
