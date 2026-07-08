@@ -27,7 +27,7 @@
           <input type="hidden" name="redirectURL" th:value="${param.redirectURL != null ? param.redirectURL[0] : '/'}">
           <input type="text" th:field="*{loginId}" class="login id" placeholder=" 아이디를 입력해주세요.">
           <input type="password" th:field="*{password}" class="login password" placeholder=" 비밀번호를 입력해주세요.">
-          <p th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="color:red;"></p>
+          <p th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="color:red;margin-left: 30px;"></p>
           <button type="submit" id="login_button" style="cursor:pointer">로그인</button>
         </form>
           <!--                     <a href=""><input type="submit" value="로그인" id="login_button"></a> -->

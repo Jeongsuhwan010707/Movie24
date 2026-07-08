@@ -52,9 +52,17 @@ function myCheck(){
 
 function outCheck(){
     if(confirm("로그아웃 하시겠습니까?")){
+        const header = document.querySelector('header');
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/logout';
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = header.dataset.csrfParam;
+        csrfInput.value = header.dataset.csrfToken;
+        form.appendChild(csrfInput);
+
         document.body.appendChild(form);
         form.submit();
     }

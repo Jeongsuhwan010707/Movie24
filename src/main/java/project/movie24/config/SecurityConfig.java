@@ -68,7 +68,7 @@ public class SecurityConfig {
                         ))
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        // 뷰 기반 로그아웃(/logout)은 리다이렉트, REST 로그아웃(/api/logout)은 상태코드만 반환
+                        // 뷰 기반 로그아웃(/logout)은 리다이렉트, REST 로그아웃(/api/logout)은 상태코드만 반환(프론트에서 알아서 처리
                         .logoutSuccessHandler((request, response, authentication) -> {
                             if (request.getRequestURI().startsWith("/api/")) {
                                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);

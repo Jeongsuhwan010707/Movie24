@@ -8,7 +8,7 @@
         <link rel="stylesheet" th:href="@{/resources/css/main/Movie24.css}">
     </head>
     <body>
-        <header th:fragment="header">
+        <header th:fragment="header" th:attr="data-csrf-param=${_csrf.parameterName},data-csrf-token=${_csrf.token}">
             <div id="title_box">
                 <h1 id="title"><a th:href="@{/}">MOVIE</a></h1>
                 <h1><a id="title_num" th:href="@{/}">24</a></h1>
