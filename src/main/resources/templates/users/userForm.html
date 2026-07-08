@@ -55,6 +55,17 @@
               <input class="inputs" type="text" id="nickName" name="nickName" placeholder=" ex) cuty11, ...">
             </li>
             <li>
+              <label>성별</label>
+              <div class="inputs" id="genderGroup">
+                <label><input type="radio" name="gender" value="M" checked> 남성</label>
+                <label><input type="radio" name="gender" value="F"> 여성</label>
+              </div>
+            </li>
+            <li>
+              <label for="birthDate">생년월일</label>
+              <input class="inputs" type="date" id="birthDate" name="birthDate">
+            </li>
+            <li>
               <label>주소</label>
               <input class="inputs" type="text" name="address" id="address" placeholder=" 주소 입력" readonly>
               <input id="searchAddrBtn" type="button" value="주소검색" onclick="sample4_exeDaumPostcode();">
@@ -128,29 +139,61 @@
       }
     }
   }
-  // var on = false;
+  let idChecked = false;
+  let checkedLoginId = '';
+
+  function checkId(){
+    const loginId = document.getElementById('loginId').value.trim();
+    if(!loginId){
+      window.alert('아이디를 입력해주세요.');
+      return;
+    }
+    fetch('/api/users/check-id?loginId=' + encodeURIComponent(loginId))
+      .then(res => res.json())
+      .then(data => {
+        if(data.available){
+          window.alert('사용 가능한 아이디입니다.');
+          idChecked = true;
+          checkedLoginId = loginId;
+        } else {
+          window.alert('이미 사용 중인 아이디입니다.');
+          idChecked = false;
+        }
+      })
+      .catch(() => window.alert('중복 확인 중 오류가 발생했습니다.'));
+  }
+
+  document.getElementById('loginId').addEventListener('input', function(){
+    idChecked = false;
+  });
+
   function checkNext() {
-    // location.href= "/users/complete";
+    const loginId = document.getElementById('loginId').value.trim();
+    const password = document.getElementById('password').value;
+    const passwordCheck = document.getElementById('password-check').value;
+    const name = document.getElementById('name').value.trim();
+    const nickName = document.getElementById('nickName').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    if(!loginId || !password || !passwordCheck || !name || !nickName || !address || !phone || !email){
+      window.alert('모든 항목을 입력해주세요.');
+      return false;
+    }
+    if(!idChecked || checkedLoginId !== loginId){
+      window.alert('아이디 중복확인을 해주세요.');
+      return false;
+    }
+    if(password !== passwordCheck){
+      window.alert('비밀번호와 비밀번호확인의 값이 다릅니다.')
+      return false;
+    }
     if(confirm("회원가입을 완료하시겠습니까?")) {
-      // if(on == false ){
-      //   window.alert('중복 확인 테스트를 해주세요.');
-      //   return false;
-      // }
-      if(document.getElementById('password').value !== document.getElementById('password-check').value){
-        window.alert('비밀번호와 비밀번호확인의 값이 다릅니다.')
-        return false;
-      }
       const form = document.enrollForm;
       form.submit();
     }
   }
-  // function checkId(){
-  //   const memberId = document.querySelector("#member-id").value;
-  //   if(confirm("아이디 중복확인을 하시겠습니까?")) {
-  //     on = true;
-  //     location.href="/member/checkId.do?member-id="+memberId;
-  //   }
-  // }
 </script>
 </body>
 </html>

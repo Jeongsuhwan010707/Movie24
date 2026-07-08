@@ -9,6 +9,11 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -35,6 +40,19 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Provider provider = Provider.LOCAL;
     private String providerId;
+
+    private String gender;
+    private LocalDate birthDate;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Grade grade = Grade.NORMAL;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public User(){}
 

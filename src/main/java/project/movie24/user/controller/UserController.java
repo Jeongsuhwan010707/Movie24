@@ -51,6 +51,8 @@ public class UserController {
                 .phone(userForm.getPhone())
                 .email(userForm.getEmail())
                 .emailStatus(userForm.getEmailStatus())
+                .gender(userForm.getGender())
+                .birthDate(userForm.getBirthDate())
                 .build();
 
         userService.saveUser(user);

@@ -28,7 +28,7 @@
 main{
     margin: 0 auto;
     width: 1050px;
-    height: 1050px;
+    height: 1250px;
     /* background-color: red; */
     position: relative;
 }
@@ -72,7 +72,7 @@ main{
     }
     #content_area{
         width: 800px;
-        height: 600px;
+        height: 760px;
         margin: 0 auto;
         margin-top: 30px;
         text-align: center;
@@ -101,7 +101,7 @@ main{
         top: 444px;
         left: 68%
 	}
-    #content_area input{
+    #content_area input, #content_area select{
     	float: left;
     }
     .inputs{
@@ -109,6 +109,22 @@ main{
         height: 40px;
         margin: 20px 30px;
         font-size: 15px;
+    }
+    #genderGroup{
+        float: left;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    #content_area #genderGroup label{
+        float: none;
+        width: auto;
+        margin: 0;
+        font-size: 15px;
+        font-weight: normal;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
     #content_area input[type=checkbox]{
         width: 20px;
@@ -127,7 +143,7 @@ main{
         width: 100px;
 	    height: 40px;
 	    position: absolute;
-	    top: 277.5px;
+	    top: 307.5px;
 	    right: 23%;
 	    font-size: 16px;
     }
@@ -136,7 +152,7 @@ main{
         width: 100px;
 	    height: 40px;
 	    position: absolute;
-	    bottom: 332.5px;
+	    bottom: 342.5px;
 	    right: 23%;
 	    font-size: 16px;
     }

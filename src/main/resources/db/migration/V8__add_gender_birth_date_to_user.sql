@@ -1,0 +1,2 @@
+ALTER TABLE user ADD COLUMN gender VARCHAR(10);
+ALTER TABLE user ADD COLUMN birth_date DATE;

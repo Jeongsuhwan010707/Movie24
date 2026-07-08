@@ -14,6 +14,9 @@ import project.movie24.user.oauth.OAuth2UserInfo;
 import project.movie24.user.oauth.OAuth2UserInfoFactory;
 import project.movie24.user.repository.UserRepository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -30,14 +33,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByProviderAndProviderId(provider, userInfo.getProviderId())
                 .orElseGet(() -> userRepository.save(User.builder()
                         .loginId(registrationId + "_" + userInfo.getProviderId())
-                        .name(userInfo.getNickname())
+                        .name(userInfo.getName() != null ? userInfo.getName() : userInfo.getNickname())
                         .nickName(userInfo.getNickname())
                         .email(userInfo.getEmail())
+                        .phone(userInfo.getPhone())
+                        .gender(userInfo.getGender())
+                        .birthDate(parseBirthDate(userInfo))
                         .emailStatus(EmailStatus.ALLOW)
                         .provider(provider)
                         .providerId(userInfo.getProviderId())
                         .build()));
 
         return new CustomOAuth2User(user, oAuth2User.getAttributes());
+    }
+
+    // 생일(MM-DD)+출생연도(yyyy)를 둘 다 동의받은 경우에만 조합 가능 - 하나라도 없으면 null
+    private LocalDate parseBirthDate(OAuth2UserInfo userInfo) {
+        if (userInfo.getBirthyear() == null || userInfo.getBirthday() == null) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(userInfo.getBirthyear() + "-" + userInfo.getBirthday());
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 }

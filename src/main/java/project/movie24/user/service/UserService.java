@@ -32,4 +32,8 @@ public class UserService {
     public User findOne(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+    public boolean isLoginIdAvailable(String loginId) {
+        return !userRepository.existsByLoginId(loginId);
+    }
 }

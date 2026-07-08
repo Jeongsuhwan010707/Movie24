@@ -25,4 +25,29 @@ public class NaverOAuth2UserInfo implements OAuth2UserInfo {
     public String getEmail() {
         return (String) response.get("email");
     }
+
+    @Override
+    public String getName() {
+        return (String) response.get("name");
+    }
+
+    @Override
+    public String getPhone() {
+        return (String) response.get("mobile");
+    }
+
+    @Override
+    public String getGender() {
+        return (String) response.get("gender");
+    }
+
+    @Override
+    public String getBirthday() {
+        return (String) response.get("birthday");
+    }
+
+    @Override
+    public String getBirthyear() {
+        return (String) response.get("birthyear");
+    }
 }
