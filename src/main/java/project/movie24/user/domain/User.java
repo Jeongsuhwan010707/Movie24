@@ -31,6 +31,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private EmailStatus emailStatus;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Provider provider = Provider.LOCAL;
+    private String providerId;
+
     public User(){}
 
 }
