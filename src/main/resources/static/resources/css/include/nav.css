@@ -32,7 +32,7 @@ nav{
     /*position : relative;*/
 }
 .navContainer{
-    padding-left: 53px;
+    padding-left: 47px;
     width: 1300px;
     height: 65px;
     margin: 0 auto;
@@ -40,7 +40,7 @@ nav{
     nav input{
         border: 0px;
         margin: 13px 10px 0px 0px;
-        margin-left: 145px;
+        margin-left: 162px;
         border-radius: 5px;
         width: 400px;
         height: 40px;
