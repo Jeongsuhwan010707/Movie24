@@ -30,10 +30,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.of(registrationId, oAuth2User.getAttributes());
         Provider provider = Provider.valueOf(registrationId.toUpperCase());
 
+        // 기존 회원이면 그대로 로그인, 처음 보는 소셜 계정이면 DB에 저장하지 않고
+        // id가 없는 상태로 반환한다 -> UserController에서 이 id==null을 "추가 정보 입력 필요"로 판단해
+        // /users/new로 보내고, 거기서 입력을 마쳐야 실제로 저장/로그인된다.
         User user = userRepository.findByProviderAndProviderId(provider, userInfo.getProviderId())
-                .orElseGet(() -> userRepository.save(User.builder()
+                .orElseGet(() -> User.builder()
                         .loginId(registrationId + "_" + userInfo.getProviderId())
-                        .name(userInfo.getName() != null ? userInfo.getName() : userInfo.getNickname())
+                        .name(userInfo.getName())
                         .nickName(userInfo.getNickname())
                         .email(userInfo.getEmail())
                         .phone(userInfo.getPhone())
@@ -42,7 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .emailStatus(EmailStatus.ALLOW)
                         .provider(provider)
                         .providerId(userInfo.getProviderId())
-                        .build()));
+                        .build());
 
         return new CustomOAuth2User(user, oAuth2User.getAttributes());
     }

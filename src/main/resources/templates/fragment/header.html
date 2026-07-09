@@ -21,11 +21,11 @@
                     <li><a th:href="@{/help}"><img src="/resources/images/free-icon-operator-8111794.png" alt=""><span class="navLabel">도움말</span></a></li>
                     <li><a href=""><img src="/resources/images/free-icon-help-round-button-61079.png" alt=""><span class="navLabel">고객센터</span></a></li>
 
-                    <div id="login" sec:authorize="isAuthenticated()">
+                    <div id="login" sec:authorize="isAuthenticated() and principal.user.id != null">
                         <li><a href="#"><img src="/resources/images/free-icon-user-5264565.png" alt="마이페이지"><span class="navLabel">마이페이지</span></a></li>
                         <li><a href="#" onclick="outCheck(); return false;"><img src="/resources/images/free-icon-lock-483412.png" alt="로그아웃"><span class="navLabel">로그아웃</span></a></li>
                     </div>
-                    <div id="login" sec:authorize="!isAuthenticated()">
+                    <div id="login" sec:authorize="!(isAuthenticated() and principal.user.id != null)">
                         <li><a href="#" onclick="myCheck(); return false;"><img src="/resources/images/free-icon-user-5264565.png" alt=""><span class="navLabel">마이페이지</span></a></li>
                         <li><a th:href="@{/login}"><img src="/resources/images/free-icon-lock-2089784.png" alt="로그인"><span class="navLabel">로그인</span></a></li>
                     </div>

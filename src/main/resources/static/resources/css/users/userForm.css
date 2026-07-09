@@ -96,7 +96,7 @@ main{
         font-weight: 500;
         
 	}
-	#content_area span{
+	#check{
 		position: absolute;
         top: 444px;
         left: 68%
@@ -108,7 +108,13 @@ main{
         width: 300px;
         height: 40px;
         margin: 20px 30px;
+        padding-left: 12px;
+        box-sizing: border-box;
         font-size: 15px;
+    }
+    .inputs.locked{
+        background-color: #f5f5f5;
+        border: 1px solid #d9d9d9;
     }
     #genderGroup{
         float: left;
@@ -126,34 +132,36 @@ main{
         align-items: center;
         gap: 6px;
     }
-    #content_area input[type=checkbox]{
+    #emailConsent{
+        clear: both;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+    #emailConsent input[type=checkbox]{
         width: 20px;
         height: 20px;
-        position: absolute;
-        bottom: 140px;
-        left: 42%
+        margin: 0;
     }
-    #content_area p{
-    	position: absolute;
-        bottom: 140px;
-        left: 46%
+    #emailConsent p{
+        margin: 0;
+        font-size: 15px;
     }
     #checkIdBtn{
         font-family: 'Pretendard-Regular';
         width: 100px;
 	    height: 40px;
-	    position: absolute;
-	    top: 307.5px;
-	    right: 23%;
+	    float: left;
+	    margin: 20px 0;
 	    font-size: 16px;
     }
     #searchAddrBtn{
         font-family: 'Pretendard-Regular';
         width: 100px;
 	    height: 40px;
-	    position: absolute;
-	    bottom: 342.5px;
-	    right: 23%;
+	    float: left;
+	    margin: 20px 0;
 	    font-size: 16px;
     }
     #sm{

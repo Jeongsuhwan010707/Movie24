@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import project.movie24.user.domain.CustomOAuth2User;
 import project.movie24.user.service.CustomOAuth2UserService;
 
 @Slf4j
@@ -72,6 +74,16 @@ public class SecurityConfig {
                         // LoginController의 커스텀 로그인 화면을 가려버린다.
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        // 처음 연동하는 소셜 계정(아직 DB에 저장 안 됨, user.id == null)은 추가 정보 입력을 위해
+                        // /users/new로 보내고, 이미 가입된 계정은 바로 메인으로 보낸다.
+                        .successHandler((request, response, authentication) -> {
+                            if (authentication.getPrincipal() instanceof CustomOAuth2User customOAuth2User
+                                    && customOAuth2User.getUser().getId() == null) {
+                                response.sendRedirect("/users/new");
+                            } else {
+                                response.sendRedirect("/");
+                            }
+                        })
                         // 실패 원인이 /login?error 리다이렉트에 묻혀 콘솔에 안 보이길래 임시로 로그를 남긴다.
                         .failureHandler((request, response, exception) -> {
                             log.error("OAuth2 로그인 실패", exception);
@@ -93,7 +105,8 @@ public class SecurityConfig {
                                 response.sendRedirect("/");
                             }
                         })
-                );
+                )
+                .addFilterBefore(new PendingSocialSignupFilter(), AuthorizationFilter.class);
         return http.build();
     }
 }

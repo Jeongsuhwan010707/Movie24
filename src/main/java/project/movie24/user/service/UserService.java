@@ -19,9 +19,10 @@ public class UserService {
 
     @Transactional
     public User saveUser(User user) {
-        User userToSave = user.toBuilder()
-                .password(passwordEncoder.encode(user.getPassword()))
-                .build();
+        // 소셜 회원가입은 비밀번호가 없으므로(null) 인코딩을 건너뛴다.
+        User userToSave = user.getPassword() == null
+                ? user
+                : user.toBuilder().password(passwordEncoder.encode(user.getPassword())).build();
         return userRepository.save(userToSave);
     }
 
