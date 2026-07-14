@@ -22,7 +22,7 @@
                     <li><a href=""><img src="/resources/images/free-icon-help-round-button-61079.png" alt=""><span class="navLabel">고객센터</span></a></li>
 
                     <div id="login" sec:authorize="isAuthenticated() and principal.user.id != null">
-                        <li><a href="#"><img src="/resources/images/free-icon-user-5264565.png" alt="마이페이지"><span class="navLabel">마이페이지</span></a></li>
+                        <li><a th:href="@{/myPage}"><img src="/resources/images/free-icon-user-5264565.png" alt="마이페이지"><span class="navLabel">마이페이지</span></a></li>
                         <li><a href="#" onclick="outCheck(); return false;"><img src="/resources/images/free-icon-lock-483412.png" alt="로그아웃"><span class="navLabel">로그아웃</span></a></li>
                     </div>
                     <div id="login" sec:authorize="!(isAuthenticated() and principal.user.id != null)">

@@ -23,8 +23,8 @@
                 <img src="/resources/images/account (2).png" alt="">
             </div>
             <div id="myPage_up_2">
-                <h1>정수환님, 환영합니다!</h1>
-                <p>회원님의 등급은 "일반"입니다.
+                <h1 th:text="|${user.nickName ?: user.name}님, 환영합니다!|">회원님, 환영합니다!</h1>
+                <p>회원님의 등급은 "<span th:switch="${user.grade.name()}"><span th:case="'VIP'">VIP</span><span th:case="'ADMIN'">관리자</span><span th:case="*">일반</span></span>"입니다.
                 </p>
             </div>
             <div id="myPage_up_3"></div>
@@ -33,41 +33,39 @@
        <div id="myPage_down">
             <div id="myPage_down_1">
                 <h1>My Coupon</h1>
-                <p>쿠폰 : 0개</p>
-                <p>관람권 : 0개</p>
+                <p>준비중인 기능입니다.</p>
             </div>
             <div id="myPage_blank3"></div>
             <div id="myPage_down_2">
                 <h1>My Point</h1>
-                <p>포인트 : 500점</p>
+                <p>준비중인 기능입니다.</p>
             </div>
             <div id="myPage_blank4"></div>
             <div id="myPage_down_3">
                 <h1>Vip Point</h1>
-                <p>Vip 포인트 : 500점</p>
-                <img src="/resources/images/bar1.png" alt="">
+                <p>준비중인 기능입니다.</p>
             </div>
             <div id="blank_1"></div>
             <div id="main_menu">
                 <div id="member">
                     <h3>회원 정보</h3>
                     <ul>
-                        <li><a href="#">가입정보 수정하기</a></li>
-                        <li><a href="#">닉네임 변경하기</a></li>
-                        <li><a href="#">약관 확인</a></li>
+                        <li><a href="#" class="disabled">가입정보 수정하기 (준비중)</a></li>
+                        <li><a href="#" class="disabled">닉네임 변경하기 (준비중)</a></li>
+                        <li><a th:href="@{/users/terms}">약관 확인</a></li>
                     </ul>
                     <h3>나의 포인트 관리</h3>
                     <ul>
-                        <li><a href="#">포인트 적립내역</a></li>
-                        <li><a href="#">포인트 받으러가기</a></li>
-                        <li><a href="#">포인트 사용하기</a></li>
+                        <li><a href="#" class="disabled">포인트 적립내역 (준비중)</a></li>
+                        <li><a href="#" class="disabled">포인트 받으러가기 (준비중)</a></li>
+                        <li><a href="#" class="disabled">포인트 사용하기 (준비중)</a></li>
                     </ul>
 
                     <h3>VIP 등급</h3>
                     <ul>
-                        <li><a href="#">VIP 포인트 적립내역</a></li>
-                        <li><a href="#">VIP 혜택</a></li>
-                        <li><a href="#">VIP 등업 조건</a></li>
+                        <li><a href="#" class="disabled">VIP 포인트 적립내역 (준비중)</a></li>
+                        <li><a href="#" class="disabled">VIP 혜택 (준비중)</a></li>
+                        <li><a href="#" class="disabled">VIP 등업 조건 (준비중)</a></li>
                     </ul>
                 </div>
             </div>
@@ -77,26 +75,36 @@
                     <div id="area1_1">
                         <img src="/resources/images/cinema.png" alt="">
                         <h3>기대되는 영화</h3>
-                        <p>보고싶은 영화는 미리 담아보세요!</p>
+                        <p>준비중인 기능입니다.</p>
                     </div>
                     <div id="area1_2">
                         <img src="/resources/images/love-books.png" alt="">
                         <h3>좋아하는 장르</h3>
-                        <p>관련 태그를 선택해서 추천을 받아보세요!</p>
+                        <p>준비중인 기능입니다.</p>
                     </div>
                     <div id="area1_3">
                         <img src="/resources/images/star-rating.png" alt="">
                         <h3>내가 쓴 리뷰</h3>
-                        <p>관람한 영화에 평점을 매겨주세요!</p>
+                        <p>준비중인 기능입니다.</p>
                     </div>
                 </div>
                 <h3>나의 예매내역</h3>
                 <div id="area2">
-                    <p>고객님의 최근 예매내역이 존재하지 않습니다.</p> 
+                    <p th:if="${#lists.isEmpty(reservations)}">고객님의 최근 예매내역이 존재하지 않습니다.</p>
+                    <ul id="reservationList" th:unless="${#lists.isEmpty(reservations)}">
+                        <li th:each="r : ${reservations}">
+                            <span th:text="${r.movieTitle}"></span> ·
+                            <span th:text="${r.theaterName} + ' ' + ${r.screenName}"></span> ·
+                            <span th:text="${#temporals.format(r.startTime, 'yyyy-MM-dd HH:mm')}"></span> ·
+                            <span th:text="${#strings.listJoin(r.seatLabels, ', ')}"></span> ·
+                            <span th:text="${#numbers.formatInteger(r.totalPrice, 0, 'COMMA')} + '원'"></span> ·
+                            <span th:text="${r.status.name() == 'CANCELLED'} ? '취소됨' : '예매완료'"></span>
+                        </li>
+                    </ul>
                 </div>
                 <h3>나의 문의내역</h3>
                 <div id="area3">
-                    <p>고객님의 1:1문의내역이 존재하지 않습니다.</p>
+                    <p>준비중인 기능입니다.</p>
                 </div>
             </div>
        </div>
