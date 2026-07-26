@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체영화 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/movie/list.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <span>영화</span> <span>&gt;</span> <span class="current">전체영화</span>
+        </div>
+        <h2 class="pageTitle">전체영화</h2>
+
+        <div class="filterBar">
+            <div class="statusTabs">
+                <a th:href="@{/movies(genre=${selectedGenre})}"
+                   th:classappend="${selectedStatus == null} ? 'active' : ''" class="tab">전체</a>
+                <a th:href="@{/movies(status='NOW_SHOWING', genre=${selectedGenre})}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'NOW_SHOWING'} ? 'active' : ''" class="tab">상영중</a>
+                <a th:href="@{/movies(status='COMING_SOON', genre=${selectedGenre})}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'COMING_SOON'} ? 'active' : ''" class="tab">상영예정작</a>
+                <a th:href="@{/movies(status='ENDED', genre=${selectedGenre})}"
+                   th:classappend="${selectedStatus != null and selectedStatus.name() == 'ENDED'} ? 'active' : ''" class="tab">상영종료</a>
+            </div>
+            <form th:action="@{/movies}" method="get" class="genreForm">
+                <input type="hidden" name="status" th:if="${selectedStatus != null}" th:value="${selectedStatus}">
+                <select name="genre" onchange="this.form.submit()">
+                    <option value="">전체 장르</option>
+                    <option th:each="g : ${genres}" th:value="${g}" th:text="${g}" th:selected="${g == selectedGenre}"></option>
+                </select>
+            </form>
+        </div>
+
+        <p class="emptyMessage" th:if="${#lists.isEmpty(movies)}">해당 조건에 맞는 영화가 없습니다.</p>
+
+        <div class="movieGrid" th:unless="${#lists.isEmpty(movies)}">
+            <div class="movieCard" th:each="movie : ${movies}">
+                <div class="posterBox">
+                    <img class="poster" th:src="${movie.posterImageUrl}" th:alt="${movie.title}">
+                    <img class="ageBadge" th:if="${movie.ageRating != null}"
+                         th:src="|/resources/images/${movie.ageRating.imageFileName}|" th:alt="${movie.ageRating}">
+                </div>
+                <h3 class="movieTitle" th:text="${movie.title}">영화 제목</h3>
+                <p class="movieMeta">
+                    <span th:if="${movie.genre != null}" th:text="${movie.genre}">장르</span>
+                    <span th:if="${movie.releaseDate != null}" th:text="${#temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">개봉일</span>
+                </p>
+                <a th:if="${movie.status != null and movie.status.name() == 'NOW_SHOWING'}"
+                   th:href="@{/movieReservation/time(movieId=${movie.id})}" class="bookBtn">예매</a>
+                <span th:if="${movie.status != null and movie.status.name() == 'COMING_SOON'}" class="bookBtn disabled">상영예정</span>
+                <span th:if="${movie.status != null and movie.status.name() == 'ENDED'}" class="bookBtn disabled">상영종료</span>
+            </div>
+        </div>
+
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${currentPage > 1}"
+               th:href="@{/movies(status=${selectedStatus}, genre=${selectedGenre}, page=${currentPage - 1})}" class="pageArrow">&lt;</a>
+            <a th:each="p : ${#numbers.sequence(1, totalPages)}"
+               th:href="@{/movies(status=${selectedStatus}, genre=${selectedGenre}, page=${p})}"
+               th:text="${p}"
+               th:classappend="${p == currentPage} ? 'current' : ''" class="pageNum"></a>
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{/movies(status=${selectedStatus}, genre=${selectedGenre}, page=${currentPage + 1})}" class="pageArrow">&gt;</a>
+        </div>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

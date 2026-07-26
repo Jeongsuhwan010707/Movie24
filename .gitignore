@@ -41,3 +41,6 @@ application-local.properties
 
 ### Claude Code (local-only overrides) ###
 .claude/settings.local.json
+
+### Design reference screenshots (local only, delete folder when done) ###
+design-reference/

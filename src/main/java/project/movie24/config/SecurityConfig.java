@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 "/api/users", "/api/users/check-id", "/api/login", "/api/logout",
                                 "/resources/**", "/*.ico", "/error",
                                 "/help", "/help/**", "/store", "/store/**",
+                                "/movies", "/movies/**",
                                 "/movieReservation/**", "/main/**",
                                 "/oauth2/**", "/login/oauth2/**"
                         ).permitAll()
