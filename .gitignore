@@ -38,3 +38,6 @@ out/
 
 ### Local secrets ###
 application-local.properties
+
+### Claude Code (local-only overrides) ###
+.claude/settings.local.json

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew compileJava*)",
+      "Bash(./gradlew compileTestJava*)",
+      "Bash(./gradlew.bat compileJava*)",
+      "Bash(./gradlew.bat compileTestJava*)",
+      "Bash(tasklist*)"
+    ]
+  }
+}
