@@ -15,6 +15,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -29,8 +30,13 @@ class AuthFlowIntegrationTest {
 
     @Test
     void unauthenticatedRequestToProtectedPathIsRejected() throws Exception {
-        mockMvc.perform(get("/api/mypage"))
-                .andExpect(status().is4xxClientError());
+        // /myPage requires authentication; there's no matching permitAll rule, so unauthenticated
+        // requests are redirected to the login page rather than getting a 4xx (confirmed against
+        // a live server - the app has no JSON-vs-HTML entry point split, so this holds regardless
+        // of Accept header).
+        mockMvc.perform(get("/myPage"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
 
     @Test
