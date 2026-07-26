@@ -95,6 +95,14 @@ main {
     flex-direction: column;
 }
 
+.posterLink {
+    display: block;
+    color: inherit;
+}
+.posterLink:hover .movieTitle {
+    text-decoration: underline;
+}
+
 .posterBox {
     position: relative;
     width: 100%;

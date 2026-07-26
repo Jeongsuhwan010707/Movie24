@@ -44,16 +44,18 @@
 
         <div class="movieGrid" th:unless="${#lists.isEmpty(movies)}">
             <div class="movieCard" th:each="movie : ${movies}">
-                <div class="posterBox">
-                    <img class="poster" th:src="${movie.posterImageUrl}" th:alt="${movie.title}">
-                    <img class="ageBadge" th:if="${movie.ageRating != null}"
-                         th:src="|/resources/images/${movie.ageRating.imageFileName}|" th:alt="${movie.ageRating}">
-                </div>
-                <h3 class="movieTitle" th:text="${movie.title}">영화 제목</h3>
-                <p class="movieMeta">
-                    <span th:if="${movie.genre != null}" th:text="${movie.genre}">장르</span>
-                    <span th:if="${movie.releaseDate != null}" th:text="${#temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">개봉일</span>
-                </p>
+                <a class="posterLink" th:href="@{/movies/{id}(id=${movie.id})}">
+                    <div class="posterBox">
+                        <img class="poster" th:src="${movie.posterImageUrl}" th:alt="${movie.title}">
+                        <img class="ageBadge" th:if="${movie.ageRating != null}"
+                             th:src="|/resources/images/${movie.ageRating.imageFileName}|" th:alt="${movie.ageRating}">
+                    </div>
+                    <h3 class="movieTitle" th:text="${movie.title}">영화 제목</h3>
+                    <p class="movieMeta">
+                        <span th:if="${movie.genre != null}" th:text="${movie.genre}">장르</span>
+                        <span th:if="${movie.releaseDate != null}" th:text="${#temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">개봉일</span>
+                    </p>
+                </a>
                 <a th:if="${movie.status != null and movie.status.name() == 'NOW_SHOWING'}"
                    th:href="@{/movieReservation/time(movieId=${movie.id})}" class="bookBtn">예매</a>
                 <span th:if="${movie.status != null and movie.status.name() == 'COMING_SOON'}" class="bookBtn disabled">상영예정</span>

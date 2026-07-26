@@ -1,15 +1,20 @@
 package project.movie24.movie.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import project.movie24.movie.domain.Movie;
 import project.movie24.movie.domain.ScreeningStatus;
 import project.movie24.movie.service.MovieService;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +25,9 @@ import java.util.Objects;
 public class MovieController {
 
     private static final int PAGE_SIZE = 10;
+
+    // 트레일러가 없는 영화(예: DB에 있지만 소스 영상 파일이 없는 경우)에 대신 보여줄 영상.
+    private static final String DEFAULT_TRAILER_URL = "/resources/videos/0526_TF7_1080X608.mp4";
 
     private final MovieService movieService;
 
@@ -59,5 +67,24 @@ public class MovieController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         return "movie/list";
+    }
+
+    @GetMapping("/{movieId}")
+    public String detail(@PathVariable Long movieId, Model model) {
+        Movie movie;
+        try {
+            movie = movieService.findOne(movieId);
+        } catch (IllegalArgumentException e) {
+            // 뷰 컨트롤러이므로 ApiExceptionHandler(JSON 응답)를 타지 않고 일반 에러 페이지로 보낸다.
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+        Long daysUntilRelease = movie.getReleaseDate() != null
+                ? ChronoUnit.DAYS.between(LocalDate.now(), movie.getReleaseDate())
+                : null;
+
+        model.addAttribute("movie", movie);
+        model.addAttribute("daysUntilRelease", daysUntilRelease);
+        model.addAttribute("defaultTrailerUrl", DEFAULT_TRAILER_URL);
+        return "main/movie";
     }
 }

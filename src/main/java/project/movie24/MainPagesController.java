@@ -15,9 +15,4 @@ public class MainPagesController {
     public String event2() {
         return "main/event2";
     }
-
-    @GetMapping("/main/movie")
-    public String movie() {
-        return "main/movie";
-    }
 }
