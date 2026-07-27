@@ -43,7 +43,7 @@
                         <li th:each="movie : ${movies}">
                             <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${movie.id}, status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}"
                                th:text="${movie.title}"
-                               th:style="${selectedMovie != null and selectedMovie.id == movie.id} ? 'font-weight:700;text-decoration:underline;' : ''">영화제목</a>
+                               th:classappend="${selectedMovie != null and selectedMovie.id == movie.id} ? 'selected'">영화제목</a>
                         </li>
                     </ul>
                     <ul th:if="${mode.name() == 'THEATER'}">
@@ -51,7 +51,7 @@
                         <li th:each="theater : ${theaterOptions}">
                             <a th:href="@{/movieReservation/time(mode=${mode}, theaterId=${theater.id}, status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}"
                                th:text="${theater.name}"
-                               th:style="${selectedTheater != null and selectedTheater.id == theater.id} ? 'font-weight:700;text-decoration:underline;' : ''">지점명</a>
+                               th:classappend="${selectedTheater != null and selectedTheater.id == theater.id} ? 'selected'">지점명</a>
                         </li>
                     </ul>
                 </div>
@@ -65,29 +65,49 @@
         <span>상영시간표</span>
     </div>
     <div id="number">
-        <img class="img" src="/resources/images/back.png" alt="">
-        <ul>
-            <li th:each="opt : ${dateOptions}">
-                <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, status=${selectedStatus}, region=${selectedRegion}, date=${opt.date})}"
-                   th:class="${opt.weekendClass}">
-                    <span class="dayNum" th:text="${opt.dayLabel}"
-                          th:style="${opt.date == selectedDate} ? 'text-decoration:underline;' : ''">10</span>
-                    <span class="dayWeek" th:text="${opt.weekdayLabel}">토</span>
-                </a>
-            </li>
-        </ul>
-        <img class="img" src="/resources/images/next.png" alt="">
-        <img class="cal" src="/resources/images/calendar (1).png" alt="">
+        <img id="dateBack" class="img" src="/resources/images/back.png" alt="">
+        <div id="dateViewport">
+            <ul id="dateTrack">
+                <li th:each="opt : ${dateOptions}"
+                    th:classappend="${opt.date == selectedDate} ? 'selected'">
+                    <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, status=${selectedStatus}, region=${selectedRegion}, date=${opt.date})}"
+                       th:class="${opt.weekendClass}"
+                       th:attr="data-date=${opt.date}">
+                        <span class="dayNum" th:text="${opt.dayLabel}">10</span>
+                        <span class="dayWeek" th:text="${opt.weekdayLabel}">토</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <img id="dateNext" class="img" src="/resources/images/next.png" alt="">
+        <img id="dateCalendarBtn" class="cal" src="/resources/images/calendar (1).png" alt="">
     </div>
-    <div id="country">
+
+    <div id="calendarModalOverlay" class="calendar-modal-overlay" style="display:none;">
+        <div class="calendar-modal">
+            <div class="calendar-modal-header">
+                <button type="button" id="calPrevMonth" class="cal-nav" aria-label="이전 달">‹</button>
+                <span id="calMonthLabel"></span>
+                <button type="button" id="calNextMonth" class="cal-nav" aria-label="다음 달">›</button>
+            </div>
+            <div class="calendar-weekdays">
+                <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+            <div id="calGrid" class="calendar-grid"></div>
+            <button type="button" id="calCloseBtn" class="cal-close">닫기</button>
+        </div>
+    </div>
+    <div id="country" th:if="${mode.name() == 'MOVIE'}">
         <span th:each="r : ${regions}" th:id="${r == selectedRegion} ? 'selectedRegion' : null">
-            <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${mode.name() == 'MOVIE' ? (selectedMovie != null ? selectedMovie.id : null) : null}, status=${selectedStatus}, region=${r}, date=${selectedDate})}"
+            <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${selectedMovie != null ? selectedMovie.id : null}, status=${selectedStatus}, region=${r}, date=${selectedDate})}"
                th:text="${r}"
                th:style="${r == selectedRegion} ? 'font-weight:700;' : ''">지역</a>
         </span>
         <span th:if="${#lists.isEmpty(regions)}">등록된 극장이 없습니다.</span>
     </div>
 
+    <div id="scheduleList">
+    <th:block th:fragment="scheduleList">
     <th:block th:if="${mode.name() == 'MOVIE'}">
         <th:block th:if="${#lists.isEmpty(theaterSchedules)}">
             <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
@@ -107,6 +127,8 @@
             <th:block th:replace="fragment/scheduleGroup.html :: scheduleGroup(${ms.movie.title}, ${ms.screens})"></th:block>
         </th:block>
     </th:block>
+    </th:block>
+    </div>
     </th:block>
     </div>
 </main>

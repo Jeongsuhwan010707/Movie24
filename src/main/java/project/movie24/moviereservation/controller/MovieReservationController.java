@@ -36,7 +36,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class MovieReservationController {
 
-    private static final int DATE_RANGE_DAYS = 14;
+    private static final int DATE_RANGE_DAYS = 17;
 
     private final MovieService movieService;
     private final TheaterService theaterService;
@@ -54,11 +54,17 @@ public class MovieReservationController {
                         @RequestParam(required = false) ScreeningStatus status,
                         HttpServletRequest request,
                         Model model) {
+        // movie/theater/date/region 필터를 클릭했을 때 전체 새로고침 없이 일정 영역만 바꾸기 위해,
+        // JS(fetch)로 온 요청이면 같은 템플릿의 일정 부분(fragment)만 렌더링해서 돌려준다.
+        boolean fragmentOnly = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+
         ScheduleMode selectedMode = mode != null ? mode : ScheduleMode.MOVIE;
         ScreeningStatus selectedStatus = status != null ? status : ScreeningStatus.NOW_SHOWING;
         List<Movie> movies = movieService.findByStatus(selectedStatus);
 
-        LocalDate selectedDate = date != null ? date : LocalDate.now();
+        // 실제 브라우저 새로고침/최초 진입(fragment가 아닌 전체 페이지 요청)은 항상 오늘 날짜부터
+        // 보여준다. 세션 중 날짜를 이동한 상태(fragment 요청)만 요청받은 date를 그대로 존중한다.
+        LocalDate selectedDate = (fragmentOnly && date != null) ? date : LocalDate.now();
         List<DateOption> dateOptions = buildDateOptions();
 
         List<Theater> theaters = theaterService.findAll();
@@ -72,7 +78,8 @@ public class MovieReservationController {
         List<MovieSchedule> movieSchedules = List.of();
 
         if (selectedMode == ScheduleMode.THEATER) {
-            theaterOptions = selectedRegion != null ? theaterService.findByRegion(selectedRegion) : List.of();
+            // 극장별 모드는 지역으로 한 번 더 좁힐 필요 없이 전체 지점을 바로 나열한다.
+            theaterOptions = theaterService.findAll();
             selectedTheater = theaterId != null ? theaterService.findOne(theaterId)
                     : theaterOptions.stream().findFirst().orElse(null);
             movieSchedules = buildMovieSchedules(selectedTheater, selectedStatus, selectedDate);
@@ -95,10 +102,13 @@ public class MovieReservationController {
         model.addAttribute("selectedTheater", selectedTheater);
         model.addAttribute("movieSchedules", movieSchedules);
 
-        // movie/theater/date/region 필터를 클릭했을 때 전체 새로고침 없이 일정 영역만 바꾸기 위해,
-        // JS(fetch)로 온 요청이면 같은 템플릿의 일정 부분(fragment)만 렌더링해서 돌려준다.
-        boolean fragmentOnly = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-        return fragmentOnly ? "movieReservation/time :: content" : "movieReservation/time";
+        if (!fragmentOnly) {
+            return "movieReservation/time";
+        }
+        // 날짜만 바꾼 경우, 위쪽 영화/극장 선택창·날짜 스크롤러는 그대로 두고
+        // 아래 일정 목록(#scheduleList)만 바꾸면 화면이 흔들리지 않는다.
+        boolean scheduleListOnly = "schedule-list".equals(request.getHeader("X-Partial"));
+        return scheduleListOnly ? "movieReservation/time :: scheduleList" : "movieReservation/time :: content";
     }
 
     private List<DateOption> buildDateOptions() {

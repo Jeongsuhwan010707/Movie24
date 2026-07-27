@@ -132,6 +132,10 @@
                     font-family: 'S-CoreDream-3Light';
                     font-weight: 600;
                 }
+                .ul a.selected:link, .ul a.selected:visited{
+                    font-weight: 700;
+                    text-decoration: underline;
+                }
     /* -------------------- 선택창 밑 메인-----------------------*/
         #banner{
             width: 100%;
@@ -170,19 +174,106 @@
         .img{
             width: 25px;
             flex: 0 0 auto;
+            cursor: pointer;
+        }
+        .img.disabled{
+            opacity: .3;
+            cursor: default;
         }
         .cal{
             width: 30px;
             margin-left: 30px;
             flex: 0 0 auto;
+            cursor: pointer;
+        }
+        .calendar-modal-overlay{
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, .45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .calendar-modal{
+            width: 320px;
+            padding: 20px 24px 24px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+            font-family: 'S-CoreDream-3Light';
+        }
+        .calendar-modal-header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .cal-nav{
+            border: none;
+            background: none;
+            font-size: 22px;
+            color: #362FD9;
+            cursor: pointer;
+            padding: 2px 10px;
+        }
+        .cal-nav:disabled{
+            color: #ccc;
+            cursor: default;
+        }
+        .calendar-weekdays, .calendar-grid{
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+        }
+        .calendar-weekdays span{
+            font-size: 13px;
+            color: #888;
+            padding: 6px 0;
+        }
+        .calendar-grid button{
+            aspect-ratio: 1;
+            width: 100%;
+            border: none;
+            background: none;
+            font-size: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .calendar-grid button:hover:not(:disabled){
+            background-color: #ECEBFB;
+        }
+        .calendar-grid button.today{
+            color: #362FD9;
+            font-weight: 700;
+        }
+        .calendar-grid button:disabled{
+            color: #ccc;
+            cursor: default;
+        }
+        .cal-close{
+            width: 100%;
+            margin-top: 14px;
+            padding: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+            font-family: 'S-CoreDream-3Light';
+            cursor: pointer;
+        }
+        #dateViewport{
+            flex: 1;
+            overflow: hidden;
+            margin: 0 20px;
         }
         #number ul{
             display: flex;
-            flex: 1;
-            justify-content: space-between;
-            margin: 0 20px;
+            transition: transform .3s ease;
         }
         #number ul li{
+            flex: 0 0 90px;
             text-align: center;
             padding: 12px 0;
         }
@@ -193,6 +284,9 @@
         }
         #number .dayNum{
             font-size: 22px;
+        }
+        #dateTrack li.selected .dayNum{
+            text-decoration: underline;
         }
         #number .dayWeek{
             font-size: 15px;
