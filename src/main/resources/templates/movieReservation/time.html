@@ -16,28 +16,42 @@
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
     <main>
+    <div id="scheduleContent">
+    <th:block th:fragment="content">
     <div id="main_select">
         <div id="main_select_left">
-            <div id="main_select_left1">
-                <a href="#"><img src="/resources/images/영화별grey.png" alt="">영화별</a>
+            <div id="main_select_left1" th:classappend="${mode.name() == 'MOVIE'} ? 'active'">
+                <a th:href="@{/movieReservation/time(mode='MOVIE', status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}">
+                    <img th:src="${mode.name() == 'MOVIE'} ? '/resources/images/영화별.png' : '/resources/images/영화별grey.png'" alt="">영화별</a>
             </div>
-            <div id="main_select_left2">
-                <a href="#"><img src="/resources/images/극장별.png" alt="">극장별</a>
+            <div id="main_select_left2" th:classappend="${mode.name() == 'THEATER'} ? 'active'">
+                <a th:href="@{/movieReservation/time(mode='THEATER', status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}">
+                    <img src="/resources/images/극장별.png" alt="">극장별</a>
             </div>
         </div>
         <div id="main_select_right">
             <div id="main_select_right1">
-                <span id="span1">상영중</span>
-                <span id="span2">상영종료</span>
+                <a id="span1" th:href="@{/movieReservation/time(mode=${mode}, status='NOW_SHOWING', movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, region=${selectedRegion}, date=${selectedDate})}"
+                   th:style="${selectedStatus.name() == 'NOW_SHOWING'} ? 'font-weight:700;text-decoration:underline;' : ''">상영중</a>
+                <a id="span2" th:href="@{/movieReservation/time(mode=${mode}, status='ENDED', movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, region=${selectedRegion}, date=${selectedDate})}"
+                   th:style="${selectedStatus.name() == 'ENDED'} ? 'font-weight:700;text-decoration:underline;' : ''">상영종료</a>
             </div>
             <div id="main_select_right2">
                 <div class="ul">
-                    <ul>
-                        <li th:if="${#lists.isEmpty(movies)}">현재 상영중인 영화가 없습니다.</li>
+                    <ul th:if="${mode.name() == 'MOVIE'}">
+                        <li th:if="${#lists.isEmpty(movies)}">해당 영화가 없습니다.</li>
                         <li th:each="movie : ${movies}">
-                            <a th:href="@{/movieReservation/time(movieId=${movie.id}, region=${selectedRegion}, date=${selectedDate})}"
+                            <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${movie.id}, status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}"
                                th:text="${movie.title}"
                                th:style="${selectedMovie != null and selectedMovie.id == movie.id} ? 'font-weight:700;text-decoration:underline;' : ''">영화제목</a>
+                        </li>
+                    </ul>
+                    <ul th:if="${mode.name() == 'THEATER'}">
+                        <li th:if="${#lists.isEmpty(theaterOptions)}">해당 지점이 없습니다.</li>
+                        <li th:each="theater : ${theaterOptions}">
+                            <a th:href="@{/movieReservation/time(mode=${mode}, theaterId=${theater.id}, status=${selectedStatus}, region=${selectedRegion}, date=${selectedDate})}"
+                               th:text="${theater.name}"
+                               th:style="${selectedTheater != null and selectedTheater.id == theater.id} ? 'font-weight:700;text-decoration:underline;' : ''">지점명</a>
                         </li>
                     </ul>
                 </div>
@@ -46,14 +60,15 @@
     </div>
     <!-------------------- 선택창 밑 메인----------------------------->
     <div id="banner">
-        <span id="span_banner" th:text="${selectedMovie != null ? selectedMovie.title : '영화이름'}">영화이름</span>
+        <span id="span_banner"
+              th:text="${mode.name() == 'MOVIE'} ? (${selectedMovie != null ? selectedMovie.title : '영화이름'}) : (${selectedTheater != null ? selectedTheater.name : '극장이름'})">영화이름</span>
         <span>상영시간표</span>
     </div>
     <div id="number">
         <img class="img" src="/resources/images/back.png" alt="">
         <ul>
             <li th:each="opt : ${dateOptions}">
-                <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${selectedRegion}, date=${opt.date})}"
+                <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, status=${selectedStatus}, region=${selectedRegion}, date=${opt.date})}"
                    th:class="${opt.weekendClass}">
                     <span class="dayNum" th:text="${opt.dayLabel}"
                           th:style="${opt.date == selectedDate} ? 'text-decoration:underline;' : ''">10</span>
@@ -66,40 +81,39 @@
     </div>
     <div id="country">
         <span th:each="r : ${regions}" th:id="${r == selectedRegion} ? 'selectedRegion' : null">
-            <a th:href="@{/movieReservation/time(movieId=${selectedMovie != null ? selectedMovie.id : null}, region=${r}, date=${selectedDate})}"
+            <a th:href="@{/movieReservation/time(mode=${mode}, movieId=${mode.name() == 'MOVIE' ? (selectedMovie != null ? selectedMovie.id : null) : null}, status=${selectedStatus}, region=${r}, date=${selectedDate})}"
                th:text="${r}"
                th:style="${r == selectedRegion} ? 'font-weight:700;' : ''">지역</a>
         </span>
         <span th:if="${#lists.isEmpty(regions)}">등록된 극장이 없습니다.</span>
     </div>
 
-    <th:block th:if="${#lists.isEmpty(theaterSchedules)}">
-        <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
+    <th:block th:if="${mode.name() == 'MOVIE'}">
+        <th:block th:if="${#lists.isEmpty(theaterSchedules)}">
+            <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
+        </th:block>
+
+        <th:block th:each="ts : ${theaterSchedules}">
+            <th:block th:replace="fragment/scheduleGroup.html :: scheduleGroup(${ts.theater.name}, ${ts.screens})"></th:block>
+        </th:block>
     </th:block>
 
-    <th:block th:each="ts : ${theaterSchedules}">
-        <div class="country_text">
-            <span th:text="${ts.theater.name}">극장명</span>
-        </div>
-        <div th:each="ss, ssStat : ${ts.screens}"
-             th:class="${ssStat.last} ? 'seat last' : 'seat'">
-            <div class="tNum">
-                <h4 th:text="${ss.screen.name}">1관</h4>총<span th:text="${ss.screen.totalSeats}">200</span>석
-            </div>
-            <div class="d2" th:text="${ss.screen.screenType}">2D</div>
-            <div class="seat_text" th:each="st : ${ss.showtimes}">
-                <a th:href="@{/movieReservation/seat(showtimeId=${st.id})}">
-                    <span th:text="${#temporals.format(st.startTime, 'HH:mm')}">17:50</span>
-                    <br>
-                    <span th:text="${ss.screen.totalSeats}">200</span>석
-                </a>
-            </div>
-        </div>
+    <th:block th:if="${mode.name() == 'THEATER'}">
+        <th:block th:if="${#lists.isEmpty(movieSchedules)}">
+            <div class="country_text"><span>선택한 조건에 상영중인 시간표가 없습니다.</span></div>
+        </th:block>
+
+        <th:block th:each="ms : ${movieSchedules}">
+            <th:block th:replace="fragment/scheduleGroup.html :: scheduleGroup(${ms.movie.title}, ${ms.screens})"></th:block>
+        </th:block>
     </th:block>
+    </th:block>
+    </div>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/movieReservationTime.js}"></script>
 </body>
 </html>

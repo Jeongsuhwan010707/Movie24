@@ -64,12 +64,18 @@
                 height: 50%;
                 border-bottom: 2px dotted #ccc;
                 padding-top: 75px;
+                background-color: #e6e4e4;
+                transition: background-color .15s ease;
             }
             #main_select_left2{
                 width: 100%;
                 height: 50%;
                 padding-top: 70px;
                 background-color: #e6e4e4;
+                transition: background-color .15s ease;
+            }
+            #main_select_left1.active, #main_select_left2.active{
+                background-color: #fff;
             }
         #main_select_right{
             width: 72%;

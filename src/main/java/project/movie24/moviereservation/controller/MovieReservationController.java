@@ -1,5 +1,6 @@
 package project.movie24.moviereservation.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,12 +47,16 @@ public class MovieReservationController {
 
     @GetMapping("/movieReservation/time")
     public String time(@RequestParam(required = false) Long movieId,
+                        @RequestParam(required = false) Long theaterId,
+                        @RequestParam(required = false) ScheduleMode mode,
                         @RequestParam(required = false) String region,
                         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                        @RequestParam(required = false) ScreeningStatus status,
+                        HttpServletRequest request,
                         Model model) {
-        List<Movie> movies = movieService.findByStatus(ScreeningStatus.NOW_SHOWING);
-        Movie selectedMovie = movieId != null ? movieService.findOne(movieId)
-                : movies.stream().findFirst().orElse(null);
+        ScheduleMode selectedMode = mode != null ? mode : ScheduleMode.MOVIE;
+        ScreeningStatus selectedStatus = status != null ? status : ScreeningStatus.NOW_SHOWING;
+        List<Movie> movies = movieService.findByStatus(selectedStatus);
 
         LocalDate selectedDate = date != null ? date : LocalDate.now();
         List<DateOption> dateOptions = buildDateOptions();
@@ -60,16 +65,40 @@ public class MovieReservationController {
         List<String> regions = theaters.stream().map(Theater::getRegion).distinct().toList();
         String selectedRegion = region != null ? region : regions.stream().findFirst().orElse(null);
 
-        List<TheaterSchedule> theaterSchedules = buildTheaterSchedules(selectedMovie, selectedRegion, selectedDate);
+        Movie selectedMovie = null;
+        List<TheaterSchedule> theaterSchedules = List.of();
+        List<Theater> theaterOptions = List.of();
+        Theater selectedTheater = null;
+        List<MovieSchedule> movieSchedules = List.of();
 
+        if (selectedMode == ScheduleMode.THEATER) {
+            theaterOptions = selectedRegion != null ? theaterService.findByRegion(selectedRegion) : List.of();
+            selectedTheater = theaterId != null ? theaterService.findOne(theaterId)
+                    : theaterOptions.stream().findFirst().orElse(null);
+            movieSchedules = buildMovieSchedules(selectedTheater, selectedStatus, selectedDate);
+        } else {
+            selectedMovie = movieId != null ? movieService.findOne(movieId)
+                    : movies.stream().findFirst().orElse(null);
+            theaterSchedules = buildTheaterSchedules(selectedMovie, selectedRegion, selectedDate);
+        }
+
+        model.addAttribute("mode", selectedMode);
         model.addAttribute("movies", movies);
+        model.addAttribute("selectedStatus", selectedStatus);
         model.addAttribute("selectedMovie", selectedMovie);
         model.addAttribute("dateOptions", dateOptions);
         model.addAttribute("selectedDate", selectedDate);
         model.addAttribute("regions", regions);
         model.addAttribute("selectedRegion", selectedRegion);
         model.addAttribute("theaterSchedules", theaterSchedules);
-        return "movieReservation/time";
+        model.addAttribute("theaterOptions", theaterOptions);
+        model.addAttribute("selectedTheater", selectedTheater);
+        model.addAttribute("movieSchedules", movieSchedules);
+
+        // movie/theater/date/region 필터를 클릭했을 때 전체 새로고침 없이 일정 영역만 바꾸기 위해,
+        // JS(fetch)로 온 요청이면 같은 템플릿의 일정 부분(fragment)만 렌더링해서 돌려준다.
+        boolean fragmentOnly = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+        return fragmentOnly ? "movieReservation/time :: content" : "movieReservation/time";
     }
 
     private List<DateOption> buildDateOptions() {
@@ -120,6 +149,49 @@ public class MovieReservationController {
                     return new ScreenSchedule(screen, screenShowtimes);
                 })
                 .filter(ss -> !ss.getShowtimes().isEmpty())
+                .toList();
+    }
+
+    private List<MovieSchedule> buildMovieSchedules(Theater selectedTheater, ScreeningStatus selectedStatus, LocalDate selectedDate) {
+        if (selectedTheater == null) {
+            return List.of();
+        }
+
+        LocalDateTime startOfDay = selectedDate.atStartOfDay();
+        LocalDateTime endOfDay = selectedDate.plusDays(1).atStartOfDay();
+        List<Showtime> showtimes = showtimeService.findByTheaterIdAndDateRange(selectedTheater.getId(), startOfDay, endOfDay)
+                .stream()
+                .filter(showtime -> showtime.getMovie().getStatus() == selectedStatus)
+                .toList();
+
+        List<Movie> moviesShowing = showtimes.stream()
+                .map(Showtime::getMovie)
+                .collect(Collectors.toMap(Movie::getId, movie -> movie, (a, b) -> a, LinkedHashMap::new))
+                .values().stream()
+                .sorted(Comparator.comparing(Movie::getTitle))
+                .toList();
+
+        return moviesShowing.stream()
+                .map(movie -> new MovieSchedule(movie, buildScreenSchedulesForMovie(movie, showtimes)))
+                .filter(ms -> !ms.getScreens().isEmpty())
+                .toList();
+    }
+
+    private List<ScreenSchedule> buildScreenSchedulesForMovie(Movie movie, List<Showtime> showtimes) {
+        List<Showtime> movieShowtimes = showtimes.stream()
+                .filter(showtime -> showtime.getMovie().getId().equals(movie.getId()))
+                .toList();
+
+        List<Screen> screens = movieShowtimes.stream()
+                .map(Showtime::getScreen)
+                .collect(Collectors.toMap(Screen::getId, screen -> screen, (a, b) -> a, LinkedHashMap::new))
+                .values().stream().toList();
+
+        return screens.stream()
+                .map(screen -> new ScreenSchedule(screen, movieShowtimes.stream()
+                        .filter(showtime -> showtime.getScreen().getId().equals(screen.getId()))
+                        .sorted(Comparator.comparing(Showtime::getStartTime))
+                        .toList()))
                 .toList();
     }
 

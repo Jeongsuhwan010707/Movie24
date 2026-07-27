@@ -72,6 +72,11 @@ public class ShowtimeService {
         return showtimeRepository.findByMovieIdAndStartTimeBetween(movieId, start, end);
     }
 
+    @Transactional(readOnly = true)
+    public List<Showtime> findByTheaterIdAndDateRange(Long theaterId, LocalDateTime start, LocalDateTime end) {
+        return showtimeRepository.findByScreen_Theater_IdAndStartTimeBetween(theaterId, start, end);
+    }
+
     private Showtime getOrThrow(Long showtimeId) {
         return showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상영시간입니다. id=" + showtimeId));

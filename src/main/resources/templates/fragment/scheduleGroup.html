@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+</head>
+<body>
+<!-- movieReservation/time.html에서 영화별/극장별 모드가 공유하는 상영시간표 한 그룹(라벨 + 상영관별 시간표) 조각.
+     영화별 모드는 극장명을, 극장별 모드는 영화명을 label로 넘겨 호출한다. -->
+<th:block th:fragment="scheduleGroup(label, screens)">
+    <div class="country_text">
+        <span th:text="${label}">극장명</span>
+    </div>
+    <div th:each="ss, ssStat : ${screens}"
+         th:class="${ssStat.last} ? 'seat last' : 'seat'">
+        <div class="tNum">
+            <h4 th:text="${ss.screen.name}">1관</h4>총<span th:text="${ss.screen.totalSeats}">200</span>석
+        </div>
+        <div class="d2" th:text="${ss.screen.screenType}">2D</div>
+        <div class="seat_text" th:each="st : ${ss.showtimes}">
+            <a th:href="@{/movieReservation/seat(showtimeId=${st.id})}">
+                <span th:text="${#temporals.format(st.startTime, 'HH:mm')}">17:50</span>
+                <br>
+                <span th:text="${ss.screen.totalSeats}">200</span>석
+            </a>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
