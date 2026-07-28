@@ -22,6 +22,7 @@
             <a href="/movieReservation/time"><button>취소하기</button></a>
         </div>
         <h1>예매하기</h1>
+        <div id="reservationLayout">
         <div id="select">
             <div id="select_logo"><p>좌석선택</p></div>
             <div id="select_per">
@@ -37,7 +38,7 @@
             <div id="select_img">
                 <div id="screenCurve">SCREEN</div>
                 <div th:each="rowEntry : ${seatsByRow}" class="seatR">
-                    <span style="width:20px;display:inline-block;text-align:center;margin-right:5px;" th:text="${rowEntry.key}">A</span>
+                    <span class="rowLabel" th:text="${rowEntry.key}">A</span>
                     <div th:each="seat : ${rowEntry.value}"
                          class="seat"
                          th:classappend="${#lists.contains(reservedSeatIds, seat.id)} ? ' taken' : ''"
@@ -91,6 +92,7 @@
                 <div id="price5-2-2"><a id="price5-2" href="#" onclick="goNext(); return false;">다음</a></div>
             </div>
         </div>
+        </div>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
@@ -126,7 +128,7 @@
         document.getElementById('price-number1').textContent = (basePrice * selectedSeats.length).toLocaleString();
     }
 
-    var SEAT_BOX_SLOTS = 8;
+    var SEAT_BOX_SLOTS = 16;
 
     function renderSelectedSeatBoxes() {
         var container = document.getElementById('selectedSeatBoxes');
