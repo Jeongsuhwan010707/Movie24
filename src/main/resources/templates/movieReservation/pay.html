@@ -25,11 +25,32 @@
         <div class="selectsale">
             <p>Movie24 관람권/기프티콘</p><img src="/resources/images/down-arrow.png" alt="">
         </div>
+        <div class="selectsaleContent">
+            <ul class="saleOptionList">
+                <li><label><input type="radio" name="ticketSale" checked>사용 안함</label><span>0원</span></li>
+                <li><label><input type="radio" name="ticketSale">Movie24 관람권 1매</label><span>-14,000원</span></li>
+                <li><label><input type="radio" name="ticketSale">모바일 기프티콘</label><span>-10,000원</span></li>
+            </ul>
+        </div>
         <div class="selectsale">
             <p>Movie24 포인트/쿠폰</p><img src="/resources/images/down-arrow.png" alt="">
         </div>
+        <div class="selectsaleContent">
+            <ul class="saleOptionList">
+                <li><label><input type="radio" name="pointSale" checked>사용 안함</label><span>0원</span></li>
+                <li><label><input type="radio" name="pointSale">보유 포인트 전액 사용</label><span>-2,500P</span></li>
+                <li><label><input type="radio" name="pointSale">Movie24 5,000원 할인쿠폰</label><span>-5,000원</span></li>
+            </ul>
+        </div>
         <div class="selectsale">
             <p>Vip 할인</p><img src="/resources/images/down-arrow.png" alt="">
+        </div>
+        <div class="selectsaleContent">
+            <ul class="saleOptionList">
+                <li><label><input type="radio" name="vipSale" checked>사용 안함</label><span>0원</span></li>
+                <li><label><input type="radio" name="vipSale">VIP 골드 할인</label><span>-3,000원</span></li>
+                <li><label><input type="radio" name="vipSale">VIP 블랙 할인</label><span>-5,000원</span></li>
+            </ul>
         </div>
         <div id="main_text2">
             <p>관람권 및 포인트 할인적용</p>
@@ -88,7 +109,7 @@
                 <h3>0원</h3>
             </div>
         </div>
-        <div class="price4 price-new">
+        <div class="price4 price-new price4-first">
             <p class="price4-1 price4-1-new">VIP 할인</p>
             <p class="price4-2 price4-2-new">0원</p>
         </div>
@@ -152,6 +173,31 @@
             alert('예매 중 오류가 발생했습니다.');
         });
     }
+
+    document.querySelectorAll('.selectsale').forEach(function (header) {
+        var content = header.nextElementSibling;
+        header.addEventListener('click', function () {
+            var isOpen = content.classList.contains('open');
+
+            document.querySelectorAll('.selectsaleContent.open').forEach(function (openContent) {
+                if (openContent !== content) {
+                    openContent.classList.remove('open');
+                    openContent.style.maxHeight = null;
+                    openContent.previousElementSibling.classList.remove('active');
+                }
+            });
+
+            if (isOpen) {
+                content.classList.remove('open');
+                content.style.maxHeight = null;
+                header.classList.remove('active');
+            } else {
+                content.classList.add('open');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                header.classList.add('active');
+            }
+        });
+    });
 </script>
 </body>
 </html>
