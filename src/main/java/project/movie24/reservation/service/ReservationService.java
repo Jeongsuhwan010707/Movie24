@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.domain.ReservationSeat;
 import project.movie24.reservation.domain.ReservationStatus;
-import project.movie24.reservation.dto.ReservationRequest;
 import project.movie24.reservation.repository.ReservationRepository;
 import project.movie24.reservation.repository.ReservationSeatRepository;
 import project.movie24.seat.domain.Seat;
@@ -31,10 +30,10 @@ public class ReservationService {
     private final ShowtimeService showtimeService;
     private final UserRepository userRepository;
 
-    public Reservation reserve(Long userId, ReservationRequest request) {
-        Showtime showtime = showtimeService.findOne(request.getShowtimeId());
-        List<Seat> seats = seatService.findAllByIds(request.getSeatIds());
-        if (seats.size() != request.getSeatIds().size()) {
+    public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds) {
+        Showtime showtime = showtimeService.findOne(showtimeId);
+        List<Seat> seats = seatService.findAllByIds(seatIds);
+        if (seats.size() != seatIds.size()) {
             throw new IllegalArgumentException("존재하지 않는 좌석이 포함되어 있습니다.");
         }
         for (Seat seat : seats) {

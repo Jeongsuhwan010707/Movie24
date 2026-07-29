@@ -18,7 +18,8 @@ import java.util.Map;
         "project.movie24.screen.controller",
         "project.movie24.showtime.controller",
         "project.movie24.seat.controller",
-        "project.movie24.reservation.controller"
+        "project.movie24.reservation.controller",
+        "project.movie24.payment.controller"
 })
 public class ApiExceptionHandler {
 

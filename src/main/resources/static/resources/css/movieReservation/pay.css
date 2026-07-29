@@ -130,43 +130,16 @@
         color: #222;
         padding-left: 15px;
     }
-    #purchase{
+    #payment-method{
         width: 100%;
-        height: 60px;
-        background-color: #eee;
-        font-family: 'S-CoreDream-3Light';
-        font-size: 20px;
-        font-weight: 500;
-    }
-    #purchase ul li{
-        float: left;
-        width: 200px;
-        padding: 16px 0 0 45px;
-    }
-    #purchase input{
-        width: 30px;
-    }
-    #purchase2{
-        width: 100%;
-        height: 60px;
-        font-family: 'S-CoreDream-3Light';
-        font-size: 17px;
-        font-weight: 400;
-        border-bottom: 1px solid #ccc;
-        border-right: 1px solid #ccc;
-        border-left: 1px solid #ccc;
-    }
-    #purchase2 p{
-        float: left;
-        padding: 18px 10px 0px 55px;
-    }
-    #purchase2 select{
-        width: 90px;
-        height: 40px;
-        font-size: 15px;
         margin-top: 10px;
     }
-    
+    #agreement{
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
     #main-right{
         width: 350px;
         min-height: 600px;
@@ -347,10 +320,6 @@
     }
     .price_4{
         border-bottom: 1px solid #787777;
-    }
-    .price4-3-new{
-        padding-top: 12px;
-        padding-left: 50px;
     }
    #price5-1-1{
     width: 50%;

@@ -31,7 +31,7 @@ public class ReservationApiController {
     @PostMapping
     public ResponseEntity<ReservationResponse> reserve(@AuthenticationPrincipal UserPrincipal principal,
                                                          @Valid @RequestBody ReservationRequest request) {
-        Reservation reservation = reservationService.reserve(principal.getUser().getId(), request);
+        Reservation reservation = reservationService.reserve(principal.getUser().getId(), request.getShowtimeId(), request.getSeatIds());
         List<String> seatLabels = reservationService.findSeatLabels(reservation.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(ReservationResponse.from(reservation, seatLabels));
     }

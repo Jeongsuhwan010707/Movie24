@@ -1,16 +1,21 @@
 package project.movie24.moviereservation.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.movie24.movie.domain.Movie;
 import project.movie24.movie.domain.ScreeningStatus;
 import project.movie24.movie.service.MovieService;
+import project.movie24.payment.domain.PendingPayment;
+import project.movie24.payment.service.PaymentService;
 import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.service.ReservationService;
 import project.movie24.screen.domain.Screen;
@@ -44,6 +49,10 @@ public class MovieReservationController {
     private final ShowtimeService showtimeService;
     private final SeatService seatService;
     private final ReservationService reservationService;
+    private final PaymentService paymentService;
+
+    @Value("${toss.client-key}")
+    private String tossClientKey;
 
     @GetMapping("/movieReservation/time")
     public String time(@RequestParam(required = false) Long movieId,
@@ -241,7 +250,32 @@ public class MovieReservationController {
         model.addAttribute("adultCount", adultCount);
         model.addAttribute("teenCount", teenCount);
         model.addAttribute("ticketSummary", buildTicketSummary(adultCount, teenCount, seats.size()));
+        model.addAttribute("tossClientKey", tossClientKey);
         return "movieReservation/pay";
+    }
+
+    @GetMapping("/movieReservation/payRedirect")
+    public String payRedirect(@RequestParam String paymentKey,
+                               @RequestParam String orderId,
+                               @AuthenticationPrincipal UserPrincipal principal,
+                               HttpSession session,
+                               RedirectAttributes redirectAttributes) {
+        PendingPayment pending = paymentService.peekPending(session, orderId);
+        try {
+            if (principal == null) {
+                throw new IllegalStateException("로그인이 만료되었습니다. 다시 로그인 후 시도해주세요.");
+            }
+            Reservation reservation = paymentService.confirmAndCreateReservation(session, principal.getUser().getId(), paymentKey, orderId);
+            return "redirect:/movieReservation/payDone?reservationId=" + reservation.getId();
+        } catch (RuntimeException e) {
+            redirectAttributes.addAttribute("payError", e.getMessage());
+            if (pending == null) {
+                return "redirect:/movieReservation/time";
+            }
+            redirectAttributes.addAttribute("showtimeId", pending.getShowtimeId());
+            redirectAttributes.addAttribute("seatIds", pending.getSeatIds());
+            return "redirect:/movieReservation/pay";
+        }
     }
 
     private String buildTicketSummary(int adultCount, int teenCount, int seatCount) {

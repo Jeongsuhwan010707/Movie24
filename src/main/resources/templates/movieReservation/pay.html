@@ -55,28 +55,8 @@
         <div id="main_text2">
             <p>관람권 및 포인트 할인적용</p>
         </div>
-        <div id="purchase">
-            <ul>
-                <li><input type="radio" name="purchase" checked>신용/체크카드</li>
-                <li><input type="radio" name="purchase">휴대폰결제</li>
-                <li><input type="radio" name="purchase">간편결제</li>
-                <li><input type="radio" name="purchase">내통장결제</li>
-            </ul>
-        </div>
-        <div id="purchase2">
-            <p>카드사 선택</p><select name="" id="">
-                <option value="">비씨카드</option>
-                <option value="">국민카드</option>
-                <option value="">신한카드</option>
-                <option value="">삼성카드</option>
-                <option value="">롯데카드</option>
-                <option value="">농협카드</option>
-                <option value="">현대카드</option>
-                <option value="">하나카드</option>
-                <option value="">우리카드</option>
-                <option value="">신협카드</option>
-            </select>
-        </div>
+        <div id="payment-method"></div>
+        <div id="agreement"></div>
     </div>
     <div id="main-right">
         <div id="price1">
@@ -122,13 +102,9 @@
                 <p id="price-number1" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}">14,000</p>
             </div>
         </div>
-        <div class="price4 price-new">
-            <p class="price4-1">결제수단</p>
-            <p class="price4-2 price4-3-new">신용/체크카드</p>
-        </div>
         <div id="price5">
             <div id="price5-1-1"><a id="price5-1" th:href="@{/movieReservation/seat(showtimeId=${showtime.id})}">이전</a></div>
-            <div id="price5-2-2"><a id="price5-2" href="#" onclick="pay(); return false;">다음</a></div>
+            <div id="price5-2-2"><a id="price5-2" href="#" onclick="requestTossPayment(); return false;">다음</a></div>
         </div>
     </div>
 </main>
@@ -136,17 +112,30 @@
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script src="https://js.tosspayments.com/v2/standard"></script>
 <script th:inline="javascript">
     var showtimeId = /*[[${showtime.id}]]*/ 0;
     var seatIdsCsv = /*[[${seatIdsCsv}]]*/ '';
+    var totalPrice = /*[[${totalPrice}]]*/ 0;
+    var tossClientKey = /*[[${tossClientKey}]]*/ '';
 
-    function pay() {
+    var tossWidgets = TossPayments(tossClientKey).widgets({customerKey: TossPayments.ANONYMOUS});
+
+    (async function initPaymentWidget() {
+        await tossWidgets.setAmount({currency: 'KRW', value: totalPrice});
+        await Promise.all([
+            tossWidgets.renderPaymentMethods({selector: '#payment-method', variantKey: 'DEFAULT'}),
+            tossWidgets.renderAgreement({selector: '#agreement', variantKey: 'AGREEMENT'})
+        ]);
+    })();
+
+    function requestTossPayment() {
         var csrfToken = document.querySelector('meta[name="_csrf"]').content;
         var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         var headers = {'Content-Type': 'application/json'};
         headers[csrfHeader] = csrfToken;
 
-        fetch('/api/reservations', {
+        fetch('/api/payments/prepare', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
@@ -161,18 +150,36 @@
             }
             return res.json().then(function (data) {
                 if (!res.ok) {
-                    alert(data.message || '예매에 실패했습니다.');
-                    if (res.status === 409) {
-                        location.href = '/movieReservation/seat?showtimeId=' + showtimeId;
-                    }
+                    alert(data.message || '결제 준비에 실패했습니다.');
                     return;
                 }
-                location.href = '/movieReservation/payDone?reservationId=' + data.id;
+                tossWidgets.setAmount({currency: 'KRW', value: data.amount}).then(function () {
+                    tossWidgets.requestPayment({
+                        orderId: data.orderId,
+                        orderName: data.orderName,
+                        successUrl: location.origin + '/movieReservation/payRedirect',
+                        failUrl: location.href
+                    }).catch(function (err) {
+                        if (err.code !== 'USER_CANCEL') {
+                            alert(err.message || '결제 요청 중 오류가 발생했습니다.');
+                        }
+                    });
+                });
             });
         }).catch(function () {
-            alert('예매 중 오류가 발생했습니다.');
+            alert('결제 준비 중 오류가 발생했습니다.');
         });
     }
+
+    (function showPayErrorIfAny() {
+        var params = new URLSearchParams(location.search);
+        var payError = params.get('payError');
+        if (payError) {
+            alert(payError);
+            params.delete('payError');
+            history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params.toString() : ''));
+        }
+    })();
 
     document.querySelectorAll('.selectsale').forEach(function (header) {
         var content = header.nextElementSibling;
