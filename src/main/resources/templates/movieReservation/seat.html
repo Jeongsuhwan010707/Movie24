@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
     <link rel="stylesheet" th:href="@{/resources/css/movieReservation/seat.css}">
 </head>
 <body>
@@ -15,6 +16,7 @@
     <div th:replace="fragment/header.html :: header"></div>
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
     <main>
         <div id="main_button">
             <button>ENGLISH</button>
@@ -98,6 +100,7 @@
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
 <script th:inline="javascript">
     var basePrice = /*[[${showtime.basePrice}]]*/ 0;
     var showtimeId = /*[[${showtime.id}]]*/ 0;
@@ -181,8 +184,11 @@
             alert('선택한 인원 수(' + limit + '명)만큼 좌석을 선택해주세요.');
             return;
         }
-        location.href = '/movieReservation/pay?showtimeId=' + showtimeId + '&seatIds=' + selectedSeats.join(',')
+        var nextUrl = '/movieReservation/pay?showtimeId=' + showtimeId + '&seatIds=' + selectedSeats.join(',')
             + '&adultCount=' + adultCount + '&teenCount=' + teenCount;
+        requireLogin(function () {
+            location.href = nextUrl;
+        });
     }
 
     renderSelectedSeatBoxes();

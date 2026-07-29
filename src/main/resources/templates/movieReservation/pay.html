@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
     <link rel="stylesheet" th:href="@{/resources/css/movieReservation/pay.css}">
 </head>
 <body>
@@ -17,6 +18,7 @@
     <div th:replace="fragment/header.html :: header"></div>
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
     <main>
     <div id="main-left">
         <div id="main_text">
@@ -110,6 +112,7 @@
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
 <script src="https://js.tosspayments.com/v2/standard"></script>
 <script th:inline="javascript">
     var showtimeId = /*[[${showtime.id}]]*/ 0;
@@ -128,6 +131,10 @@
     })();
 
     function requestTossPayment() {
+        requireLogin(proceedToPayment);
+    }
+
+    function proceedToPayment() {
         var csrfToken = document.querySelector('meta[name="_csrf"]').content;
         var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         var headers = {'Content-Type': 'application/json'};

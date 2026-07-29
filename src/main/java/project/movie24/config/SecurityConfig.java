@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -65,6 +67,17 @@ public class SecurityConfig {
                                 "/api/reservations/showtimes/**"
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                // oauth2Login().loginPage("/login")이 전체 필터체인의 기본 AuthenticationEntryPoint가 되어버려서,
+                // 이게 없으면 /api/** 요청도 인증 실패 시 401이 아니라 /login으로 302 리다이렉트된다.
+                // fetch는 리다이렉트를 그대로 따라가 최종적으로 200(로그인 페이지 HTML)을 받아버리므로,
+                // JS에서 res.status로 로그인 여부를 판단하는 코드(예: 로그인 모달 게이트)가 전부 무력화된다.
+                // /api/**만 순수 401로 응답하도록 별도 entry point를 지정해 분리한다.
+                .exceptionHandling(exceptions -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                new AntPathRequestMatcher("/api/**")
+                        )
                 )
                 // 로그인은 LoginController(뷰)/AuthApiController(REST)가 AuthenticationManager로 직접 처리한다.
                 .formLogin(form -> form.disable())

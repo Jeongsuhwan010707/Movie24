@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
     <link rel="stylesheet" th:href="@{/resources/css/movieReservation/time.css}">
 </head>
 <body>
@@ -15,6 +16,7 @@
     <div th:replace="fragment/header.html :: header"></div>
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
     <main>
     <div id="scheduleContent">
     <th:block th:fragment="content">
@@ -136,6 +138,7 @@
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
 <script th:src="@{/resources/js/movieReservationTime.js}"></script>
 </body>
 </html>

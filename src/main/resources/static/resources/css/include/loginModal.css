@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+.login-modal-overlay{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.login-modal-overlay.open{
+    display: flex;
+}
+.login-modal{
+    position: relative;
+    width: 360px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 14px;
+    padding: 36px 30px 30px;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+.login-modal-close{
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    border: none;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+    color: #999;
+    cursor: pointer;
+}
+.login-modal-title{
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+.login-modal-desc{
+    margin-top: 8px;
+    font-size: 14px;
+    color: #888;
+}
+.login-modal-error{
+    display: none;
+    margin-top: 14px;
+    padding: 10px;
+    background-color: #fdecea;
+    color: #c0392b;
+    font-size: 13px;
+    border-radius: 6px;
+}
+.login-modal-error.show{
+    display: block;
+}
+.login-modal-input{
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 46px;
+    margin-top: 14px;
+    padding: 0 14px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.login-modal-input:focus{
+    outline: none;
+    border-color: #362FD9;
+}
+.login-modal-submit{
+    width: 100%;
+    height: 48px;
+    margin-top: 18px;
+    background-color: #362FD9;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.login-modal-submit:disabled{
+    background-color: #9b96e8;
+    cursor: not-allowed;
+}
+.login-modal-submit:hover:not(:disabled){
+    background-color: #2a23ad;
+}
+.login-modal-fulllink{
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #888;
+    text-decoration: underline;
+}

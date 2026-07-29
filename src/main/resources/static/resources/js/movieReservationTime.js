@@ -315,6 +315,20 @@ document.addEventListener('DOMContentLoaded', function () {
         loadContent(a.href, true);
     });
 
+    // 좌석 선택으로 넘어가는 링크는 로그인 여부부터 확인한다. 로그인이 안 되어 있으면
+    // 로그인 모달(fragment/loginModal.html, js/loginModal.js)을 띄우고, 성공해야 이동한다.
+    content.addEventListener('click', function (e) {
+        const a = e.target.closest('a');
+        if (!a || a.href.indexOf('/movieReservation/seat') === -1) {
+            return;
+        }
+        e.preventDefault();
+        const href = a.href;
+        requireLogin(function () {
+            window.location.href = href;
+        });
+    });
+
     window.addEventListener('popstate', function () {
         loadContent(location.href, false);
     });
