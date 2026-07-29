@@ -18,10 +18,10 @@
         </div>
         <div class="d2" th:text="${ss.screen.screenType}">2D</div>
         <div class="seat_text" th:each="st : ${ss.showtimes}">
-            <a th:href="@{/movieReservation/seat(showtimeId=${st.id})}">
-                <span th:text="${#temporals.format(st.startTime, 'HH:mm')}">17:50</span>
+            <a th:href="@{/movieReservation/seat(showtimeId=${st.showtime.id})}">
+                <span class="startTime" th:text="${#temporals.format(st.showtime.startTime, 'HH:mm')}">09:00</span><span class="endTime" th:text="'~' + ${#temporals.format(st.endTime, 'HH:mm')}">~10:00</span>
                 <br>
-                <span th:text="${ss.screen.totalSeats}">200</span>석
+                <span class="remainNum" th:text="${st.remainingSeats}">151</span><span class="totalNum" th:text="'/' + ${ss.screen.totalSeats} + '석'">/155석</span>
             </a>
         </div>
     </div>

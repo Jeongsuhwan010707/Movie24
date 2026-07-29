@@ -161,14 +161,25 @@ public class MovieReservationController {
     private List<ScreenSchedule> buildScreenSchedules(Theater theater, List<Showtime> showtimes) {
         return screenService.findByTheaterId(theater.getId()).stream()
                 .map(screen -> {
-                    List<Showtime> screenShowtimes = showtimes.stream()
+                    List<ShowtimeSchedule> screenShowtimes = showtimes.stream()
                             .filter(showtime -> showtime.getScreen().getId().equals(screen.getId()))
                             .sorted(Comparator.comparing(Showtime::getStartTime))
+                            .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime)))
                             .toList();
                     return new ScreenSchedule(screen, screenShowtimes);
                 })
                 .filter(ss -> !ss.getShowtimes().isEmpty())
                 .toList();
+    }
+
+    private LocalDateTime endTime(Showtime showtime) {
+        Integer runtimeMinutes = showtime.getMovie().getRuntimeMinutes();
+        return showtime.getStartTime().plusMinutes(runtimeMinutes != null ? runtimeMinutes : 0);
+    }
+
+    private int remainingSeats(Screen screen, Showtime showtime) {
+        int reserved = reservationService.findReservedSeatIds(showtime.getId()).size();
+        return Math.max(0, screen.getTotalSeats() - reserved);
     }
 
     private List<MovieSchedule> buildMovieSchedules(Theater selectedTheater, ScreeningStatus selectedStatus, LocalDate selectedDate) {
@@ -210,6 +221,7 @@ public class MovieReservationController {
                 .map(screen -> new ScreenSchedule(screen, movieShowtimes.stream()
                         .filter(showtime -> showtime.getScreen().getId().equals(screen.getId()))
                         .sorted(Comparator.comparing(Showtime::getStartTime))
+                        .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime)))
                         .toList()))
                 .toList();
     }

@@ -3,7 +3,6 @@ package project.movie24.moviereservation.controller;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import project.movie24.screen.domain.Screen;
-import project.movie24.showtime.domain.Showtime;
 
 import java.util.List;
 
@@ -14,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class ScreenSchedule {
     private Screen screen;
-    private List<Showtime> showtimes;
+    private List<ShowtimeSchedule> showtimes;
 }

@@ -28,27 +28,32 @@
     main{
         margin: 0 auto;
         width: 1300px;
-        height: 800px;
+        min-height: 800px;
         /* background-color: red; */
         position: relative;
         margin-top: 70px;
     }
+    main::after{
+        content: "";
+        display: block;
+        clear: both;
+    }
     #main-left{
         width: 900px;
-        height: 600px;
+        min-height: 600px;
         float: left;
-        /* background-color: red; */  
+        /* background-color: red; */
     }
     #main_text{
         width: 100%;
         height: 80px;
         font-size: 20px;
-        padding-top: 25px;
+        padding-top: 24px;
         /* background-color: green; */
         border-top: 1px solid #222;
         font-weight: 600;
         color: #222;
-        padding-left: 15px;
+        padding-left: 24px;
     }
     .selectsale{
         width: 100%;
@@ -118,21 +123,13 @@
     .selectsale.active img{
         transform: rotate(180deg);
     }
-    #main_text2{
+    .paySectionDivider{
         width: 100%;
-        height: 80px;
-        font-size: 20px;
-        margin-top: 50px;
-        padding-top: 25px;
-        /* background-color: green; */
         border-top: 1px solid #222;
-        font-weight: 600;
-        color: #222;
-        padding-left: 15px;
+        margin-top: 20px;
     }
     #payment-method{
         width: 100%;
-        margin-top: 10px;
     }
     #agreement{
         width: 100%;
@@ -319,19 +316,24 @@
         border-bottom-right-radius: 10px;
     }
     .price_4{
-        border-bottom: 1px solid #787777;
+        border-top: 1px solid #787777;
     }
    #price5-1-1{
     width: 50%;
     height: 100%;
     float: left;
     border-right: 1px solid #787777;
-    padding-top: 15px;
 	}
 	#price5-2-2{
     width: 50%;
     height: 100%;
     float: left;
+   }
+   #price5-1-1 a, #price5-2-2 a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     padding-top: 15px;
    }
    #main-right a:link, #main-right a:visited{
@@ -340,7 +342,7 @@
    #price5-1-1:hover{
     background-color: #362FD9;
     border-bottom-left-radius: 10px;
-   } 
+   }
    #price5-2-2:hover{
     background-color: #362FD9;
     border-bottom-right-radius: 10px;
