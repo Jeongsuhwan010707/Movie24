@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Movie {
 
     @Id @GeneratedValue
@@ -42,8 +44,6 @@ public class Movie {
 
     @Enumerated(EnumType.STRING)
     private ScreeningStatus status;
-
-    public Movie(){}
 
     public void update(String title, String director, String actors, String genre,
                         AgeRating ageRating, Integer runtimeMinutes, String country,

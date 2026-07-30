@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import project.movie24.security.SessionAuthenticator;
 import project.movie24.user.domain.User;
 import project.movie24.user.domain.UserPrincipal;
 import project.movie24.user.dto.LoginRequest;
@@ -24,7 +22,7 @@ import project.movie24.user.service.LoginService;
 public class AuthApiController {
 
     private final LoginService loginService;
-    private final SecurityContextRepository securityContextRepository;
+    private final SessionAuthenticator sessionAuthenticator;
 
     @PostMapping("/api/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request,
@@ -35,10 +33,7 @@ public class AuthApiController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, httpRequest, httpResponse);
+        sessionAuthenticator.authenticate(authentication, httpRequest, httpResponse);
 
         User user = ((UserPrincipal) authentication.getPrincipal()).getUser();
         return ResponseEntity.ok(UserResponse.from(user));

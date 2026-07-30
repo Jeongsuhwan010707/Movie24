@@ -3,6 +3,7 @@ package project.movie24.seat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.screen.domain.Screen;
 import project.movie24.screen.service.ScreenService;
 import project.movie24.seat.domain.Seat;
@@ -61,8 +62,19 @@ public class SeatService {
         return seatRepository.findAllById(seatIds);
     }
 
+    /**
+     * 예매/결제 준비 양쪽에서 "요청한 좌석이 전부 실제로 존재하는가"를 똑같이 검증하던 걸 한 곳으로 모은다.
+     */
+    @Transactional(readOnly = true)
+    public List<Seat> findAllByIdsOrThrow(List<Long> seatIds) {
+        List<Seat> seats = findAllByIds(seatIds);
+        if (seats.size() != seatIds.size()) {
+            throw new IllegalArgumentException("존재하지 않는 좌석이 포함되어 있습니다.");
+        }
+        return seats;
+    }
+
     private Seat getOrThrow(Long seatId) {
-        return seatRepository.findById(seatId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 좌석입니다. id=" + seatId));
+        return EntityFinders.getOrThrow(seatRepository, seatId, "좌석");
     }
 }

@@ -30,6 +30,7 @@ import project.movie24.user.domain.UserPrincipal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -148,23 +149,22 @@ public class MovieReservationController {
             return List.of();
         }
 
-        LocalDateTime startOfDay = selectedDate.atStartOfDay();
-        LocalDateTime endOfDay = selectedDate.plusDays(1).atStartOfDay();
-        List<Showtime> showtimes = showtimeService.findByMovieIdAndDateRange(selectedMovie.getId(), startOfDay, endOfDay);
+        List<Showtime> showtimes = showtimeService.findByMovieIdAndDateRange(selectedMovie.getId(), startOfDay(selectedDate), endOfDay(selectedDate));
+        Map<Long, Integer> reservedCounts = reservedCountsFor(showtimes);
 
         return theaterService.findByRegion(selectedRegion).stream()
-                .map(theater -> new TheaterSchedule(theater, buildScreenSchedules(theater, showtimes)))
+                .map(theater -> new TheaterSchedule(theater, buildScreenSchedules(theater, showtimes, reservedCounts)))
                 .filter(ts -> !ts.getScreens().isEmpty())
                 .toList();
     }
 
-    private List<ScreenSchedule> buildScreenSchedules(Theater theater, List<Showtime> showtimes) {
+    private List<ScreenSchedule> buildScreenSchedules(Theater theater, List<Showtime> showtimes, Map<Long, Integer> reservedCounts) {
         return screenService.findByTheaterId(theater.getId()).stream()
                 .map(screen -> {
                     List<ShowtimeSchedule> screenShowtimes = showtimes.stream()
                             .filter(showtime -> showtime.getScreen().getId().equals(screen.getId()))
                             .sorted(Comparator.comparing(Showtime::getStartTime))
-                            .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime)))
+                            .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime, reservedCounts)))
                             .toList();
                     return new ScreenSchedule(screen, screenShowtimes);
                 })
@@ -172,13 +172,28 @@ public class MovieReservationController {
                 .toList();
     }
 
+    private LocalDateTime startOfDay(LocalDate date) {
+        return date.atStartOfDay();
+    }
+
+    private LocalDateTime endOfDay(LocalDate date) {
+        return date.plusDays(1).atStartOfDay();
+    }
+
     private LocalDateTime endTime(Showtime showtime) {
         Integer runtimeMinutes = showtime.getMovie().getRuntimeMinutes();
         return showtime.getStartTime().plusMinutes(runtimeMinutes != null ? runtimeMinutes : 0);
     }
 
-    private int remainingSeats(Screen screen, Showtime showtime) {
-        int reserved = reservationService.findReservedSeatIds(showtime.getId()).size();
+    // 상영시간표 화면(하루치 전체 상영시간)에서 잔여 좌석을 한 번에 계산하기 위해, 건마다 쿼리하는 대신
+    // 미리 배치로 센 예약 좌석 수(reservedCountsFor)를 조회해서 쓴다.
+    private Map<Long, Integer> reservedCountsFor(List<Showtime> showtimes) {
+        List<Long> showtimeIds = showtimes.stream().map(Showtime::getId).toList();
+        return reservationService.countReservedSeatsByShowtimeIds(showtimeIds);
+    }
+
+    private int remainingSeats(Screen screen, Showtime showtime, Map<Long, Integer> reservedCounts) {
+        int reserved = reservedCounts.getOrDefault(showtime.getId(), 0);
         return Math.max(0, screen.getTotalSeats() - reserved);
     }
 
@@ -187,12 +202,11 @@ public class MovieReservationController {
             return List.of();
         }
 
-        LocalDateTime startOfDay = selectedDate.atStartOfDay();
-        LocalDateTime endOfDay = selectedDate.plusDays(1).atStartOfDay();
-        List<Showtime> showtimes = showtimeService.findByTheaterIdAndDateRange(selectedTheater.getId(), startOfDay, endOfDay)
+        List<Showtime> showtimes = showtimeService.findByTheaterIdAndDateRange(selectedTheater.getId(), startOfDay(selectedDate), endOfDay(selectedDate))
                 .stream()
                 .filter(showtime -> showtime.getMovie().getStatus() == selectedStatus)
                 .toList();
+        Map<Long, Integer> reservedCounts = reservedCountsFor(showtimes);
 
         List<Movie> moviesShowing = showtimes.stream()
                 .map(Showtime::getMovie)
@@ -202,12 +216,12 @@ public class MovieReservationController {
                 .toList();
 
         return moviesShowing.stream()
-                .map(movie -> new MovieSchedule(movie, buildScreenSchedulesForMovie(movie, showtimes)))
+                .map(movie -> new MovieSchedule(movie, buildScreenSchedulesForMovie(movie, showtimes, reservedCounts)))
                 .filter(ms -> !ms.getScreens().isEmpty())
                 .toList();
     }
 
-    private List<ScreenSchedule> buildScreenSchedulesForMovie(Movie movie, List<Showtime> showtimes) {
+    private List<ScreenSchedule> buildScreenSchedulesForMovie(Movie movie, List<Showtime> showtimes, Map<Long, Integer> reservedCounts) {
         List<Showtime> movieShowtimes = showtimes.stream()
                 .filter(showtime -> showtime.getMovie().getId().equals(movie.getId()))
                 .toList();
@@ -221,7 +235,7 @@ public class MovieReservationController {
                 .map(screen -> new ScreenSchedule(screen, movieShowtimes.stream()
                         .filter(showtime -> showtime.getScreen().getId().equals(screen.getId()))
                         .sorted(Comparator.comparing(Showtime::getStartTime))
-                        .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime)))
+                        .map(showtime -> new ShowtimeSchedule(showtime, endTime(showtime), remainingSeats(screen, showtime, reservedCounts)))
                         .toList()))
                 .toList();
     }
@@ -252,7 +266,7 @@ public class MovieReservationController {
         List<Seat> seats = seatService.findAllByIds(seatIds).stream()
                 .sorted(Comparator.comparing(Seat::getRowLabel).thenComparing(Seat::getSeatNumber))
                 .toList();
-        int totalPrice = showtime.getBasePrice() * seats.size();
+        int totalPrice = showtime.priceFor(seats.size());
         String seatIdsCsv = seatIds.stream().map(String::valueOf).collect(Collectors.joining(","));
 
         model.addAttribute("showtime", showtime);
@@ -291,7 +305,7 @@ public class MovieReservationController {
     }
 
     private String buildTicketSummary(int adultCount, int teenCount, int seatCount) {
-        List<String> parts = new java.util.ArrayList<>();
+        List<String> parts = new ArrayList<>();
         if (adultCount > 0) {
             parts.add("성인 " + adultCount);
         }

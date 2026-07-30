@@ -7,11 +7,13 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Theater {
 
     @Id @GeneratedValue
@@ -21,8 +23,6 @@ public class Theater {
     private String name;
     private String region;
     private String address;
-
-    public Theater(){}
 
     public void update(String name, String region, String address) {
         this.name = name;

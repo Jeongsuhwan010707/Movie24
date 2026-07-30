@@ -4,15 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import project.movie24.security.SessionAuthenticator;
 import project.movie24.user.domain.CustomOAuth2User;
 import project.movie24.user.domain.EmailStatus;
 import project.movie24.user.domain.User;
@@ -27,7 +26,7 @@ public class UserController {
 
     private final UserService userService;
     private final LoginService loginService;
-    private final SecurityContextRepository securityContextRepository;
+    private final SessionAuthenticator sessionAuthenticator;
 
     @GetMapping("/terms")
     public String joinForm(){
@@ -108,14 +107,14 @@ public class UserController {
             // 임시(미저장) 소셜 principal을, 방금 저장되어 id가 생긴 principal로 교체한다.
             CustomOAuth2User newPrincipal = new CustomOAuth2User(saved,
                     ((CustomOAuth2User) oldToken.getPrincipal()).getAttributes());
-            setAuthenticatedSession(new OAuth2AuthenticationToken(
+            sessionAuthenticator.authenticate(new OAuth2AuthenticationToken(
                     newPrincipal, newPrincipal.getAuthorities(), oldToken.getAuthorizedClientRegistrationId()
             ), request, response);
         } else {
             // 가입 직후 자동 로그인: 인코딩 전 원본 비밀번호로 인증해 세션에 저장한다.
             Authentication authentication = loginService.login(userForm.getLoginId(), userForm.getPassword());
             if (authentication != null) {
-                setAuthenticatedSession(authentication, request, response);
+                sessionAuthenticator.authenticate(authentication, request, response);
             }
         }
 
@@ -125,13 +124,6 @@ public class UserController {
     @GetMapping("/complete")
     public String completeForm(){
         return "/users/complete";
-    }
-
-    private void setAuthenticatedSession(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, request, response);
     }
 
     // 소셜 로그인으로 처음 들어와 아직 DB에 저장되지 않은(id == null) 임시 사용자라면 반환한다.

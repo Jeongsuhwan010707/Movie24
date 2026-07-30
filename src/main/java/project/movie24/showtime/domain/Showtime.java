@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.movie24.movie.domain.Movie;
 import project.movie24.screen.domain.Screen;
 
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Showtime {
 
     @Id @GeneratedValue
@@ -36,12 +38,14 @@ public class Showtime {
     private LocalDateTime startTime;
     private Integer basePrice;
 
-    public Showtime(){}
-
     public void update(Movie movie, Screen screen, LocalDateTime startTime, Integer basePrice) {
         this.movie = movie;
         this.screen = screen;
         this.startTime = startTime;
         this.basePrice = basePrice;
+    }
+
+    public int priceFor(int seatCount) {
+        return basePrice * seatCount;
     }
 }

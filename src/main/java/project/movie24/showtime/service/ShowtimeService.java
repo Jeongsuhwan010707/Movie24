@@ -3,6 +3,7 @@ package project.movie24.showtime.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.movie.domain.Movie;
 import project.movie24.movie.service.MovieService;
 import project.movie24.screen.domain.Screen;
@@ -78,7 +79,6 @@ public class ShowtimeService {
     }
 
     private Showtime getOrThrow(Long showtimeId) {
-        return showtimeRepository.findById(showtimeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상영시간입니다. id=" + showtimeId));
+        return EntityFinders.getOrThrow(showtimeRepository, showtimeId, "상영시간");
     }
 }

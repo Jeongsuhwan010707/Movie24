@@ -1,12 +1,9 @@
-document.querySelectorAll(".popularPoster").forEach(function(item,index) {
+document.querySelectorAll(".popularPoster").forEach(function(item, index) {
     item.addEventListener("mouseenter", () => {
-// 					item.nextElementSilbing.style.display = "block";
         document.querySelector("#lookDetail"+(index+1)).style.display="block";
         item.style.opacity = 0.4;
         item.style.border = "2px solid #999797";
     })
-});
-document.querySelectorAll(".popularPoster").forEach(function(item, index) {
     item.addEventListener("mouseleave", () => {
         document.querySelector("#lookDetail"+(index+1)).style.display="none";
         item.style.opacity = 1;
@@ -62,21 +59,17 @@ function nextVideo(){
     }
 };
 
-var p1 = document.getElementsByClassName("popular");
-var p2 = document.getElementsByClassName("popular2");
+function toggleTrailerView(showingPopular) {
+    document.querySelector(".popularBtn").style.fontWeight = showingPopular ? "900" : "500";
+    document.querySelector(".popularBtn").style.textDecoration = showingPopular ? "underline" : "none";
+    document.querySelector(".trailerMovieBtn").style.fontWeight = showingPopular ? "500" : "900";
+    document.querySelector(".trailerMovieBtn").style.textDecoration = showingPopular ? "none" : "underline";
+    document.querySelector(".popular").style.display = showingPopular ? "block" : "none";
+    document.querySelector(".popular2").style.display = showingPopular ? "none" : "block";
+}
 function showPopular(){
-    document.querySelector(".popularBtn").style.fontWeight = "900";
-    document.querySelector(".popularBtn").style.textDecoration = "underline";
-    document.querySelector(".trailerMovieBtn").style.fontWeight = "500";
-    document.querySelector(".trailerMovieBtn").style.textDecoration = "none";
-    document.querySelector(".popular2").style.display = "none";
-    document.querySelector(".popular").style.display = "block";
+    toggleTrailerView(true);
 };
 function showComing(){
-    document.querySelector(".trailerMovieBtn").style.fontWeight = "900";
-    document.querySelector(".trailerMovieBtn").style.textDecoration = "underline";
-    document.querySelector(".popularBtn").style.fontWeight = "500";
-    document.querySelector(".popularBtn").style.textDecoration = "none";
-    document.querySelector(".popular").style.display = "none";
-    document.querySelector(".popular2").style.display = "block";
+    toggleTrailerView(false);
 };

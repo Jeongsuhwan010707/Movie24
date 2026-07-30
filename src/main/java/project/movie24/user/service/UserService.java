@@ -28,14 +28,6 @@ public class UserService {
         return userRepository.save(userToSave);
     }
 
-    public List<User> findUsers() {
-        return userRepository.findAll();
-    }
-
-    public User findOne(Long userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
-
     public boolean isLoginIdAvailable(String loginId) {
         return !userRepository.existsByLoginId(loginId);
     }

@@ -3,6 +3,7 @@ package project.movie24.screen.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.screen.domain.Screen;
 import project.movie24.screen.dto.ScreenRequest;
 import project.movie24.screen.repository.ScreenRepository;
@@ -57,7 +58,6 @@ public class ScreenService {
     }
 
     private Screen getOrThrow(Long screenId) {
-        return screenRepository.findById(screenId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상영관입니다. id=" + screenId));
+        return EntityFinders.getOrThrow(screenRepository, screenId, "상영관");
     }
 }

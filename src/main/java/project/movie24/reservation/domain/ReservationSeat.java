@@ -12,6 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.movie24.seat.domain.Seat;
 import project.movie24.showtime.domain.Showtime;
 
@@ -23,6 +24,7 @@ import project.movie24.showtime.domain.Showtime;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReservationSeat {
 
     @Id @GeneratedValue
@@ -40,6 +42,4 @@ public class ReservationSeat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "showtime_id")
     private Showtime showtime;
-
-    public ReservationSeat(){}
 }

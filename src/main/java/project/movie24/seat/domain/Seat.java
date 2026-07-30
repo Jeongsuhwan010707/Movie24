@@ -12,6 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.movie24.screen.domain.Screen;
 
 @Entity
@@ -19,6 +20,7 @@ import project.movie24.screen.domain.Screen;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Seat {
 
     @Id @GeneratedValue
@@ -31,8 +33,6 @@ public class Seat {
 
     private String rowLabel;
     private Integer seatNumber;
-
-    public Seat(){}
 
     public String getSeatLabel() {
         return rowLabel + seatNumber;

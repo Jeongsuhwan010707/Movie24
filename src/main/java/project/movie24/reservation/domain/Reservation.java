@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.user.domain.User;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Reservation {
 
     @Id @GeneratedValue
@@ -41,8 +43,6 @@ public class Reservation {
     private ReservationStatus status;
 
     private LocalDateTime reservedAt;
-
-    public Reservation(){}
 
     public void cancel() {
         this.status = ReservationStatus.CANCELLED;

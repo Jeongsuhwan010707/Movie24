@@ -1,7 +1,6 @@
 package project.movie24.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -64,8 +63,7 @@ public class FindAccountApiController {
             throw new IllegalArgumentException(passwordResetFailureGuidance(request.getName(), request.getEmail()));
         }
 
-        HttpSession session = httpRequest.getSession();
-        session.setAttribute(FindAccountController.RESET_USER_ID_SESSION_KEY, verified.get().getId());
+        PasswordResetSession.markVerified(httpRequest, verified.get().getId());
         return ResponseEntity.ok().build();
     }
 
@@ -104,9 +102,8 @@ public class FindAccountApiController {
     // 끝쪽 2~3자만 가리고 나머지는 그대로 보여준다(짧은 아이디는 최소 1자만 가림).
     private String maskLoginId(String loginId) {
         int length = loginId.length();
-        int maskCount = length <= 3 ? 1 : (length <= 5 ? 2 : 3);
-        int visibleCount = Math.max(1, length - maskCount);
-        maskCount = length - visibleCount;
+        int maskCount = Math.min(length - 1, length <= 3 ? 1 : (length <= 5 ? 2 : 3));
+        int visibleCount = length - maskCount;
         return loginId.substring(0, visibleCount) + "*".repeat(maskCount);
     }
 }

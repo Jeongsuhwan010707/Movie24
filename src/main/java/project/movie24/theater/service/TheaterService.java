@@ -3,6 +3,7 @@ package project.movie24.theater.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.theater.domain.Theater;
 import project.movie24.theater.dto.TheaterRequest;
 import project.movie24.theater.repository.TheaterRepository;
@@ -51,7 +52,6 @@ public class TheaterService {
     }
 
     private Theater getOrThrow(Long theaterId) {
-        return theaterRepository.findById(theaterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 극장입니다. id=" + theaterId));
+        return EntityFinders.getOrThrow(theaterRepository, theaterId, "극장");
     }
 }

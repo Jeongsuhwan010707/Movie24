@@ -32,12 +32,9 @@ public class PaymentService {
     @Transactional(readOnly = true)
     public PaymentPrepareResponse prepare(HttpSession session, PaymentPrepareRequest request) {
         Showtime showtime = showtimeService.findOne(request.getShowtimeId());
-        List<Seat> seats = seatService.findAllByIds(request.getSeatIds());
-        if (seats.size() != request.getSeatIds().size()) {
-            throw new IllegalArgumentException("존재하지 않는 좌석이 포함되어 있습니다.");
-        }
+        List<Seat> seats = seatService.findAllByIdsOrThrow(request.getSeatIds());
 
-        int amount = showtime.getBasePrice() * seats.size();
+        int amount = showtime.priceFor(seats.size());
         String orderId = "movie24-" + UUID.randomUUID();
 
         session.setAttribute(SESSION_KEY, new PendingPayment(orderId, request.getShowtimeId(), request.getSeatIds(), amount));

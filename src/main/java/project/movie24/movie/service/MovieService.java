@@ -3,6 +3,7 @@ package project.movie24.movie.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.movie.domain.Movie;
 import project.movie24.movie.domain.ScreeningStatus;
 import project.movie24.movie.dto.MovieRequest;
@@ -64,7 +65,6 @@ public class MovieService {
     }
 
     private Movie getOrThrow(Long movieId) {
-        return movieRepository.findById(movieId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 영화입니다. id=" + movieId));
+        return EntityFinders.getOrThrow(movieRepository, movieId, "영화");
     }
 }

@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.common.EntityFinders;
 import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.domain.ReservationSeat;
 import project.movie24.reservation.domain.ReservationStatus;
+import project.movie24.reservation.dto.ReservationResponse;
 import project.movie24.reservation.repository.ReservationRepository;
 import project.movie24.reservation.repository.ReservationSeatRepository;
 import project.movie24.seat.domain.Seat;
@@ -18,6 +20,8 @@ import project.movie24.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,10 +36,7 @@ public class ReservationService {
 
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds) {
         Showtime showtime = showtimeService.findOne(showtimeId);
-        List<Seat> seats = seatService.findAllByIds(seatIds);
-        if (seats.size() != seatIds.size()) {
-            throw new IllegalArgumentException("존재하지 않는 좌석이 포함되어 있습니다.");
-        }
+        List<Seat> seats = seatService.findAllByIdsOrThrow(seatIds);
         for (Seat seat : seats) {
             if (!seat.getScreen().getId().equals(showtime.getScreen().getId())) {
                 throw new IllegalArgumentException("해당 상영관의 좌석이 아닙니다: " + seat.getSeatLabel());
@@ -46,7 +47,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.save(Reservation.builder()
                 .user(user)
                 .showtime(showtime)
-                .totalPrice(showtime.getBasePrice() * seats.size())
+                .totalPrice(showtime.priceFor(seats.size()))
                 .status(ReservationStatus.RESERVED)
                 .reservedAt(LocalDateTime.now())
                 .build());
@@ -79,9 +80,22 @@ public class ReservationService {
         reservationSeatRepository.deleteAll(reservationSeatRepository.findByReservationId(reservationId));
     }
 
+    /**
+     * 예매 건마다 상영시간/영화/상영관/극장/좌석을 따로 조회하지 않도록, 두 번의 쿼리(예매+상세 조인,
+     * 좌석 일괄 조회)로 마이페이지/예매내역 목록에 필요한 응답을 한 번에 만든다.
+     */
     @Transactional(readOnly = true)
-    public List<Reservation> findMyReservations(Long userId) {
-        return reservationRepository.findByUserId(userId);
+    public List<ReservationResponse> findMyReservationResponses(Long userId) {
+        List<Reservation> reservations = reservationRepository.findByUserIdWithDetails(userId);
+        List<Long> reservationIds = reservations.stream().map(Reservation::getId).toList();
+
+        Map<Long, List<String>> seatLabelsByReservationId = reservationSeatRepository.findByReservationIdIn(reservationIds).stream()
+                .collect(Collectors.groupingBy(rs -> rs.getReservation().getId(),
+                        Collectors.mapping(rs -> rs.getSeat().getSeatLabel(), Collectors.toList())));
+
+        return reservations.stream()
+                .map(r -> ReservationResponse.from(r, seatLabelsByReservationId.getOrDefault(r.getId(), List.of())))
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -107,8 +121,22 @@ public class ReservationService {
                 .toList();
     }
 
+    /**
+     * 상영시간표 화면에서 잔여 좌석을 계산할 때, 상영시간마다 따로 쿼리하지 않도록
+     * 여러 상영시간의 예약 좌석 수를 한 번에 조회한다.
+     */
+    @Transactional(readOnly = true)
+    public Map<Long, Integer> countReservedSeatsByShowtimeIds(List<Long> showtimeIds) {
+        if (showtimeIds.isEmpty()) {
+            return Map.of();
+        }
+        return reservationSeatRepository.countReservedSeatsByShowtimeIdIn(showtimeIds, ReservationStatus.RESERVED).stream()
+                .collect(Collectors.toMap(
+                        ReservationSeatRepository.ShowtimeReservedCount::getShowtimeId,
+                        c -> c.getReservedCount().intValue()));
+    }
+
     private Reservation getOrThrow(Long reservationId) {
-        return reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예매입니다. id=" + reservationId));
+        return EntityFinders.getOrThrow(reservationRepository, reservationId, "예매");
     }
 }

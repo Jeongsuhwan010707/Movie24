@@ -1,9 +1,4 @@
 (function () {
-    function csrfToken() {
-        var header = document.querySelector('header[data-csrf-token]');
-        return header ? header.dataset.csrfToken : '';
-    }
-
     function clearResult(box) {
         box.innerHTML = '';
         box.classList.remove('find_error', 'find_result');
@@ -18,7 +13,7 @@
     function postJson(url, body) {
         return fetch(url, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken()},
+            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken()},
             body: JSON.stringify(body)
         }).then(function (res) {
             return res.json().catch(function () { return {}; }).then(function (data) {
@@ -58,31 +53,40 @@
         showTab('id');
     }
 
-    function initFindId() {
-        var form = document.getElementById('findIdForm');
-        var resultBox = document.getElementById('findIdResult');
+    // formId의 submit을 가로채 fields(각 {id, key})를 모아 JSON으로 url에 POST하고,
+    // 실패 시 에러 메시지를, 성공 시 onSuccess(resultBox, data)를 resultBoxId에 반영한다.
+    function bindFindForm(config) {
+        var form = document.getElementById(config.formId);
+        var resultBox = document.getElementById(config.resultBoxId);
         var submitBtn = form.querySelector('.find_submit');
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             clearResult(resultBox);
 
-            var name = document.getElementById('findIdName').value.trim();
-            var email = document.getElementById('findIdEmail').value.trim();
-            if (!name || !email) {
-                showError(resultBox, '이름과 이메일을 입력해주세요.');
+            var body = {};
+            var missing = false;
+            config.fields.forEach(function (field) {
+                var value = document.getElementById(field.id).value.trim();
+                body[field.key] = value;
+                if (!value) {
+                    missing = true;
+                }
+            });
+            if (missing) {
+                showError(resultBox, config.requiredMessage);
                 return;
             }
 
             submitBtn.disabled = true;
-            postJson('/api/users/find-id', {name: name, email: email})
+            postJson(config.url, body)
                 .then(function (result) {
                     submitBtn.disabled = false;
                     if (!result.ok) {
                         showError(resultBox, firstErrorMessage(result.data));
                         return;
                     }
-                    renderFindIdResult(resultBox, result.data);
+                    config.onSuccess(resultBox, result.data);
                 })
                 .catch(function () {
                     submitBtn.disabled = false;
@@ -117,37 +121,29 @@
         }
     }
 
+    function initFindId() {
+        bindFindForm({
+            formId: 'findIdForm',
+            resultBoxId: 'findIdResult',
+            fields: [{id: 'findIdName', key: 'name'}, {id: 'findIdEmail', key: 'email'}],
+            requiredMessage: '이름과 이메일을 입력해주세요.',
+            url: '/api/users/find-id',
+            onSuccess: renderFindIdResult
+        });
+    }
+
     function initFindPassword() {
-        var form = document.getElementById('findPasswordForm');
-        var resultBox = document.getElementById('findPasswordResult');
-        var submitBtn = form.querySelector('.find_submit');
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            clearResult(resultBox);
-
-            var loginId = document.getElementById('findPwLoginId').value.trim();
-            var name = document.getElementById('findPwName').value.trim();
-            var email = document.getElementById('findPwEmail').value.trim();
-            if (!loginId || !name || !email) {
-                showError(resultBox, '아이디, 이름, 이메일을 모두 입력해주세요.');
-                return;
-            }
-
-            submitBtn.disabled = true;
-            postJson('/api/users/find-password/verify', {loginId: loginId, name: name, email: email})
-                .then(function (result) {
-                    submitBtn.disabled = false;
-                    if (!result.ok) {
-                        showError(resultBox, firstErrorMessage(result.data));
-                        return;
-                    }
-                    window.location.href = '/users/reset-password';
-                })
-                .catch(function () {
-                    submitBtn.disabled = false;
-                    showError(resultBox, '요청 처리 중 오류가 발생했습니다.');
-                });
+        bindFindForm({
+            formId: 'findPasswordForm',
+            resultBoxId: 'findPasswordResult',
+            fields: [
+                {id: 'findPwLoginId', key: 'loginId'},
+                {id: 'findPwName', key: 'name'},
+                {id: 'findPwEmail', key: 'email'}
+            ],
+            requiredMessage: '아이디, 이름, 이메일을 모두 입력해주세요.',
+            url: '/api/users/find-password/verify',
+            onSuccess: function () { window.location.href = '/users/reset-password'; }
         });
     }
 

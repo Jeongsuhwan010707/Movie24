@@ -70,7 +70,7 @@
         submitBtn.disabled = true;
         fetch('/api/login', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken()},
+            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken()},
             body: JSON.stringify({loginId: loginId, password: password})
         }).then(function (res) {
             submitBtn.disabled = false;
@@ -91,11 +91,6 @@
             submitBtn.disabled = false;
             showError('로그인 중 오류가 발생했습니다.');
         });
-    }
-
-    function csrfToken() {
-        var header = document.querySelector('header[data-csrf-token]');
-        return header ? header.dataset.csrfToken : '';
     }
 
     function requireLogin(action) {

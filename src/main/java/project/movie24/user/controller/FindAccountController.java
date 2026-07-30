@@ -1,7 +1,6 @@
 package project.movie24.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,9 +18,6 @@ import project.movie24.user.service.UserService;
 @RequiredArgsConstructor
 public class FindAccountController {
 
-    // 비밀번호 재설정 본인확인(FindAccountApiController#verifyForPasswordReset)이 세션에 심어두는 키.
-    static final String RESET_USER_ID_SESSION_KEY = "passwordResetUserId";
-
     private final UserService userService;
 
     @GetMapping("/find-account")
@@ -31,8 +27,7 @@ public class FindAccountController {
 
     @GetMapping("/reset-password")
     public String resetPasswordForm(Model model, HttpServletRequest request) {
-        if (request.getSession(false) == null
-                || request.getSession(false).getAttribute(RESET_USER_ID_SESSION_KEY) == null) {
+        if (PasswordResetSession.verifiedUserId(request) == null) {
             return "redirect:/users/find-account";
         }
         model.addAttribute("resetPasswordForm", new ResetPasswordForm());
@@ -42,8 +37,7 @@ public class FindAccountController {
     @PostMapping("/reset-password")
     public String resetPassword(@Valid @ModelAttribute("resetPasswordForm") ResetPasswordForm form, BindingResult bindingResult,
                                  Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long userId = session == null ? null : (Long) session.getAttribute(RESET_USER_ID_SESSION_KEY);
+        Long userId = PasswordResetSession.verifiedUserId(request);
         if (userId == null) {
             return "redirect:/users/find-account";
         }
@@ -57,7 +51,7 @@ public class FindAccountController {
         }
 
         userService.resetPassword(userId, form.getNewPassword());
-        session.removeAttribute(RESET_USER_ID_SESSION_KEY);
+        PasswordResetSession.clear(request);
         return "redirect:/login?resetSuccess";
     }
 }

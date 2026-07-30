@@ -10,12 +10,14 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import project.movie24.theater.domain.Theater;
 
 @Entity
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Screen {
 
     @Id @GeneratedValue
@@ -29,8 +31,6 @@ public class Screen {
     private String name;
     private Integer totalSeats;
     private String screenType;
-
-    public Screen(){}
 
     public void update(Theater theater, String name, Integer totalSeats, String screenType) {
         this.theater = theater;
