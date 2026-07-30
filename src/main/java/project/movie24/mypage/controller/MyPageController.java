@@ -22,7 +22,7 @@ public class MyPageController {
     @GetMapping("/myPage")
     public String index(@AuthenticationPrincipal UserPrincipal principal, Model model) {
         User user = principal.getUser();
-        List<ReservationResponse> myReservations = reservationService.findMyReservationResponses(user.getId()).stream()
+        List<ReservationResponse> myReservations = reservationService.findMyReservations(user.getId()).stream()
                 .sorted(Comparator.comparing(ReservationResponse::getReservedAt).reversed())
                 .toList();
 

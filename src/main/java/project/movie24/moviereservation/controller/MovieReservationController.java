@@ -149,7 +149,7 @@ public class MovieReservationController {
             return List.of();
         }
 
-        List<Showtime> showtimes = showtimeService.findByMovieIdAndDateRange(selectedMovie.getId(), startOfDay(selectedDate), endOfDay(selectedDate));
+        List<Showtime> showtimes = showtimeService.findByMovieAndDate(selectedMovie.getId(), startOfDay(selectedDate), endOfDay(selectedDate));
         Map<Long, Integer> reservedCounts = reservedCountsFor(showtimes);
 
         return theaterService.findByRegion(selectedRegion).stream()
@@ -189,7 +189,7 @@ public class MovieReservationController {
     // 미리 배치로 센 예약 좌석 수(reservedCountsFor)를 조회해서 쓴다.
     private Map<Long, Integer> reservedCountsFor(List<Showtime> showtimes) {
         List<Long> showtimeIds = showtimes.stream().map(Showtime::getId).toList();
-        return reservationService.countReservedSeatsByShowtimeIds(showtimeIds);
+        return reservationService.countReservedSeats(showtimeIds);
     }
 
     private int remainingSeats(Screen screen, Showtime showtime, Map<Long, Integer> reservedCounts) {
@@ -202,7 +202,7 @@ public class MovieReservationController {
             return List.of();
         }
 
-        List<Showtime> showtimes = showtimeService.findByTheaterIdAndDateRange(selectedTheater.getId(), startOfDay(selectedDate), endOfDay(selectedDate))
+        List<Showtime> showtimes = showtimeService.findByTheaterAndDate(selectedTheater.getId(), startOfDay(selectedDate), endOfDay(selectedDate))
                 .stream()
                 .filter(showtime -> showtime.getMovie().getStatus() == selectedStatus)
                 .toList();
@@ -216,12 +216,12 @@ public class MovieReservationController {
                 .toList();
 
         return moviesShowing.stream()
-                .map(movie -> new MovieSchedule(movie, buildScreenSchedulesForMovie(movie, showtimes, reservedCounts)))
+                .map(movie -> new MovieSchedule(movie, buildScreenSchedules(movie, showtimes, reservedCounts)))
                 .filter(ms -> !ms.getScreens().isEmpty())
                 .toList();
     }
 
-    private List<ScreenSchedule> buildScreenSchedulesForMovie(Movie movie, List<Showtime> showtimes, Map<Long, Integer> reservedCounts) {
+    private List<ScreenSchedule> buildScreenSchedules(Movie movie, List<Showtime> showtimes, Map<Long, Integer> reservedCounts) {
         List<Showtime> movieShowtimes = showtimes.stream()
                 .filter(showtime -> showtime.getMovie().getId().equals(movie.getId()))
                 .toList();

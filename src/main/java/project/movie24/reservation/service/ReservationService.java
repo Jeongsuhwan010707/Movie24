@@ -85,7 +85,7 @@ public class ReservationService {
      * 좌석 일괄 조회)로 마이페이지/예매내역 목록에 필요한 응답을 한 번에 만든다.
      */
     @Transactional(readOnly = true)
-    public List<ReservationResponse> findMyReservationResponses(Long userId) {
+    public List<ReservationResponse> findMyReservations(Long userId) {
         List<Reservation> reservations = reservationRepository.findByUserIdWithDetails(userId);
         List<Long> reservationIds = reservations.stream().map(Reservation::getId).toList();
 
@@ -126,7 +126,7 @@ public class ReservationService {
      * 여러 상영시간의 예약 좌석 수를 한 번에 조회한다.
      */
     @Transactional(readOnly = true)
-    public Map<Long, Integer> countReservedSeatsByShowtimeIds(List<Long> showtimeIds) {
+    public Map<Long, Integer> countReservedSeats(List<Long> showtimeIds) {
         if (showtimeIds.isEmpty()) {
             return Map.of();
         }

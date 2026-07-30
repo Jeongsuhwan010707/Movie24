@@ -38,7 +38,7 @@ public class ReservationApiController {
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> myReservations(@AuthenticationPrincipal UserPrincipal principal) {
-        return ResponseEntity.ok(reservationService.findMyReservationResponses(principal.getUser().getId()));
+        return ResponseEntity.ok(reservationService.findMyReservations(principal.getUser().getId()));
     }
 
     @DeleteMapping("/{reservationId}")

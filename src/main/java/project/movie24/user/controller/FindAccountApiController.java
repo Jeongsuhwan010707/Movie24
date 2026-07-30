@@ -35,7 +35,7 @@ public class FindAccountApiController {
 
     @PostMapping("/find-id")
     public ResponseEntity<FindIdResponse> findId(@Valid @RequestBody FindIdRequest request) {
-        List<User> matches = userService.findAllUsersByNameAndEmail(request.getName(), request.getEmail());
+        List<User> matches = userService.findByNameAndEmail(request.getName(), request.getEmail());
         if (matches.isEmpty()) {
             throw new IllegalArgumentException("일치하는 회원 정보가 없습니다.");
         }
@@ -57,10 +57,10 @@ public class FindAccountApiController {
     @PostMapping("/find-password/verify")
     public ResponseEntity<Void> verifyForPasswordReset(@Valid @RequestBody FindPasswordRequest request,
                                                          HttpServletRequest httpRequest) {
-        Optional<User> verified = userService.verifyLocalUserForPasswordReset(
+        Optional<User> verified = userService.verifyLocalAccount(
                 request.getLoginId(), request.getName(), request.getEmail());
         if (verified.isEmpty()) {
-            throw new IllegalArgumentException(passwordResetFailureGuidance(request.getName(), request.getEmail()));
+            throw new IllegalArgumentException(resetGuidance(request.getName(), request.getEmail()));
         }
 
         PasswordResetSession.markVerified(httpRequest, verified.get().getId());
@@ -71,8 +71,8 @@ public class FindAccountApiController {
      * 입력한 아이디+이름+이메일로 로컬 계정을 특정하지 못했을 때, 같은 이름+이메일의 다른 계정이
      * 있는지(다른 아이디의 로컬 계정, 또는 소셜 계정 - 여러 개일 수 있음) 확인해 안내 문구를 만든다.
      */
-    private String passwordResetFailureGuidance(String name, String email) {
-        List<User> matches = userService.findAllUsersByNameAndEmail(name, email);
+    private String resetGuidance(String name, String email) {
+        List<User> matches = userService.findByNameAndEmail(name, email);
         if (matches.isEmpty()) {
             return "일치하는 회원 정보가 없습니다.";
         }

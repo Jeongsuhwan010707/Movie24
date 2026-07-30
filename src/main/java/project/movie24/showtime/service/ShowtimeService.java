@@ -69,12 +69,12 @@ public class ShowtimeService {
     }
 
     @Transactional(readOnly = true)
-    public List<Showtime> findByMovieIdAndDateRange(Long movieId, LocalDateTime start, LocalDateTime end) {
+    public List<Showtime> findByMovieAndDate(Long movieId, LocalDateTime start, LocalDateTime end) {
         return showtimeRepository.findByMovieIdAndStartTimeBetween(movieId, start, end);
     }
 
     @Transactional(readOnly = true)
-    public List<Showtime> findByTheaterIdAndDateRange(Long theaterId, LocalDateTime start, LocalDateTime end) {
+    public List<Showtime> findByTheaterAndDate(Long theaterId, LocalDateTime start, LocalDateTime end) {
         return showtimeRepository.findByScreen_Theater_IdAndStartTimeBetween(theaterId, start, end);
     }
 

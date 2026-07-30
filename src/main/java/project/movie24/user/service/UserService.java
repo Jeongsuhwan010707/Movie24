@@ -36,7 +36,7 @@ public class UserService {
      * 아이디 + 이름 + 이메일이 모두 일치하는 로컬 계정인지 확인한다(비밀번호 재설정 전 본인확인).
      * loginId가 유니크 컬럼이라 결과는 항상 0~1건이다.
      */
-    public Optional<User> verifyLocalUserForPasswordReset(String loginId, String name, String email) {
+    public Optional<User> verifyLocalAccount(String loginId, String name, String email) {
         return userRepository.findByLoginIdAndNameAndEmailAndProvider(loginId, name, email, Provider.LOCAL);
     }
 
@@ -44,7 +44,7 @@ public class UserService {
      * 이름 + 이메일이 일치하는 모든 계정(일반 + 소셜)을 찾는다. email은 유니크 컬럼이 아니고,
      * 같은 사람이 일반 가입 + 여러 소셜 계정을 동시에 가질 수도 있으므로 여러 건이 나올 수 있다.
      */
-    public List<User> findAllUsersByNameAndEmail(String name, String email) {
+    public List<User> findByNameAndEmail(String name, String email) {
         return userRepository.findAllByNameAndEmail(name, email);
     }
 
