@@ -67,6 +67,15 @@ public class SecurityConfig {
                                 "/api/seats", "/api/seats/**",
                                 "/api/reservations/showtimes/**"
                         ).permitAll()
+                        // 영화/상영관/상영시간/좌석 데이터 관리는 아직 전용 관리자 화면이 없어 API를 직접 호출해 쓰지만,
+                        // 조회(GET) 외 등록/수정/삭제는 ADMIN 등급만 가능하도록 잠가둔다.
+                        .requestMatchers(
+                                "/api/movies", "/api/movies/**",
+                                "/api/theaters", "/api/theaters/**",
+                                "/api/screens", "/api/screens/**",
+                                "/api/showtimes", "/api/showtimes/**",
+                                "/api/seats", "/api/seats/**"
+                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 // oauth2Login().loginPage("/login")이 전체 필터체인의 기본 AuthenticationEntryPoint가 되어버려서,
@@ -74,9 +83,14 @@ public class SecurityConfig {
                 // fetch는 리다이렉트를 그대로 따라가 최종적으로 200(로그인 페이지 HTML)을 받아버리므로,
                 // JS에서 res.status로 로그인 여부를 판단하는 코드(예: 로그인 모달 게이트)가 전부 무력화된다.
                 // /api/**만 순수 401로 응답하도록 별도 entry point를 지정해 분리한다.
+                // 같은 이유로 인가 실패(ADMIN 권한 없음)도 /login으로 리다이렉트되지 않고 순수 403으로 응답하게 한다.
                 .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                new AntPathRequestMatcher("/api/**")
+                        )
+                        .defaultAccessDeniedHandlerFor(
+                                (request, response, e) -> response.setStatus(HttpStatus.FORBIDDEN.value()),
                                 new AntPathRequestMatcher("/api/**")
                         )
                 )
