@@ -17,36 +17,40 @@
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
     <main>
-   <div id="up_area">
-       <div id="myPage_up">
-        <div id="myPage_blank"></div>
-            <div id="myPage_up_1">
+        <section class="profile-card">
+            <div class="profile-avatar">
                 <img src="/resources/images/account (2).png" alt="">
             </div>
-            <div id="myPage_up_2">
+            <div class="profile-info">
+                <span class="grade-chip" th:switch="${user.grade.name()}">
+                    <span th:case="'VIP'">VIP</span>
+                    <span th:case="'ADMIN'">관리자</span>
+                    <span th:case="*">일반회원</span>
+                </span>
                 <h1 th:text="|${user.nickName ?: user.name}님, 환영합니다!|">회원님, 환영합니다!</h1>
-                <p>회원님의 등급은 "<span th:switch="${user.grade.name()}"><span th:case="'VIP'">VIP</span><span th:case="'ADMIN'">관리자</span><span th:case="*">일반</span></span>"입니다.
-                </p>
+                <p>Movie24와 함께 즐거운 영화 생활 되세요.</p>
             </div>
-            <div id="myPage_up_3"></div>
-       </div>
-       <div id="myPage_blank2"></div>
-       <div id="myPage_down">
-            <div id="myPage_down_1">
-                <h1>My Coupon</h1>
+        </section>
+
+        <section class="quick-stats">
+            <div class="stat-card">
+                <span class="stat-icon stat-icon-coupon">%</span>
+                <h3>My Coupon</h3>
                 <p>준비중인 기능입니다.</p>
             </div>
-            <div id="myPage_blank3"></div>
-            <div id="myPage_down_2">
-                <h1>My Point</h1>
+            <div class="stat-card">
+                <span class="stat-icon stat-icon-point">P</span>
+                <h3>My Point</h3>
                 <p>준비중인 기능입니다.</p>
             </div>
-            <div id="myPage_blank4"></div>
-            <div id="myPage_down_3">
-                <h1>Vip Point</h1>
+            <div class="stat-card">
+                <span class="stat-icon stat-icon-vip">VIP</span>
+                <h3>Vip Point</h3>
                 <p>준비중인 기능입니다.</p>
             </div>
-            <div id="blank_1"></div>
+        </section>
+
+        <div id="myPage_down">
             <div id="main_menu">
                 <div id="member">
                     <h3>회원 정보</h3>
@@ -119,10 +123,10 @@
                     <p>준비중인 기능입니다.</p>
                 </div>
             </div>
-       </div>
-   </div>
-        <a id="next" href="/movieReservation/time">예매하기</a>
-</main>
+        </div>
+
+        <a id="next" th:href="@{/movieReservation/time}">예매하기</a>
+    </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
