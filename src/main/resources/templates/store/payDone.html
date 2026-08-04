@@ -42,7 +42,19 @@
             </h1>
             <p>마이페이지에서 구매내역을 확인해보세요~</p>
         </div>
-        <a href="/">Home</a>
+        <div id="orderSummary" th:if="${order != null}">
+            <h3 th:text="'주문번호: ' + ${order.orderUid}"></h3>
+            <ul>
+                <li th:each="i : ${orderItems}">
+                    <span th:text="${i.itemName} + ' x ' + ${i.quantity}"></span>
+                    <span th:text="${#numbers.formatInteger(i.lineTotal, 0, 'COMMA')} + '원'"></span>
+                </li>
+            </ul>
+            <div class="orderTotal">
+                <span class="orderTotal-value" th:text="${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')} + '원'"></span>
+            </div>
+        </div>
+        <a id="homeBtn" th:href="@{/}">Home</a>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>

@@ -103,6 +103,17 @@
                         </li>
                     </ul>
                 </div>
+                <h3>나의 구매내역</h3>
+                <div class="historyBox">
+                    <p th:if="${#lists.isEmpty(storeOrders)}">고객님의 스토어 구매내역이 존재하지 않습니다.</p>
+                    <ul id="storeOrderList" th:unless="${#lists.isEmpty(storeOrders)}">
+                        <li th:each="o : ${storeOrders}">
+                            <span th:text="${#temporals.format(o.orderedAt, 'yyyy-MM-dd HH:mm')}"></span> ·
+                            <span th:text="${#strings.listJoin(o.items.![itemName], ', ')}"></span> ·
+                            <span th:text="${#numbers.formatInteger(o.totalAmount, 0, 'COMMA')} + '원'"></span>
+                        </li>
+                    </ul>
+                </div>
                 <h3>나의 문의내역</h3>
                 <div id="area3">
                     <p>준비중인 기능입니다.</p>

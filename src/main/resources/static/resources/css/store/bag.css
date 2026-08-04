@@ -28,9 +28,16 @@
     main{
         margin: 0 auto;
         width: 1300px;
-        height: 1080px;
+        height: auto;
+        min-height: 1080px;
         /* background-color: red; */
         position: relative;
+    }
+    #emptyCart{
+        text-align: center;
+        padding: 100px 0;
+        font-size: 20px;
+        color: #545353;
     }
     #main_logo{
         width: 100%;
@@ -59,10 +66,12 @@
         }
         #h11{
             color: #362FD9;
+            font-weight: 900;
+            text-decoration: underline;
         }
         #purchase{
             width: 100%;
-            height: 260px;
+            height: auto;
         }
         #purchase_up{
             width: 100%;
@@ -86,47 +95,77 @@
             }
         #purchase_down{
             width: 100%;
-            height: 180px;
+            height: auto;
             border-bottom: 1px solid #515050;
         }
-        #product{
+        .cart-row{
+            width: 100%;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            box-sizing: border-box;
+        }
+        .cart-row:last-child{
+            border-bottom: none;
+        }
+        .cart-row-name{
             width: 640px;
-            height: 100%;
-            float: left;
-            text-align: center;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            text-align: left;
             font-size: 20px;
+            box-sizing: border-box;
+            padding-right: 20px;
         }
-        #product img{
-            width: 200px;
-            float: left;
+        .cart-row-name img{
+            width: 120px;
+            flex-shrink: 0;
             margin-left: 50px;
+            margin-right: 20px;
+            border-radius: 8px;
         }
-        #product h2{
-            padding-top: 50px;
+        .cart-row-text{
+            min-width: 0;
+        }
+        .cart-row-name h2{
+            margin: 0;
             color: #545353;
+            font-size: 20px;
         }
-        .product{
+        .cart-row-name p{
+            margin-top: 8px;
+            color: #999;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: keep-all;
+        }
+        .cart-row-col{
             width: 160px;
-            height: 100%;
+            flex-shrink: 0;
             text-align: center;
             font-size: 20px;
-            float: left;
-            padding-top: 70px;
         }
-        .product select{
+        .cart-row-col select{
             width: 100px;
             height: 30px;
             font-size: 17px;
         }
-        .product img{
-            width: 30px;
+        .cart-row-col input[type=checkbox]{
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
         }
         #no{
             width: 100%;
-            height: 80px;
+            height: auto;
+            min-height: 80px;
             /* background-color: red; */
             font-size: 17px;
             display: inline-flex;
+            flex-wrap: wrap;
             justify-content: space-between;
         }
         #no p{
@@ -139,10 +178,11 @@
             font-size: 15px;
             margin-top: 20px;
             margin-right: 35px;
+            cursor: pointer;
         }
         #purchase2{
             width: 100%;
-            height: 260px;
+            height: auto;
             margin-top: 50px;
         }
         #purchase_up2{
@@ -166,13 +206,15 @@
         #purchase_down2{
             width: 100%;
             position: relative;
-            height: 180px;
+            height: auto;
+            min-height: 180px;
             border-bottom: 1px solid #515050;
             display: flex;
             justify-content: space-between;
             align-items: center;
             text-align: center;
             padding-left: 200px;
+            box-sizing: border-box;
         }
         #purchase_down2 ul li{
             font-size: 25px;
@@ -195,7 +237,7 @@
         #main_select{
             width: 700px;
             margin: 50px auto;
-            height: 100px;
+            height: auto;
             /* background-color: red; */
             text-align: center;
         }
@@ -207,6 +249,7 @@
             color: white;
             background-color: #362FD9;
             margin-top: 15px;
+            cursor: pointer;
         }
 
           

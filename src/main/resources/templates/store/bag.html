@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
     <title>Movie24</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
@@ -33,7 +35,10 @@
             <h1>구매완료</h1>
         </div>
     </div>
-    <div id="purchase">
+
+    <p th:if="${#lists.isEmpty(cartItems)}" id="emptyCart">장바구니에 담긴 상품이 없습니다.</p>
+
+    <div id="purchase" th:unless="${#lists.isEmpty(cartItems)}">
         <div id="purchase_up">
             <ul>
                 <li id="name">상품명</li>
@@ -44,37 +49,37 @@
             </ul>
         </div>
         <div id="purchase_down">
-            <div id="product">
-                <img src="/resources/images/cgv팝콘-removebg-preview.png" alt="">
-                <span><h2>팝콘 패키지 1</h2></span>
-                <p>팝콘(1), 음료(1), 관람권(1)</p>
-            </div>
-            <div class="product">
-                <p>12,000원</p>
-            </div>
-            <div class="product">
-                <select name="" id="">
-                    <option value="">1</option>
-                    <option value="">2</option>
-                    <option value="">3</option>
-                    <option value="">4</option>
-                    <option value="">5</option>
-                    <option value="">6</option>
-                </select>
-            </div>
-            <div class="product">
-                <p>12,000원</p>
-            </div>
-            <div class="product">
-                <img src="/resources/images/select.png" alt="">
+            <div class="cart-row" th:each="c : ${cartItems}" th:attr="data-cart-item-id=${c.id},data-unit-price=${c.unitPrice}">
+                <div class="cart-row-name">
+                    <img th:src="@{${c.imageUrl}}" alt="">
+                    <div class="cart-row-text">
+                        <h2 th:text="${c.name}"></h2>
+                        <p th:text="${c.description}"></p>
+                    </div>
+                </div>
+                <div class="cart-row-col">
+                    <p th:text="${#numbers.formatInteger(c.unitPrice, 0, 'COMMA')} + '원'"></p>
+                </div>
+                <div class="cart-row-col">
+                    <select class="qtySelect">
+                        <option th:each="n : ${#numbers.sequence(1, 10)}"
+                                th:value="${n}" th:text="${n}" th:selected="${n == c.quantity}"></option>
+                    </select>
+                </div>
+                <div class="cart-row-col">
+                    <p class="lineTotal" th:text="${#numbers.formatInteger(c.lineTotal, 0, 'COMMA')} + '원'"></p>
+                </div>
+                <div class="cart-row-col">
+                    <input type="checkbox" class="selectCheckbox">
+                </div>
             </div>
         </div>
     </div>
-    <div id="no">
+    <div id="no" th:unless="${#lists.isEmpty(cartItems)}">
         <p><strong>장바구니에 담긴 상품은 최대 30일까지 보관됩니다.</strong></p>
-        <button>선택상품 해제</button>
+        <button type="button" id="removeSelectedBtn">선택상품 삭제</button>
     </div>
-    <div id="purchase2">
+    <div id="purchase2" th:unless="${#lists.isEmpty(cartItems)}">
 
         <div id="purchase_up2">
             <ul>
@@ -85,22 +90,115 @@
         </div>
         <div id="purchase_down2">
             <ul>
-                <li>12,000원</li>
+                <li id="totalProduct">0원</li>
                 <li id="img1"><img width="50px" src="/resources/images/minus (2).png" alt=""></li>
                 <li>0원</li>
                 <li id="img2"><img width="50px" src="/resources/images/equal (1).png" alt=""></li>
-                <li id="blue">12,000원</li>
+                <li id="totalPay" class="blue">0원</li>
             </ul>
         </div>
     </div>
     <div id="main_select">
-        <a href="/store"><button>뒤로</button></a>
-        <a href="/store/bagPay"><button>구매하기</button></a>
+        <a th:href="@{/store}"><button type="button">뒤로</button></a>
+        <button type="button" id="checkoutBtn">구매하기</button>
     </div>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:inline="javascript">
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
+    }
+    function getCsrfHeader() {
+        return document.querySelector('meta[name="_csrf_header"]').content;
+    }
+    function jsonHeaders() {
+        var headers = {'Content-Type': 'application/json'};
+        headers[getCsrfHeader()] = getCsrfToken();
+        return headers;
+    }
+
+    // 체크박스는 "선택상품 삭제" 용도일 뿐, 선택 여부와 상관없이 장바구니의 전체 금액이 합계에 반영된다.
+    function recalcTotals() {
+        var total = 0;
+        document.querySelectorAll('.cart-row').forEach(function (row) {
+            var unitPrice = Number(row.getAttribute('data-unit-price'));
+            var qty = Number(row.querySelector('.qtySelect').value);
+            total += unitPrice * qty;
+        });
+        var formatted = total.toLocaleString('ko-KR') + '원';
+        document.getElementById('totalProduct').textContent = formatted;
+        document.getElementById('totalPay').textContent = formatted;
+    }
+
+    document.querySelectorAll('.qtySelect').forEach(function (select) {
+        select.addEventListener('change', function () {
+            var row = select.closest('.cart-row');
+            var cartItemId = row.getAttribute('data-cart-item-id');
+            var quantity = Number(select.value);
+            var unitPrice = Number(row.getAttribute('data-unit-price'));
+
+            fetch('/api/store/cart/' + cartItemId, {
+                method: 'PUT',
+                headers: jsonHeaders(),
+                body: JSON.stringify({quantity: quantity})
+            }).then(function (res) {
+                if (!res.ok) {
+                    alert('수량 변경에 실패했습니다.');
+                    return;
+                }
+                row.querySelector('.lineTotal').textContent = (unitPrice * quantity).toLocaleString('ko-KR') + '원';
+                recalcTotals();
+            }).catch(function () {
+                alert('수량 변경 중 오류가 발생했습니다.');
+            });
+        });
+    });
+
+    var removeBtn = document.getElementById('removeSelectedBtn');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', function () {
+            var ids = [];
+            document.querySelectorAll('.cart-row').forEach(function (row) {
+                if (row.querySelector('.selectCheckbox').checked) {
+                    ids.push(Number(row.getAttribute('data-cart-item-id')));
+                }
+            });
+            if (ids.length === 0) {
+                alert('삭제할 상품을 선택해주세요.');
+                return;
+            }
+            fetch('/api/store/cart/remove', {
+                method: 'POST',
+                headers: jsonHeaders(),
+                body: JSON.stringify({cartItemIds: ids})
+            }).then(function (res) {
+                if (!res.ok) {
+                    alert('상품 삭제에 실패했습니다.');
+                    return;
+                }
+                location.reload();
+            }).catch(function () {
+                alert('상품 삭제 중 오류가 발생했습니다.');
+            });
+        });
+    }
+
+    document.getElementById('checkoutBtn').addEventListener('click', function () {
+        var ids = [];
+        document.querySelectorAll('.cart-row').forEach(function (row) {
+            ids.push(row.getAttribute('data-cart-item-id'));
+        });
+        if (ids.length === 0) {
+            alert('장바구니에 담긴 상품이 없습니다.');
+            return;
+        }
+        location.href = '/store/bagPay?cartItemIds=' + ids.join(',');
+    });
+
+    recalcTotals();
+</script>
 </body>
 </html>

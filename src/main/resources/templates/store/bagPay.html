@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
     <title>Movie24</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
@@ -40,33 +42,26 @@
                 <li>판매금액</li>
                 <li>수량</li>
                 <li>구매금액</li>
-                <li>선택</li>
             </ul>
         </div>
         <div id="purchase_down">
-            <div id="product">
-                <img src="/resources/images/cgv팝콘-removebg-preview.png" alt="">
-                <span><h2>팝콘 패키지 1</h2></span>
-                <p>팝콘(1), 음료(1), 관람권(1)</p>
-            </div>
-            <div class="product">
-                <p>12,000원</p>
-            </div>
-            <div class="product">
-                <select name="" id="">
-                    <option value="">1</option>
-                    <option value="">2</option>
-                    <option value="">3</option>
-                    <option value="">4</option>
-                    <option value="">5</option>
-                    <option value="">6</option>
-                </select>
-            </div>
-            <div class="product">
-                <p>12,000원</p>
-            </div>
-            <div class="product">
-                <img src="/resources/images/select.png" alt="">
+            <div class="cart-row" th:each="c : ${cartItems}">
+                <div class="cart-row-name">
+                    <img th:src="@{${c.imageUrl}}" alt="">
+                    <div class="cart-row-text">
+                        <h2 th:text="${c.name}"></h2>
+                        <p th:text="${c.description}"></p>
+                    </div>
+                </div>
+                <div class="cart-row-col">
+                    <p th:text="${#numbers.formatInteger(c.unitPrice, 0, 'COMMA')} + '원'"></p>
+                </div>
+                <div class="cart-row-col">
+                    <p th:text="${c.quantity}"></p>
+                </div>
+                <div class="cart-row-col">
+                    <p th:text="${#numbers.formatInteger(c.lineTotal, 0, 'COMMA')} + '원'"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -81,11 +76,11 @@
         </div>
         <div id="purchase_down2">
             <ul>
-                <li>12,000원</li>
+                <li th:text="${#numbers.formatInteger(totalAmount, 0, 'COMMA')} + '원'"></li>
                 <li id="img1"><img width="50px" src="/resources/images/minus (2).png" alt=""></li>
                 <li>0원</li>
                 <li id="img2"><img width="50px" src="/resources/images/equal (1).png" alt=""></li>
-                <li id="blue">12,000원</li>
+                <li id="blue" th:text="${#numbers.formatInteger(totalAmount, 0, 'COMMA')} + '원'"></li>
             </ul>
         </div>
     </div>
@@ -93,8 +88,14 @@
         <h2>주문자 정보확인</h2>
     </div>
     <div class="h2_text">
-        <span><p>이름</p><input type="text" placeholder="이름을 입력해주세요."></span>
-        <span><p>전화번호</p><input type="text" placeholder="전화번호를 입력해주세요."></span>
+        <div class="order-field">
+            <p>이름</p><input type="text" id="ordererName" th:value="${user.name}" placeholder="이름을 입력해주세요.">
+            <span id="ordererNameError" class="field-error"></span>
+        </div>
+        <div class="order-field">
+            <p>전화번호</p><input type="text" id="ordererPhone" th:value="${user.phone}" placeholder="전화번호를 입력해주세요.">
+            <span id="ordererPhoneError" class="field-error"></span>
+        </div>
     </div>
     <div class="no">
         <p>*구매하신 CGV 기프트콘은 주문자 정보에 입력된 휴대전화 번호로 MMS로 발송됩니다.
@@ -103,26 +104,179 @@
     <div class="h2_area">
         <h2>결제수단</h2>
     </div>
-    <div class="h2_text">
-        <span><input type="radio" name="purchase"><p>신용카드</p></span>
-        <span><input type="radio" name="purchase"><p>Kakaopay</p></span>
-    </div>
-    <div id="h2-area2">
-        <img src="/resources/images/select.png" alt="">
-        <h2>주문정보/결제 대행 서비스 약관 모두 동의</h2>
-    </div>
-    <div id="h2_text2">
-
-    </div>
+    <div id="payment-method"></div>
+    <div id="agreement"></div>
 
     <div id="main_select">
-        <a href="/store/bag"><button>뒤로</button></a>
-        <a href="/store/payDone"><button>구매하기</button></a>
+        <a th:href="@{'/store/bag'}"><button type="button" id="backButton">뒤로</button></a>
+        <a href="#" id="checkoutLink"><button type="button" id="checkoutButton">구매하기</button></a>
     </div>
 </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
+<div id="validationModalOverlay" class="validation-modal-overlay">
+    <div class="validation-modal">
+        <h2 class="validation-modal-title">주문자 정보를 확인해주세요</h2>
+        <ul id="validationModalMessage" class="validation-modal-message"></ul>
+        <button type="button" id="validationModalOk" class="validation-modal-ok">확인</button>
+    </div>
+</div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<script th:inline="javascript">
+    var cartItemIdsCsv = /*[[${cartItemIdsCsv}]]*/ '';
+    var totalAmount = /*[[${totalAmount}]]*/ 0;
+    var tossClientKey = /*[[${tossClientKey}]]*/ '';
+
+    var tossWidgets = TossPayments(tossClientKey).widgets({customerKey: TossPayments.ANONYMOUS});
+
+    (async function initPaymentWidget() {
+        await tossWidgets.setAmount({currency: 'KRW', value: totalAmount});
+        await Promise.all([
+            tossWidgets.renderPaymentMethods({selector: '#payment-method', variantKey: 'DEFAULT'}),
+            tossWidgets.renderAgreement({selector: '#agreement', variantKey: 'AGREEMENT'})
+        ]);
+    })();
+
+    var ordererNameInput = document.getElementById('ordererName');
+    var ordererPhoneInput = document.getElementById('ordererPhone');
+    var ordererNameError = document.getElementById('ordererNameError');
+    var ordererPhoneError = document.getElementById('ordererPhoneError');
+    var checkoutButton = document.getElementById('checkoutButton');
+    var PHONE_PATTERN = /^01[0-9]-?\d{3,4}-?\d{4}$/;
+
+    function showFieldError(el, msg) {
+        el.textContent = msg;
+        el.classList.add('show');
+    }
+
+    function clearFieldError(el) {
+        el.textContent = '';
+        el.classList.remove('show');
+    }
+
+    var validationModalOverlay = document.getElementById('validationModalOverlay');
+    var validationModalMessage = document.getElementById('validationModalMessage');
+
+    function openValidationModal(messages) {
+        validationModalMessage.innerHTML = '';
+        messages.forEach(function (msg) {
+            var li = document.createElement('li');
+            li.textContent = msg;
+            validationModalMessage.appendChild(li);
+        });
+        validationModalOverlay.classList.add('open');
+    }
+
+    function closeValidationModal() {
+        validationModalOverlay.classList.remove('open');
+    }
+
+    document.getElementById('validationModalOk').addEventListener('click', closeValidationModal);
+    validationModalOverlay.addEventListener('click', function (e) {
+        if (e.target === validationModalOverlay) {
+            closeValidationModal();
+        }
+    });
+
+    function validateOrderInfo() {
+        clearFieldError(ordererNameError);
+        clearFieldError(ordererPhoneError);
+        var errorMessages = [];
+
+        if (!ordererNameInput.value.trim()) {
+            showFieldError(ordererNameError, '이름을 입력해주세요.');
+            errorMessages.push('이름을 입력해주세요.');
+        }
+        var phone = ordererPhoneInput.value.trim();
+        if (!phone) {
+            showFieldError(ordererPhoneError, '전화번호를 입력해주세요.');
+            errorMessages.push('전화번호를 입력해주세요.');
+        } else if (!PHONE_PATTERN.test(phone)) {
+            showFieldError(ordererPhoneError, '올바른 휴대전화 번호 형식이 아닙니다. (예: 010-1234-5678)');
+            errorMessages.push('올바른 휴대전화 번호 형식이 아닙니다. (예: 010-1234-5678)');
+        }
+
+        if (errorMessages.length > 0) {
+            openValidationModal(errorMessages);
+            return false;
+        }
+        return true;
+    }
+
+    function setCheckoutLoading(loading) {
+        checkoutButton.disabled = loading;
+        checkoutButton.textContent = loading ? '결제 준비 중...' : '구매하기';
+    }
+
+    function proceedToPayment() {
+        var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        var headers = {'Content-Type': 'application/json'};
+        headers[csrfHeader] = csrfToken;
+
+        setCheckoutLoading(true);
+
+        fetch('/api/store/checkout/prepare', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                cartItemIds: cartItemIdsCsv.split(',').map(Number)
+            })
+        }).then(function (res) {
+            if (res.status === 401 || res.status === 403) {
+                alert('로그인이 필요합니다.');
+                location.href = '/login?redirectURL=' + encodeURIComponent(location.href);
+                return;
+            }
+            return res.json().then(function (data) {
+                if (!res.ok) {
+                    alert(data.message || '결제 준비에 실패했습니다.');
+                    setCheckoutLoading(false);
+                    return;
+                }
+                // prepare가 끝나면 비동기로 바로 토스 결제 정보 입력 화면으로 넘어간다(별도 페이지 이동/새로고침 없음).
+                tossWidgets.setAmount({currency: 'KRW', value: data.amount}).then(function () {
+                    tossWidgets.requestPayment({
+                        orderId: data.orderId,
+                        orderName: data.orderName,
+                        successUrl: location.origin + '/store/payRedirect',
+                        failUrl: location.href
+                    }).catch(function (err) {
+                        setCheckoutLoading(false);
+                        if (err.code !== 'USER_CANCEL') {
+                            alert(err.message || '결제 요청 중 오류가 발생했습니다.');
+                        }
+                    });
+                });
+            });
+        }).catch(function () {
+            setCheckoutLoading(false);
+            alert('결제 준비 중 오류가 발생했습니다.');
+        });
+    }
+
+    document.getElementById('checkoutLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (checkoutButton.disabled) {
+            return;
+        }
+        if (!validateOrderInfo()) {
+            return;
+        }
+        proceedToPayment();
+    });
+
+    (function showPayErrorIfAny() {
+        var params = new URLSearchParams(location.search);
+        var payError = params.get('payError');
+        if (payError) {
+            alert(payError);
+            params.delete('payError');
+            history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params.toString() : ''));
+        }
+    })();
+</script>
 </body>
 </html>

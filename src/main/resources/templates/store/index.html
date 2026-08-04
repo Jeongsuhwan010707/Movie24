@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
     <title>Movie24</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
     <link rel="stylesheet" th:href="@{/resources/css/store/index.css}">
 </head>
 <body>
@@ -16,6 +19,20 @@
     <div th:replace="fragment/header.html :: header"></div>
     <!-- 네비게이터 영역 -->
     <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
+    <div id="productModalOverlay" class="product-modal-overlay">
+        <div class="product-modal">
+            <button type="button" id="productModalClose" class="product-modal-close" aria-label="닫기">&times;</button>
+            <img id="productModalImg" class="product-modal-img" src="" alt="">
+            <h2 id="productModalName" class="product-modal-name"></h2>
+            <p id="productModalDesc" class="product-modal-desc"></p>
+            <p id="productModalPrice" class="product-modal-price"></p>
+            <div class="product-modal-buttons">
+                <button type="button" id="productModalCancel" class="product-modal-cancel">취소</button>
+                <button type="button" id="productModalAdd" class="product-modal-add">장바구니에 담기</button>
+            </div>
+        </div>
+    </div>
     <main>
     <div id="main_logo">
         <h1>스토어</h1>
@@ -23,11 +40,11 @@
     <div id="main_content">
         <div id="login_li">
             <ul>
-                <li><a href="#">패키지</a></li>
-                <li><a href="#">영화관람권</a></li>
-                <li><a id="li-last" href="#">기프트카드</a></li>
-                <li><a href="#">장바구니</a>
-                <span>0</span></li>
+                <li><a href="#package">패키지</a></li>
+                <li><a href="#movie-ticket">영화관람권</a></li>
+                <li id="li-last"><a href="#gift">기프트카드</a></li>
+                <li id="cartLi"><a th:href="@{/store/bag}">장바구니</a>
+                <span id="cartCountBadge" th:text="${cartCount}">0</span></li>
             </ul>
         </div>
     </div>
@@ -37,26 +54,14 @@
             </div>
             <div class="product">
                 <ul>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/cgv팝콘-removebg-preview.png" alt="">
-                        <p>팝콘 패키지1</p>
-                        <p>10,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/cgv팝콘2-removebg-preview.png" alt="">
-                        <p>팝콘 패키지2</p>
-                        <p>10,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가박스팝콘.png" alt="">
-                        <p>팝콘 패키지3</p>
-                        <p>10,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가박스팝콘2.png" alt="">
-                        <p>팝콘 패키지4</p>
-                        <p>10,000원</p>
-                    </a></li>
+                    <li th:each="item : ${packages}">
+                        <a href="#" class="addToCartLink"
+                           th:attr="data-item-id=${item.id},data-name=${item.name},data-description=${item.description},data-price=${item.price},data-image=@{${item.imageUrl}}">
+                            <img th:src="@{${item.imageUrl}}" alt="">
+                            <p th:text="${item.name}"></p>
+                            <p th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'"></p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -66,26 +71,14 @@
             </div>
             <div class="product">
                 <ul>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가티켓1.png" alt="">
-                        <p>영화관람권 1</p>
-                        <p>20,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가티켓2.png" alt="">
-                        <p>영화관람권 2</p>
-                        <p>30,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가티켓3.png" alt="">
-                        <p>영화관람권 3</p>
-                        <p>10,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가티켓4.png" alt="">
-                        <p>영화관람권 4</p>
-                        <p>15,000원</p>
-                    </a></li>
+                    <li th:each="item : ${tickets}">
+                        <a href="#" class="addToCartLink"
+                           th:attr="data-item-id=${item.id},data-name=${item.name},data-description=${item.description},data-price=${item.price},data-image=@{${item.imageUrl}}">
+                            <img th:src="@{${item.imageUrl}}" alt="">
+                            <p th:text="${item.name}"></p>
+                            <p th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'"></p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -95,31 +88,116 @@
             </div>
             <div class="product">
                 <ul>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가카드1.png" alt="">
-                        <p>기프트카드 1</p>
-                        <p>11,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가카드2.png" alt="">
-                        <p>기프트카드 2</p>
-                        <p>12,000원</p>
-                    </a></li>
-                    <li><a href="/store/bag">
-                        <img src="/resources/images/메가카드3.png" alt="">
-                        <p>기프트카드 3</p>
-                        <p>20,000원</p>
-                    </a></li>
-                    <li><a href="#">
-                    </a></li>
+                    <li th:each="item : ${giftCards}">
+                        <a href="#" class="addToCartLink"
+                           th:attr="data-item-id=${item.id},data-name=${item.name},data-description=${item.description},data-price=${item.price},data-image=@{${item.imageUrl}}">
+                            <img th:src="@{${item.imageUrl}}" alt="">
+                            <p th:text="${item.name}"></p>
+                            <p th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'"></p>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <a id="next" href="/store/bag">장바구니</a>
+        <div id="bottomCartArea">
+            <a id="bottomCartBtn" th:href="@{/store/bag}">장바구니로 이동</a>
+        </div>
+        <div id="bottomCartSpacer"></div>
+        <a id="next" th:href="@{/store/bag}">장바구니</a>
     </main>
     <!-- --------------------푸터---------------------------------- -->
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
+<script th:inline="javascript">
+    function getCsrfToken() {
+        return document.querySelector('meta[name="_csrf"]').content;
+    }
+    function getCsrfHeader() {
+        return document.querySelector('meta[name="_csrf_header"]').content;
+    }
+
+    function refreshCartCount() {
+        fetch('/api/store/cart/count', {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+            .then(function (res) {
+                return res.ok ? res.json() : {count: 0};
+            })
+            .then(function (data) {
+                document.getElementById('cartCountBadge').textContent = data.count;
+            })
+            .catch(function () {});
+    }
+
+    function addToCart(itemId) {
+        var headers = {'Content-Type': 'application/json'};
+        headers[getCsrfHeader()] = getCsrfToken();
+
+        fetch('/api/store/cart', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({storeItemId: itemId, quantity: 1})
+        }).then(function (res) {
+            if (res.status === 401 || res.status === 403) {
+                alert('로그인이 필요합니다.');
+                return;
+            }
+            if (!res.ok) {
+                alert('장바구니 담기에 실패했습니다.');
+                return;
+            }
+            closeProductModal();
+            refreshCartCount();
+        }).catch(function () {
+            alert('장바구니 담기 중 오류가 발생했습니다.');
+        });
+    }
+
+    var productModalOverlay = document.getElementById('productModalOverlay');
+    var productModalImg = document.getElementById('productModalImg');
+    var productModalName = document.getElementById('productModalName');
+    var productModalDesc = document.getElementById('productModalDesc');
+    var productModalPrice = document.getElementById('productModalPrice');
+    var productModalAdd = document.getElementById('productModalAdd');
+    var currentModalItemId = null;
+
+    function openProductModal(link) {
+        currentModalItemId = Number(link.getAttribute('data-item-id'));
+        productModalImg.src = link.getAttribute('data-image');
+        productModalName.textContent = link.getAttribute('data-name');
+        productModalDesc.textContent = link.getAttribute('data-description') || '';
+        productModalPrice.textContent = Number(link.getAttribute('data-price')).toLocaleString('ko-KR') + '원';
+        productModalOverlay.classList.add('open');
+    }
+
+    function closeProductModal() {
+        productModalOverlay.classList.remove('open');
+        currentModalItemId = null;
+    }
+
+    document.querySelectorAll('.addToCartLink').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            openProductModal(link);
+        });
+    });
+
+    document.getElementById('productModalClose').addEventListener('click', closeProductModal);
+    document.getElementById('productModalCancel').addEventListener('click', closeProductModal);
+    productModalOverlay.addEventListener('click', function (e) {
+        if (e.target === productModalOverlay) {
+            closeProductModal();
+        }
+    });
+    productModalAdd.addEventListener('click', function () {
+        if (currentModalItemId === null) {
+            return;
+        }
+        var itemId = currentModalItemId;
+        requireLogin(function () {
+            addToCart(itemId);
+        });
+    });
+</script>
 </body>
 </html>

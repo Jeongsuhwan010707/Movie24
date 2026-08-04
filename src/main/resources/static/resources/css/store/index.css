@@ -28,7 +28,8 @@
     main{
         margin: 0 auto;
         width: 1300px;
-        height: 2050px;
+        height: auto;
+        min-height: 1080px;
         /* background-color: red; */
         position: relative;
     }
@@ -73,6 +74,9 @@
         #li-last{
             padding-right: 650px;
         }
+        #login_li #cartLi{
+            margin-top: 18px;
+        }
         #login_li span{
             /* padding: 5px 5px; */
             border-radius: 100%;
@@ -88,7 +92,7 @@
         }
         #package{
             width: 100%;
-            height: 500px;
+            height: auto;
             margin-top: 100px;
         }
         .title_store{
@@ -101,15 +105,18 @@
         }
         .product{
             width: 100%;
-            height: 400px;
+            height: auto;
+            overflow: hidden;
             text-align: center;
             /* background-color: blue; */
-            padding-top: 30px;
+            padding: 30px 0;
+            box-sizing: border-box;
         }
         .product a:visited, .product a:link{
             color: black;
             font-size: 18px;
             line-height: 1.5;
+            cursor: pointer;
         }
         .product li{
             float: left;
@@ -127,12 +134,12 @@
         }
         #movie-ticket{
             width: 100%;
-            height: 500px;
+            height: auto;
             margin-top: 50px;
         }
         #gift{
             width: 100%;
-            height: 500px;
+            height: auto;
             margin-top: 50px;
         }
 
@@ -150,9 +157,122 @@
             font-family: 'LINESeedKR-Bd';
             font-size: 20px;
             padding-top: 12px;
+            cursor: pointer;
         }
         #next:hover{
             opacity: 0.7;
             transition: opacity 0.4s ease;
+        }
+        #bottomCartArea{
+            width: 100%;
+            text-align: center;
+            padding: 50px 0 60px;
+        }
+        #bottomCartBtn, #bottomCartBtn:link, #bottomCartBtn:visited{
+            display: inline-block;
+            padding: 16px 60px;
+            background-color: #362FD9;
+            color: #fff;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #bottomCartBtn:hover{
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+        #bottomCartSpacer{
+            width: 100%;
+            height: 100px;
+        }
+    /* ----------상품 모달------------------------- */
+        .product-modal-overlay{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-modal-overlay.open{
+            display: flex;
+        }
+        .product-modal{
+            position: relative;
+            width: 360px;
+            box-sizing: border-box;
+            background-color: #fff;
+            border-radius: 14px;
+            padding: 36px 30px 30px;
+            text-align: center;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+        .product-modal-close{
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            border: none;
+            background: none;
+            font-size: 22px;
+            line-height: 1;
+            color: #999;
+            cursor: pointer;
+        }
+        .product-modal-img{
+            width: 140px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .product-modal-name{
+            font-family: 'S-CoreDream-3Light';
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+        }
+        .product-modal-desc{
+            margin-top: 8px;
+            font-size: 14px;
+            color: #888;
+            line-height: 1.5;
+        }
+        .product-modal-price{
+            margin-top: 12px;
+            font-family: 'LINESeedKR-Bd';
+            font-size: 20px;
+            color: #362FD9;
+        }
+        .product-modal-buttons{
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+        }
+        .product-modal-buttons button{
+            flex: 1;
+            height: 48px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        .product-modal-cancel{
+            background-color: #fff;
+            color: #555;
+        }
+        .product-modal-cancel:hover{
+            background-color: #f2f2f2;
+        }
+        .product-modal-add{
+            background-color: #362FD9;
+            color: #fff;
+            border: 1px solid #362FD9;
+        }
+        .product-modal-add:hover{
+            background-color: #2a23ad;
         }
     /* ----------푸터------------------------- */
