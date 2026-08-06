@@ -12,6 +12,8 @@ public class TheaterResponse {
     private String name;
     private String region;
     private String address;
+    private Double latitude;
+    private Double longitude;
 
     public static TheaterResponse from(Theater theater) {
         return TheaterResponse.builder()
@@ -19,6 +21,8 @@ public class TheaterResponse {
                 .name(theater.getName())
                 .region(theater.getRegion())
                 .address(theater.getAddress())
+                .latitude(theater.getLatitude())
+                .longitude(theater.getLongitude())
                 .build();
     }
 }

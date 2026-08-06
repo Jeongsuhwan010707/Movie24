@@ -56,6 +56,7 @@ public class SecurityConfig {
                                 "/resources/**", "/*.ico", "/error",
                                 "/help", "/help/**", "/store",
                                 "/movies", "/movies/**",
+                                "/theaters/nearby",
                                 "/movieReservation/**", "/main/**",
                                 "/oauth2/**", "/login/oauth2/**"
                         ).permitAll()

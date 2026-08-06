@@ -11,7 +11,7 @@
                 <ul class="navMenu">
                     <li><a th:href="@{/movies}">영화</a></li>
                     <li><a th:href="@{/movieReservation/time}">예매</a></li>
-                    <li><a href="">극장</a></li>
+                    <li><a th:href="@{/theaters/nearby}">극장</a></li>
                     <li><a th:href="@{/store}">스토어</a></li>
                     <li><a href="">이벤트</a></li>
                     <li><a href="">혜택</a></li>
@@ -25,7 +25,6 @@
                 <div id="menu_text">
                     <ul class="nav_menu firstMenu">
                         <h3>영화</h3>
-                        <li><a href="">인기차트</a></li>
                         <li><a th:href="@{/movies}">전체영화</a></li>
                     </ul>
                     <ul class="nav_menu">
@@ -35,7 +34,7 @@
                     </ul>
                     <ul class="nav_menu">
                         <h3>극장</h3>
-                        <li><a href="">근처영화관</a></li>
+                        <li><a th:href="@{/theaters/nearby}">근처영화관</a></li>
                         <li><a href="">전체영화관</a></li>
                     </ul>
                     <ul class="nav_menu">

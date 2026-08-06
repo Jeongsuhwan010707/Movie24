@@ -13,4 +13,6 @@ public class TheaterRequest {
     private String region;
 
     private String address;
+    private Double latitude;
+    private Double longitude;
 }

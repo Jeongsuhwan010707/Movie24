@@ -1,0 +1,22 @@
+-- V11에서 theater에 위경도 컬럼을 추가한 뒤, 이미 등록되어 있던(TestDataInit이 아닌 방식으로 만들어진)
+-- 극장 데이터는 좌표가 비어 있었다. 이름 기준으로 실제 위치에 가까운 좌표를 채워 넣는다.
+UPDATE theater SET latitude = 37.4979, longitude = 127.0276 WHERE name = '강남점';
+UPDATE theater SET latitude = 37.5563, longitude = 126.9220 WHERE name = '홍대점';
+UPDATE theater SET latitude = 35.1579, longitude = 129.0594 WHERE name = '서면점';
+UPDATE theater SET latitude = 35.1587, longitude = 129.1604 WHERE name = '해운대점';
+UPDATE theater SET latitude = 36.3512, longitude = 127.3845 WHERE name = '둔산점';
+UPDATE theater SET latitude = 36.3623, longitude = 127.3560 WHERE name = '유성점';
+UPDATE theater SET latitude = 37.4893, longitude = 126.7241 WHERE name = '부평점';
+UPDATE theater SET latitude = 37.3894, longitude = 126.6432 WHERE name = '송도점';
+UPDATE theater SET latitude = 37.2636, longitude = 127.0286 WHERE name = '수원점';
+UPDATE theater SET latitude = 37.6584, longitude = 126.7715 WHERE name = '일산점';
+UPDATE theater SET latitude = 37.5133, longitude = 127.1000 WHERE name = '잠실점';
+UPDATE theater SET latitude = 37.5219, longitude = 126.9245 WHERE name = '여의도점';
+UPDATE theater SET latitude = 35.1532, longitude = 129.1187 WHERE name = '광안리점';
+UPDATE theater SET latitude = 35.2048, longitude = 129.0836 WHERE name = '동래점';
+UPDATE theater SET latitude = 36.3444, longitude = 127.3707 WHERE name = '갈마점';
+UPDATE theater SET latitude = 36.3782, longitude = 127.3143 WHERE name = '노은점';
+UPDATE theater SET latitude = 37.5372, longitude = 126.7378 WHERE name = '계양점';
+UPDATE theater SET latitude = 37.5364, longitude = 126.6428 WHERE name = '청라점';
+UPDATE theater SET latitude = 37.3826, longitude = 127.1189 WHERE name = '분당점';
+UPDATE theater SET latitude = 37.3946, longitude = 126.9569 WHERE name = '평촌점';

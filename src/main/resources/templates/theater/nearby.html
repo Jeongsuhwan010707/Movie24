@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>Movie24 - 근처영화관</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/theater/nearby.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <!-- 네비게이터 영역 -->
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
+
+    <main id="theaterNearbyPage">
+        <div id="main_logo">
+            <h1>근처영화관</h1>
+        </div>
+
+        <div id="theaterSearchBar">
+            <input type="text" id="theaterSearchInput" placeholder="극장 이름, 지역, 주소로 검색해보세요.">
+            <button type="button" id="theaterSearchBtn">검색</button>
+            <button type="button" id="theaterSearchResetBtn">전체보기</button>
+            <button type="button" id="locateMeBtn">내 위치로 이동</button>
+        </div>
+
+        <div id="theaterMapLayout">
+            <aside id="theaterListPanel">
+                <p id="theaterLocationStatus">위치 정보를 확인하는 중...</p>
+                <ul id="theaterList"></ul>
+            </aside>
+            <div id="theaterMapArea">
+                <div id="theaterMap"></div>
+                <div id="theaterMapKeyNotice" th:if="${kakaoMapJsKey == null or #strings.isEmpty(kakaoMapJsKey)}">
+                    지도를 표시하려면 카카오맵 JavaScript 키 설정이 필요합니다.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- --------------------푸터---------------------------------- -->
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
+<script th:if="${kakaoMapJsKey != null and !#strings.isEmpty(kakaoMapJsKey)}"
+        th:src="@{'https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=' + ${kakaoMapJsKey}}"></script>
+<script th:inline="javascript">
+    var THEATER_API_URL = /*[[@{/api/theaters}]]*/ '/api/theaters';
+    var KAKAO_MAP_READY = /*[[${kakaoMapJsKey != null and !#strings.isEmpty(kakaoMapJsKey)}]]*/ false;
+</script>
+<script th:src="@{/resources/js/theaterNearby.js}"></script>
+</body>
+</html>

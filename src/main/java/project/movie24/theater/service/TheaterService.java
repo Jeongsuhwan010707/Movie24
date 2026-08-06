@@ -22,13 +22,15 @@ public class TheaterService {
                 .name(request.getName())
                 .region(request.getRegion())
                 .address(request.getAddress())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .build();
         return theaterRepository.save(theater);
     }
 
     public Theater update(Long theaterId, TheaterRequest request) {
         Theater theater = getOrThrow(theaterId);
-        theater.update(request.getName(), request.getRegion(), request.getAddress());
+        theater.update(request.getName(), request.getRegion(), request.getAddress(), request.getLatitude(), request.getLongitude());
         return theater;
     }
 

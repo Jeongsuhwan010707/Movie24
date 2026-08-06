@@ -1,0 +1,220 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+main#theaterNearbyPage {
+    margin: 0 auto;
+    width: 1300px;
+    height: auto;
+    min-height: 1080px;
+}
+
+#theaterNearbyPage #main_logo {
+    width: 100%;
+    height: 150px;
+    border-bottom: 1px solid #222;
+}
+#theaterNearbyPage #main_logo h1 {
+    font-family: 'S-CoreDream-3Light';
+    font-size: 35px;
+    font-weight: 700;
+    padding-top: 50px;
+}
+
+#theaterSearchBar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 0;
+}
+#theaterSearchBar input {
+    flex: 1;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+#theaterSearchBar input:focus {
+    outline: none;
+    border-color: #362FD9;
+}
+#theaterSearchBar button {
+    height: 44px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #362FD9;
+    color: #fff;
+    font-family: 'LINESeedKR-Bd';
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#theaterSearchBar button:hover {
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+}
+#theaterSearchResetBtn {
+    background-color: #fff !important;
+    color: #362FD9 !important;
+    border: 1px solid #362FD9 !important;
+}
+#locateMeBtn {
+    background-color: #222 !important;
+}
+
+#theaterMapLayout {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 60px;
+}
+
+#theaterListPanel {
+    width: 340px;
+    flex-shrink: 0;
+    height: 640px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e2e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+#theaterLocationStatus {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #666;
+    background-color: #f7f7fb;
+    border-bottom: 1px solid #e2e2e2;
+}
+#theaterList {
+    flex: 1;
+    overflow-y: auto;
+}
+.theater-list-item {
+    position: relative;
+    padding: 16px 18px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.theater-list-item:hover {
+    background-color: #f7f7fb;
+}
+.theater-list-item.active {
+    background-color: #eeecfd;
+    border-left: 3px solid #362FD9;
+}
+.theater-list-name {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 4px;
+}
+.theater-list-address {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.4;
+    padding-right: 60px;
+}
+.theater-list-distance {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-family: 'LINESeedKR-Bd';
+    font-size: 13px;
+    color: #362FD9;
+}
+.theater-list-empty {
+    padding: 40px 16px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+#theaterMapArea {
+    position: relative;
+    flex: 1;
+    height: 640px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #eee;
+}
+#theaterMap {
+    width: 100%;
+    height: 100%;
+}
+#theaterMapKeyNotice {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 40px;
+    color: #666;
+    font-size: 15px;
+    background-color: #f2f2f2;
+}
+
+/* 지도 위 극장 정보 말풍선(CustomOverlay) */
+.theater-overlay {
+    position: relative;
+    min-width: 220px;
+    max-width: 260px;
+    padding: 14px 16px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    font-family: 'Pretendard-Regular', sans-serif;
+}
+.theater-overlay-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    border: none;
+    background: none;
+    font-size: 18px;
+    line-height: 1;
+    color: #999;
+    cursor: pointer;
+}
+.theater-overlay h4 {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 6px;
+    padding-right: 16px;
+}
+.theater-overlay-address {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+.theater-overlay-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.theater-overlay-links a {
+    color: #362FD9;
+    font-size: 13px;
+    font-weight: 700;
+}
+.theater-overlay-links a:hover {
+    text-decoration: underline;
+}
+.theater-overlay-distance {
+    font-size: 13px;
+    color: #666;
+}
