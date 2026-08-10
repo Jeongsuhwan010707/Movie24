@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
     <link rel="stylesheet" th:href="@{/resources/css/theater/nearby.css}">
 </head>
 <body>
@@ -22,6 +23,9 @@
     <div th:replace="fragment/loginModal.html :: loginModal"></div>
 
     <main id="theaterNearbyPage">
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <span class="current">극장</span>
+        </div>
         <div id="main_logo">
             <h1>전체영화관</h1>
         </div>

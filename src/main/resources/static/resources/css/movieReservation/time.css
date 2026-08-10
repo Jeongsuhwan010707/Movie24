@@ -28,23 +28,19 @@
     main{
         margin: 0 auto;
         width: 1300px;
-        /* background-color: red; */
         position: relative;
     }
     #main_select{
         width: 1300px;
         height: 400px;
-        /* background-color: red; */
         margin: 50px auto;
         border-radius: 13px;
         border: 5px solid grey;
-        margin-top: 100px;
     }
         #main_select_left{
             width: 20%;
             height: 100%;
             float: left;
-            /* background-color: blue; */
             text-align: center;
         }
             #main_select_left a:visited, #main_select_left a:link{

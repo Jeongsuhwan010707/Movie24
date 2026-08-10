@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
     <link rel="stylesheet" th:href="@{/resources/css/movieReservation/time.css}">
 </head>
 <body>
@@ -19,6 +20,10 @@
     <div th:replace="fragment/nav.html :: nav"></div>
     <div th:replace="fragment/loginModal.html :: loginModal"></div>
     <main>
+    <div class="breadcrumb">
+        <a th:href="@{/}">홈</a> <span>&gt;</span> <span class="current">예매</span>
+    </div>
+    <h2 class="pageTitle">예매</h2>
     <div id="scheduleContent">
     <th:block th:fragment="content">
     <div id="main_select">

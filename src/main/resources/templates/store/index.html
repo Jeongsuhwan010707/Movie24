@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
     <link rel="stylesheet" th:href="@{/resources/css/store/index.css}">
 </head>
 <body>
@@ -34,6 +35,9 @@
         </div>
     </div>
     <main>
+    <div class="breadcrumb">
+        <a th:href="@{/}">홈</a> <span>&gt;</span> <span class="current">스토어</span>
+    </div>
     <div id="main_logo">
         <h1>스토어</h1>
     </div>

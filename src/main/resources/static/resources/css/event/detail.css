@@ -19,19 +19,6 @@ main {
     padding-bottom: 80px;
 }
 
-.breadcrumb {
-    padding: 20px 0 10px;
-    font-size: 13px;
-    color: #888;
-}
-.breadcrumb a {
-    color: #888;
-}
-.breadcrumb .current {
-    color: #362FD9;
-    font-weight: 600;
-}
-
 .eventHeader {
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;
