@@ -1,0 +1,94 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 700px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+.formError {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    background-color: #fdecec;
+    color: #d8362a;
+    font-size: 14px;
+}
+
+.editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.editForm.narrow {
+    max-width: 420px;
+}
+
+.formRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.formRow label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+.formInput {
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+.formInput.locked {
+    background-color: #f5f5f5;
+    color: #888;
+}
+#searchAddrBtn {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 10px 16px;
+    border: 1px solid #362FD9;
+    border-radius: 6px;
+    background: #fff;
+    color: #362FD9;
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+}
+
+.consentRow {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+.consentRow label {
+    font-weight: 400;
+}
+
+.submitBtn {
+    margin-top: 10px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(to right, #362FD9, #85CDFD);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'LINESeedKR-Bd';
+    cursor: pointer;
+}

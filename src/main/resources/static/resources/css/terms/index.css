@@ -1,0 +1,70 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 900px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+.termsTabs {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    width: fit-content;
+}
+.termsTab {
+    padding: 12px 24px;
+    font-size: 15px;
+    color: #444;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+}
+.termsTab:last-child {
+    border-right: none;
+}
+.termsTab:hover {
+    background-color: #f5f5fb;
+}
+
+.termsSection {
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    margin-bottom: 40px;
+    scroll-margin-top: 20px;
+}
+.termsSection:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.termsSectionTitle {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 20px;
+    color: #21214a;
+    margin-bottom: 20px;
+}
+
+.termsBody p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 20px;
+}
+.termsBody strong {
+    color: #222;
+}

@@ -58,6 +58,7 @@ public class SecurityConfig {
                                 "/movies", "/movies/**",
                                 "/theaters/nearby",
                                 "/events", "/events/**",
+                                "/terms", "/terms/**",
                                 "/movieReservation/**", "/main/**",
                                 "/oauth2/**", "/login/oauth2/**"
                         ).permitAll()

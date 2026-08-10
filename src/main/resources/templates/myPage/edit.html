@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>가입정보 수정 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/form.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">가입정보 수정</span>
+        </div>
+        <h2 class="pageTitle">가입정보 수정</h2>
+
+        <p class="formError" th:if="${param.error != null}">전화번호와 이메일은 반드시 입력해주세요.</p>
+
+        <form class="editForm" th:action="@{/myPage/edit}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="formRow">
+                <label for="loginId">아이디</label>
+                <input class="formInput locked" type="text" id="loginId" th:value="${user.loginId}" readonly>
+            </div>
+            <div class="formRow">
+                <label for="name">이름</label>
+                <input class="formInput locked" type="text" id="name" th:value="${user.name}" readonly>
+            </div>
+            <div class="formRow">
+                <label for="address">주소</label>
+                <input class="formInput" type="text" name="address" id="address" placeholder="주소 입력"
+                       th:value="${user.address}" readonly>
+                <button type="button" id="searchAddrBtn" onclick="searchAddress();">주소검색</button>
+            </div>
+            <div class="formRow">
+                <label for="phone">전화번호</label>
+                <input class="formInput" type="tel" name="phone" id="phone" placeholder="010-XXXX-XXXX"
+                       th:value="${user.phone}">
+            </div>
+            <div class="formRow">
+                <label for="email">이메일</label>
+                <input class="formInput" type="email" name="email" id="email" placeholder="이메일을 입력해주세요."
+                       th:value="${user.email}">
+            </div>
+            <div class="formRow consentRow">
+                <input type="checkbox" id="emailYn" name="emailYn" value="Y"
+                       th:checked="${user.emailStatus != null and user.emailStatus.name() == 'ALLOW'}">
+                <label for="emailYn">이메일 수신동의 (선택)</label>
+            </div>
+            <button type="submit" class="submitBtn">저장하기</button>
+        </form>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function searchAddress() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                document.getElementById('address').value = data.address;
+            }
+        }).open();
+    }
+</script>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

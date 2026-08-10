@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>닉네임 변경 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/form.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">닉네임 변경</span>
+        </div>
+        <h2 class="pageTitle">닉네임 변경</h2>
+
+        <p class="formError" th:if="${param.error != null}">닉네임을 입력해주세요.</p>
+
+        <form class="editForm narrow" th:action="@{/myPage/nickname}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="formRow">
+                <label for="nickName">닉네임</label>
+                <input class="formInput" type="text" name="nickName" id="nickName" placeholder="ex) cuty11"
+                       th:value="${user.nickName}">
+            </div>
+            <button type="submit" class="submitBtn">변경하기</button>
+        </form>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

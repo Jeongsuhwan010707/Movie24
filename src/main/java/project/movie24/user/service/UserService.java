@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.user.domain.EmailStatus;
 import project.movie24.user.domain.Provider;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
@@ -52,5 +53,24 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         userRepository.save(user.toBuilder().password(passwordEncoder.encode(newPassword)).build());
+    }
+
+    public User updateProfile(Long userId, String address, String phone, String email, EmailStatus emailStatus) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        User updated = user.toBuilder()
+                .address(address)
+                .phone(phone)
+                .email(email)
+                .emailStatus(emailStatus)
+                .build();
+        return userRepository.save(updated);
+    }
+
+    public User updateNickName(Long userId, String nickName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        User updated = user.toBuilder().nickName(nickName).build();
+        return userRepository.save(updated);
     }
 }
