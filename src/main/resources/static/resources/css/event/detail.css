@@ -1,0 +1,118 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 900px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+.breadcrumb {
+    padding: 20px 0 10px;
+    font-size: 13px;
+    color: #888;
+}
+.breadcrumb a {
+    color: #888;
+}
+.breadcrumb .current {
+    color: #362FD9;
+    font-weight: 600;
+}
+
+.eventHeader {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.statusBadge.ongoing {
+    background: linear-gradient(to right, #362FD9, #85CDFD);
+}
+.statusBadge.ended {
+    background: #888;
+}
+
+.eventTitle {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 26px;
+}
+
+.eventPeriod {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+}
+
+.eventThumb {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #eee;
+}
+.eventThumb img {
+    width: 100%;
+    display: block;
+}
+
+.eventContent {
+    margin-top: 30px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+}
+
+.winnerBox {
+    margin-top: 40px;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: #f5f5fb;
+    border: 1px solid #e0e0f0;
+}
+.winnerBox h3 {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 18px;
+    color: #21214a;
+    margin-bottom: 12px;
+}
+.winnerBox p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #444;
+    white-space: pre-line;
+}
+
+.listBtn {
+    display: block;
+    width: 160px;
+    margin: 50px auto 0;
+    padding: 14px 0;
+    text-align: center;
+    border-radius: 6px;
+    background: #21214a;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+}

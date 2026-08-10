@@ -57,6 +57,7 @@ public class SecurityConfig {
                                 "/help", "/help/**", "/store",
                                 "/movies", "/movies/**",
                                 "/theaters/nearby",
+                                "/events", "/events/**",
                                 "/movieReservation/**", "/main/**",
                                 "/oauth2/**", "/login/oauth2/**"
                         ).permitAll()
@@ -67,9 +68,10 @@ public class SecurityConfig {
                                 "/api/showtimes", "/api/showtimes/**",
                                 "/api/seats", "/api/seats/**",
                                 "/api/reservations/showtimes/**",
-                                "/api/store/items", "/api/store/items/**"
+                                "/api/store/items", "/api/store/items/**",
+                                "/api/events", "/api/events/**"
                         ).permitAll()
-                        // 영화/상영관/상영시간/좌석/스토어 상품 데이터 관리는 아직 전용 관리자 화면이 없어 API를 직접 호출해 쓰지만,
+                        // 영화/상영관/상영시간/좌석/스토어 상품/이벤트 데이터 관리는 아직 전용 관리자 화면이 없어 API를 직접 호출해 쓰지만,
                         // 조회(GET) 외 등록/수정/삭제는 ADMIN 등급만 가능하도록 잠가둔다.
                         .requestMatchers(
                                 "/api/movies", "/api/movies/**",
@@ -77,7 +79,8 @@ public class SecurityConfig {
                                 "/api/screens", "/api/screens/**",
                                 "/api/showtimes", "/api/showtimes/**",
                                 "/api/seats", "/api/seats/**",
-                                "/api/store/items", "/api/store/items/**"
+                                "/api/store/items", "/api/store/items/**",
+                                "/api/events", "/api/events/**"
                         ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

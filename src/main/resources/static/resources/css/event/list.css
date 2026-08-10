@@ -1,0 +1,171 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 1300px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 60px;
+}
+
+.breadcrumb {
+    padding: 20px 0 10px;
+    font-size: 13px;
+    color: #888;
+}
+.breadcrumb a {
+    color: #888;
+}
+.breadcrumb .current {
+    color: #362FD9;
+    font-weight: 600;
+}
+
+.pageTitle {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 30px;
+    padding-bottom: 20px;
+}
+
+.filterBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 25px;
+}
+
+.statusTabs {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.statusTabs .tab {
+    padding: 12px 24px;
+    font-size: 15px;
+    color: #444;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+}
+.statusTabs .tab:last-child {
+    border-right: none;
+}
+.statusTabs .tab.active {
+    background-color: #21214a;
+    color: #fff;
+    font-weight: 600;
+}
+
+.emptyMessage {
+    padding: 80px 0;
+    text-align: center;
+    color: #888;
+    font-size: 17px;
+}
+
+.eventGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px 20px;
+}
+
+.eventCard {
+    display: block;
+    color: inherit;
+}
+.eventCard:hover .eventTitle {
+    text-decoration: underline;
+}
+
+.thumbBox {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #eee;
+}
+.thumbBox .thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.statusBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+}
+.statusBadge.ongoing {
+    background: linear-gradient(to right, #362FD9, #85CDFD);
+}
+.statusBadge.ended {
+    background: #888;
+}
+.winnerBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #21214a;
+    background: #ffd60a;
+}
+
+.eventTitle {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.eventPeriod {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 50px;
+}
+.pagination a {
+    color: #444;
+    font-size: 15px;
+}
+.pageNum {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.pageNum.current {
+    background-color: #362FD9;
+    color: #fff !important;
+    font-weight: 700;
+}

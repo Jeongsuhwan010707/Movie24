@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title th:text="${event.title + ' - Movie24'}">Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/event/detail.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/events}">이벤트</a> <span>&gt;</span>
+            <span class="current" th:text="${event.title}">이벤트 제목</span>
+        </div>
+
+        <div class="eventHeader">
+            <span class="statusBadge" th:classappend="${event.status.name() == 'ONGOING'} ? 'ongoing' : 'ended'"
+                  th:text="${event.status.name() == 'ONGOING'} ? '진행중' : '종료'">진행중</span>
+            <h2 class="eventTitle" th:text="${event.title}">이벤트 제목</h2>
+            <p class="eventPeriod" th:if="${event.startDate != null and event.endDate != null}"
+               th:text="'이벤트 기간 : ' + ${#temporals.format(event.startDate, 'yyyy.MM.dd')} + ' ~ ' + ${#temporals.format(event.endDate, 'yyyy.MM.dd')}">기간</p>
+        </div>
+
+        <div class="eventThumb">
+            <img th:src="${event.thumbnailUrl}" th:alt="${event.title}">
+        </div>
+
+        <div class="eventContent">
+            <p th:text="${event.content}">이벤트 상세 내용</p>
+        </div>
+
+        <div class="winnerBox" th:if="${event.winnerAnnounced}">
+            <h3>당첨자 발표</h3>
+            <p th:text="${event.winnerContent}">당첨자 안내 내용</p>
+        </div>
+
+        <a class="listBtn" th:href="@{/events}">목록으로</a>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>
