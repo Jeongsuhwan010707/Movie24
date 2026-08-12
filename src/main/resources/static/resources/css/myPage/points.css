@@ -1,0 +1,115 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 700px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+.pointSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+}
+.pointSummary .label {
+    color: #888;
+    font-size: 14px;
+}
+.pointSummary .balance {
+    margin-top: 8px;
+    font-family: 'LINESeedKR-Bd';
+    font-size: 32px;
+    color: #362FD9;
+}
+
+.emptyState {
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 70px 0;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.pointHistoryList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.pointHistoryList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid #eee;
+}
+.pointHistoryList li:last-child {
+    border-bottom: none;
+}
+.historyLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.historyType {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.historyType.earn {
+    background-color: #eef0ff;
+    color: #362FD9;
+}
+.historyType.use {
+    background-color: #fff2e5;
+    color: #d97a1f;
+}
+.historyType.cancel {
+    background-color: #f2f2f2;
+    color: #888;
+}
+.historyDate {
+    color: #999;
+    font-size: 13px;
+}
+.historyRight {
+    text-align: right;
+}
+.historyAmount {
+    font-family: 'LINESeedKR-Bd';
+    font-size: 17px;
+}
+.historyAmount.positive {
+    color: #362FD9;
+}
+.historyAmount.negative {
+    color: #d8362a;
+}
+.historyBalance {
+    margin-top: 2px;
+    color: #aaa;
+    font-size: 12px;
+}

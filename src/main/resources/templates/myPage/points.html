@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>포인트 적립내역 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/points.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">포인트 적립내역</span>
+        </div>
+        <h2 class="pageTitle">포인트 적립내역</h2>
+
+        <div class="pointSummary">
+            <div>
+                <p class="label">현재 보유 포인트</p>
+                <p class="balance" th:text="${#numbers.formatInteger(user.point, 0, 'COMMA')} + 'P'">0P</p>
+            </div>
+        </div>
+
+        <p class="emptyState" th:if="${#lists.isEmpty(pointHistory)}">포인트 적립/사용 내역이 없습니다.</p>
+        <ul class="pointHistoryList" th:unless="${#lists.isEmpty(pointHistory)}">
+            <li th:each="h : ${pointHistory}">
+                <div class="historyLeft">
+                    <span th:switch="${h.type.name()}">
+                        <span th:case="'EARN'" class="historyType earn">적립</span>
+                        <span th:case="'USE'" class="historyType use">사용</span>
+                        <span th:case="'CANCEL_EARN'" class="historyType cancel">적립 취소</span>
+                        <span th:case="'CANCEL_USE'" class="historyType cancel">사용 취소(환급)</span>
+                    </span>
+                    <span class="historyDate" th:text="${#temporals.format(h.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.12 12:00</span>
+                </div>
+                <div class="historyRight">
+                    <p th:class="${h.changeAmount > 0} ? 'historyAmount positive' : 'historyAmount negative'"
+                       th:text="${(h.changeAmount > 0 ? '+' : '') + #numbers.formatInteger(h.changeAmount, 0, 'COMMA')} + 'P'">+0P</p>
+                    <p class="historyBalance" th:text="'잔액 ' + ${#numbers.formatInteger(h.balanceAfter, 0, 'COMMA')} + 'P'">잔액 0P</p>
+                </div>
+            </li>
+        </ul>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

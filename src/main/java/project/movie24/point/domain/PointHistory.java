@@ -1,4 +1,4 @@
-package project.movie24.reservation.domain;
+package project.movie24.point.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.movie24.showtime.domain.Showtime;
 import project.movie24.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -23,37 +22,23 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class PointHistory {
 
     @Id @GeneratedValue
-    @Column(name = "reservation_id")
+    @Column(name = "point_history_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "showtime_id")
-    private Showtime showtime;
-
-    private Integer totalPrice;
+    // Reservation 엔티티와 직접 연관관계를 맺지 않고 id만 저장해, point 패키지가 reservation에 의존하지 않게 한다.
+    private Long reservationId;
 
     @Enumerated(EnumType.STRING)
-    private ReservationStatus status;
+    private PointHistoryType type;
 
-    private LocalDateTime reservedAt;
-
-    @Builder.Default
-    private int earnedPoint = 0;
-
-    @Builder.Default
-    private int usedPoint = 0;
-
-    @Builder.Default
-    private int gradeDiscountAmount = 0;
-
-    public void cancel() {
-        this.status = ReservationStatus.CANCELLED;
-    }
+    private Integer changeAmount;
+    private Integer balanceAfter;
+    private LocalDateTime createdAt;
 }

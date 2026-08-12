@@ -36,23 +36,50 @@
             </ul>
         </div>
         <div class="selectsale">
-            <p>Movie24 포인트/쿠폰</p><img src="/resources/images/down-arrow.png" alt="">
+            <p>Movie24 포인트</p><img src="/resources/images/down-arrow.png" alt="">
         </div>
         <div class="selectsaleContent">
             <ul class="saleOptionList">
-                <li><label><input type="radio" name="pointSale" checked>사용 안함</label><span>0원</span></li>
-                <li><label><input type="radio" name="pointSale">보유 포인트 전액 사용</label><span>-2,500P</span></li>
-                <li><label><input type="radio" name="pointSale">Movie24 5,000원 할인쿠폰</label><span>-5,000원</span></li>
+                <li>
+                    <label>보유 포인트 <span id="pointBalanceText" th:text="${#numbers.formatInteger(pointBalance, 0, 'COMMA')} + 'P'">0P</span></label>
+                    <div class="pointInputGroup">
+                        <div class="pointInputWrap">
+                            <input type="number" id="usePointInput" class="pointInput" min="0" step="1" value="0">
+                            <span class="pointInputSuffix">P</span>
+                        </div>
+                        <button type="button" id="useAllPointBtn" class="useAllPointBtn">전액사용</button>
+                    </div>
+                </li>
+                <li><span>쿠폰: 준비중인 기능입니다.</span></li>
             </ul>
         </div>
         <div class="selectsale">
-            <p>Vip 할인</p><img src="/resources/images/down-arrow.png" alt="">
+            <p>회원 등급</p><img src="/resources/images/down-arrow.png" alt="">
         </div>
         <div class="selectsaleContent">
             <ul class="saleOptionList">
-                <li><label><input type="radio" name="vipSale" checked>사용 안함</label><span>0원</span></li>
-                <li><label><input type="radio" name="vipSale">VIP 골드 할인</label><span>-3,000원</span></li>
-                <li><label><input type="radio" name="vipSale">VIP 블랙 할인</label><span>-5,000원</span></li>
+                <li th:if="${grade != null and gradeDiscountRate > 0 and gradeDiscountEligible}">
+                    <label>
+                        <input type="checkbox" id="useGradeDiscountInput">
+                        <span th:switch="${grade.name()}">
+                            <span th:case="'VIP'">VIP 등급 고객님, Movie24를 가장 특별하게 즐기고 계시네요. 이번 결제에 <strong>20% 할인</strong>을 적용해보세요.</span>
+                            <span th:case="'GOLD'">GOLD 등급 고객님, 남다른 취향에 감사드려요. 이번 결제에 <strong>10% 할인</strong>을 적용해보세요.</span>
+                            <span th:case="'SILVER'">SILVER 등급 고객님, 함께해주셔서 감사합니다. 이번 결제에 <strong>5% 할인</strong>을 적용해보세요.</span>
+                        </span>
+                    </label>
+                    <span id="gradeDiscountAmountText">-0원</span>
+                </li>
+                <li th:if="${grade != null and gradeDiscountRate > 0 and !gradeDiscountEligible}">
+                    <span th:switch="${grade.name()}">
+                        <span th:case="'VIP'">이번 달 VIP 할인 혜택을 이미 사용하셨어요. 다음 달에 다시 만나요!</span>
+                        <span th:case="'GOLD'">이번 달 GOLD 할인 혜택을 이미 사용하셨어요. 다음 달에 다시 만나요!</span>
+                        <span th:case="'SILVER'">이번 달 SILVER 할인 혜택을 이미 사용하셨어요. 다음 달에 다시 만나요!</span>
+                    </span>
+                </li>
+                <li th:if="${grade != null and gradeDiscountRate == 0}">
+                    <span>예매하고 구매할수록 등급이 올라가요. 지금부터 시작해서 실버 등급에 도전해보세요!</span>
+                </li>
+                <li th:if="${grade == null}"><span>로그인 후 등급 혜택을 확인할 수 있습니다.</span></li>
             </ul>
         </div>
         <div class="paySectionDivider"></div>
@@ -90,10 +117,6 @@
                 <h3>0원</h3>
             </div>
         </div>
-        <div class="price4 price-new price4-first">
-            <p class="price4-1 price4-1-new">VIP 할인</p>
-            <p class="price4-2 price4-2-new">0원</p>
-        </div>
         <div class="price4 price_4">
             <div class="price4-1">
                 최종결제금액
@@ -119,7 +142,12 @@
     var showtimeId = /*[[${showtime.id}]]*/ 0;
     var seatIdsCsv = /*[[${seatIdsCsv}]]*/ '';
     var totalPrice = /*[[${totalPrice}]]*/ 0;
+    var pointBalance = /*[[${pointBalance}]]*/ 0;
+    var gradeDiscountRate = /*[[${gradeDiscountRate}]]*/ 0;
     var tossClientKey = /*[[${tossClientKey}]]*/ '';
+    // 서버(PaymentService)의 MIN_PAYABLE_AMOUNT와 맞춰, 캐시 결제금액이 최소 100원은 남도록 포인트 사용 한도를 계산한다.
+    var MIN_PAYABLE_AMOUNT = 100;
+    var maxUsablePoint = 0;
 
     var tossWidgets = TossPayments(tossClientKey).widgets({customerKey: TossPayments.ANONYMOUS});
 
@@ -135,6 +163,54 @@
         requireLogin(proceedToPayment);
     }
 
+    var usePointInput = document.getElementById('usePointInput');
+    var useGradeDiscountInput = document.getElementById('useGradeDiscountInput');
+    var gradeDiscountAmountText = document.getElementById('gradeDiscountAmountText');
+
+    function currentGradeDiscountAmount() {
+        if (useGradeDiscountInput && useGradeDiscountInput.checked) {
+            return Math.floor(totalPrice * gradeDiscountRate / 100);
+        }
+        return 0;
+    }
+
+    function currentUsePoint() {
+        var raw = parseInt(usePointInput.value, 10);
+        if (isNaN(raw) || raw < 0) {
+            raw = 0;
+        }
+        return Math.min(raw, maxUsablePoint);
+    }
+
+    function updatePriceDisplay() {
+        var gradeDiscountAmount = currentGradeDiscountAmount();
+        var amountAfterDiscount = totalPrice - gradeDiscountAmount;
+        maxUsablePoint = Math.max(0, Math.min(pointBalance, amountAfterDiscount - MIN_PAYABLE_AMOUNT));
+        usePointInput.max = maxUsablePoint;
+
+        var usePoint = currentUsePoint();
+        usePointInput.value = usePoint;
+
+        var totalDiscount = gradeDiscountAmount + usePoint;
+        var finalPrice = totalPrice - totalDiscount;
+        document.querySelector('#disCount').nextElementSibling.textContent = totalDiscount.toLocaleString('ko-KR') + '원';
+        document.getElementById('price-number1').textContent = finalPrice.toLocaleString('ko-KR');
+        if (gradeDiscountAmountText) {
+            gradeDiscountAmountText.textContent = '-' + gradeDiscountAmount.toLocaleString('ko-KR') + '원';
+        }
+    }
+
+    usePointInput.addEventListener('input', updatePriceDisplay);
+    document.getElementById('useAllPointBtn').addEventListener('click', function () {
+        usePointInput.value = maxUsablePoint;
+        updatePriceDisplay();
+    });
+    if (useGradeDiscountInput) {
+        useGradeDiscountInput.addEventListener('change', updatePriceDisplay);
+    }
+
+    updatePriceDisplay();
+
     function proceedToPayment() {
         var csrfToken = document.querySelector('meta[name="_csrf"]').content;
         var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
@@ -146,7 +222,9 @@
             headers: headers,
             body: JSON.stringify({
                 showtimeId: showtimeId,
-                seatIds: seatIdsCsv.split(',').map(Number)
+                seatIds: seatIdsCsv.split(',').map(Number),
+                usePoint: currentUsePoint(),
+                useGradeDiscount: !!(useGradeDiscountInput && useGradeDiscountInput.checked)
             })
         }).then(function (res) {
             if (res.status === 401 || res.status === 403) {

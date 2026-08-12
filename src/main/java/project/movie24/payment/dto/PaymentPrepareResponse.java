@@ -10,4 +10,7 @@ public class PaymentPrepareResponse {
     private String orderId;
     private String orderName;
     private int amount;
+    private int totalPrice;
+    private int usedPoint;
+    private int gradeDiscountAmount;
 }

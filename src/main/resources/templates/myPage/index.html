@@ -24,6 +24,8 @@
             <div class="profile-info">
                 <span class="grade-chip" th:switch="${user.grade.name()}">
                     <span th:case="'VIP'">VIP</span>
+                    <span th:case="'GOLD'">GOLD</span>
+                    <span th:case="'SILVER'">SILVER</span>
                     <span th:case="'ADMIN'">관리자</span>
                     <span th:case="*">일반회원</span>
                 </span>
@@ -41,12 +43,20 @@
             <div class="stat-card">
                 <span class="stat-icon stat-icon-point">P</span>
                 <h3>My Point</h3>
-                <p>준비중인 기능입니다.</p>
+                <p th:text="${#numbers.formatInteger(user.point, 0, 'COMMA')} + 'P'">0P</p>
             </div>
             <div class="stat-card">
-                <span class="stat-icon stat-icon-vip">VIP</span>
-                <h3>Vip Point</h3>
-                <p>준비중인 기능입니다.</p>
+                <span class="stat-icon stat-icon-vip" th:switch="${user.grade.name()}">
+                    <span th:case="'VIP'">VIP</span>
+                    <span th:case="'GOLD'">GOLD</span>
+                    <span th:case="'SILVER'">SILVER</span>
+                    <span th:case="'ADMIN'">관리자</span>
+                    <span th:case="*">일반</span>
+                </span>
+                <h3>회원 등급</h3>
+                <p th:if="${nextGradeThreshold == null}">최고 등급입니다.</p>
+                <p th:unless="${nextGradeThreshold == null}"
+                   th:text="'다음 등급까지 ' + ${#numbers.formatInteger(nextGradeThreshold - recentSpend, 0, 'COMMA')} + '원'">다음 등급까지</p>
             </div>
         </section>
 
@@ -61,9 +71,9 @@
                     </ul>
                     <h3>나의 포인트 관리</h3>
                     <ul>
-                        <li><a href="#" class="disabled">포인트 적립내역 (준비중)</a></li>
+                        <li><a th:href="@{/myPage/points}">포인트 적립내역</a></li>
                         <li><a href="#" class="disabled">포인트 받으러가기 (준비중)</a></li>
-                        <li><a href="#" class="disabled">포인트 사용하기 (준비중)</a></li>
+                        <li><a th:href="@{/movieReservation/time}">포인트 사용하기</a></li>
                     </ul>
 
                     <h3>VIP 등급</h3>

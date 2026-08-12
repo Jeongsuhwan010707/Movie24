@@ -1,10 +1,13 @@
 package project.movie24.moviereservation.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +25,15 @@ import project.movie24.screen.domain.Screen;
 import project.movie24.screen.service.ScreenService;
 import project.movie24.seat.domain.Seat;
 import project.movie24.seat.service.SeatService;
+import project.movie24.security.SessionAuthenticator;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
 import project.movie24.theater.domain.Theater;
 import project.movie24.theater.service.TheaterService;
+import project.movie24.user.domain.User;
 import project.movie24.user.domain.UserPrincipal;
+import project.movie24.user.repository.UserRepository;
+import project.movie24.user.service.UserService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,7 +57,10 @@ public class MovieReservationController {
     private final ShowtimeService showtimeService;
     private final SeatService seatService;
     private final ReservationService reservationService;
+    private final UserService userService;
     private final PaymentService paymentService;
+    private final UserRepository userRepository;
+    private final SessionAuthenticator sessionAuthenticator;
 
     @Value("${toss.client-key}")
     private String tossClientKey;
@@ -261,6 +271,7 @@ public class MovieReservationController {
     public String pay(@RequestParam Long showtimeId, @RequestParam List<Long> seatIds,
                        @RequestParam(defaultValue = "0") int adultCount,
                        @RequestParam(defaultValue = "0") int teenCount,
+                       @AuthenticationPrincipal UserPrincipal principal,
                        Model model) {
         Showtime showtime = showtimeService.findOne(showtimeId);
         List<Seat> seats = seatService.findAllByIds(seatIds).stream()
@@ -277,6 +288,13 @@ public class MovieReservationController {
         model.addAttribute("teenCount", teenCount);
         model.addAttribute("ticketSummary", buildTicketSummary(adultCount, teenCount, seats.size()));
         model.addAttribute("tossClientKey", tossClientKey);
+        // /movieReservation/**는 permitAll이라 비로그인 상태로도 접근 가능 - principal이 없으면 포인트 0/혜택 없음으로 취급한다.
+        model.addAttribute("pointBalance", principal != null ? principal.getUser().getPoint() : 0);
+        model.addAttribute("grade", principal != null ? principal.getUser().getGrade() : null);
+        int gradeDiscountRate = principal != null ? userService.discountRateFor(principal.getUser().getGrade()) : 0;
+        model.addAttribute("gradeDiscountRate", gradeDiscountRate);
+        model.addAttribute("gradeDiscountEligible", principal != null && gradeDiscountRate > 0
+                && !reservationService.hasUsedGradeDiscountThisMonth(principal.getUser().getId()));
         return "movieReservation/pay";
     }
 
@@ -285,6 +303,8 @@ public class MovieReservationController {
                                @RequestParam String orderId,
                                @AuthenticationPrincipal UserPrincipal principal,
                                HttpSession session,
+                               HttpServletRequest request,
+                               HttpServletResponse response,
                                RedirectAttributes redirectAttributes) {
         PendingPayment pending = paymentService.peekPending(session, orderId);
         try {
@@ -292,6 +312,9 @@ public class MovieReservationController {
                 throw new IllegalStateException("로그인이 만료되었습니다. 다시 로그인 후 시도해주세요.");
             }
             Reservation reservation = paymentService.confirmAndCreateReservation(session, principal.getUser().getId(), paymentKey, orderId);
+            // 결제 과정에서 포인트/등급이 바뀌어도 세션에 저장된 principal은 결제 전 스냅샷이라
+            // 바로 반영되지 않는다. 최신 User로 세션 인증 정보를 다시 심어준다.
+            reAuthenticate(principal.getUser().getId(), request, response);
             return "redirect:/movieReservation/payDone?reservationId=" + reservation.getId();
         } catch (RuntimeException e) {
             redirectAttributes.addAttribute("payError", e.getMessage());
@@ -302,6 +325,15 @@ public class MovieReservationController {
             redirectAttributes.addAttribute("seatIds", pending.getSeatIds());
             return "redirect:/movieReservation/pay";
         }
+    }
+
+    private void reAuthenticate(Long userId, HttpServletRequest request, HttpServletResponse response) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        UserPrincipal newPrincipal = new UserPrincipal(user);
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(newPrincipal, null, newPrincipal.getAuthorities());
+        sessionAuthenticator.authenticate(authentication, request, response);
     }
 
     private String buildTicketSummary(int adultCount, int teenCount, int seatCount) {

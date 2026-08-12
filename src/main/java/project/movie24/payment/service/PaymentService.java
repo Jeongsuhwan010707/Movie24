@@ -14,6 +14,9 @@ import project.movie24.seat.domain.Seat;
 import project.movie24.seat.service.SeatService;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
+import project.movie24.user.domain.User;
+import project.movie24.user.repository.UserRepository;
+import project.movie24.user.service.UserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,26 +26,53 @@ import java.util.UUID;
 public class PaymentService {
 
     private static final String SESSION_KEY = "PENDING_PAYMENT";
+    // 포인트로 전액을 대체하면 Toss 위젯의 0원 결제라는 별도 케이스를 다뤄야 하므로,
+    // 캐시로 결제할 최소 금액을 남겨두도록 포인트 사용 한도를 제한한다.
+    private static final int MIN_PAYABLE_AMOUNT = 100;
 
     private final ShowtimeService showtimeService;
     private final SeatService seatService;
     private final ReservationService reservationService;
     private final TossPaymentClient tossPaymentClient;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
-    public PaymentPrepareResponse prepare(HttpSession session, PaymentPrepareRequest request) {
+    public PaymentPrepareResponse prepare(HttpSession session, Long userId, PaymentPrepareRequest request) {
         Showtime showtime = showtimeService.findOne(request.getShowtimeId());
         List<Seat> seats = seatService.findAllByIdsOrThrow(request.getSeatIds());
+        int totalPrice = showtime.priceFor(seats.size());
 
-        int amount = showtime.priceFor(seats.size());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        int discountRate = userService.discountRateFor(user.getGrade());
+        boolean gradeDiscountEligible = discountRate > 0 && !reservationService.hasUsedGradeDiscountThisMonth(userId);
+        if (request.isUseGradeDiscount() && !gradeDiscountEligible) {
+            throw new IllegalStateException("등급 할인을 사용할 수 없습니다.");
+        }
+        int gradeDiscountAmount = (request.isUseGradeDiscount() && gradeDiscountEligible) ? totalPrice * discountRate / 100 : 0;
+        int amountAfterDiscount = totalPrice - gradeDiscountAmount;
+
+        int maxUsablePoint = Math.max(0, Math.min(user.getPoint(), amountAfterDiscount - MIN_PAYABLE_AMOUNT));
+        if (request.getUsePoint() > maxUsablePoint) {
+            throw new IllegalStateException("사용 가능한 포인트를 초과했습니다.");
+        }
+        int usedPoint = request.getUsePoint();
+        int amount = amountAfterDiscount - usedPoint;
+
         String orderId = "movie24-" + UUID.randomUUID();
 
-        session.setAttribute(SESSION_KEY, new PendingPayment(orderId, request.getShowtimeId(), request.getSeatIds(), amount));
+        session.setAttribute(SESSION_KEY, new PendingPayment(orderId, request.getShowtimeId(), request.getSeatIds(),
+                amount, totalPrice, usedPoint, gradeDiscountAmount));
 
         return PaymentPrepareResponse.builder()
                 .orderId(orderId)
                 .orderName(buildOrderName(showtime, seats.size()))
                 .amount(amount)
+                .totalPrice(totalPrice)
+                .usedPoint(usedPoint)
+                .gradeDiscountAmount(gradeDiscountAmount)
                 .build();
     }
 
@@ -63,7 +93,8 @@ public class PaymentService {
         tossPaymentClient.confirm(paymentKey, orderId, pending.getAmount());
 
         try {
-            Reservation reservation = reservationService.reserve(userId, pending.getShowtimeId(), pending.getSeatIds());
+            Reservation reservation = reservationService.reserve(userId, pending.getShowtimeId(), pending.getSeatIds(),
+                    pending.getUsedPoint(), pending.getGradeDiscountAmount());
             session.removeAttribute(SESSION_KEY);
             return reservation;
         } catch (RuntimeException e) {

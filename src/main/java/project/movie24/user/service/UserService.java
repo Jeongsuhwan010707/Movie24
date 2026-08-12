@@ -5,17 +5,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.movie24.user.domain.EmailStatus;
+import project.movie24.user.domain.Grade;
 import project.movie24.user.domain.Provider;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+
+    // 최근 1년 누적 결제금액 기준 VIP 등급 승급 임계값. 강등은 하지 않는다.
+    private static final int SILVER_THRESHOLD = 200_000;
+    private static final int GOLD_THRESHOLD = 500_000;
+    private static final int VIP_THRESHOLD = 1_000_000;
+
+    // 등급별 월 1회 결제 할인율(%). 결제 총액에 곱해 원 단위로 내림한다.
+    private static final Map<Grade, Integer> DISCOUNT_RATE_BY_GRADE = Map.of(
+            Grade.NORMAL, 0, Grade.SILVER, 5, Grade.GOLD, 10, Grade.VIP, 20);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -72,5 +83,56 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         User updated = user.toBuilder().nickName(nickName).build();
         return userRepository.save(updated);
+    }
+
+    /**
+     * 최근 1년 누적 결제금액을 바탕으로 등급을 재계산한다. ADMIN은 대상에서 제외하고,
+     * 이미 산정된 등급보다 낮은 등급으로는 절대 강등하지 않는다(승급만 수행).
+     */
+    public User recalculateGrade(Long userId, long recentSpend) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        if (user.getGrade() == Grade.ADMIN) {
+            return user;
+        }
+
+        Grade target = gradeFor(recentSpend);
+        if (target.ordinal() <= user.getGrade().ordinal()) {
+            return user;
+        }
+        return userRepository.save(user.toBuilder().grade(target).build());
+    }
+
+    /**
+     * 마이페이지에서 "다음 등급까지 남은 금액"을 보여주기 위한 다음 등급 임계값.
+     * VIP/ADMIN은 더 오를 등급이 없으므로 null을 반환한다.
+     */
+    public Integer nextGradeThreshold(Grade grade) {
+        return switch (grade) {
+            case NORMAL -> SILVER_THRESHOLD;
+            case SILVER -> GOLD_THRESHOLD;
+            case GOLD -> VIP_THRESHOLD;
+            default -> null;
+        };
+    }
+
+    /**
+     * 등급별 월 1회 결제 할인율(%). 정의되지 않은 등급(ADMIN 등)은 0을 반환한다.
+     */
+    public int discountRateFor(Grade grade) {
+        return DISCOUNT_RATE_BY_GRADE.getOrDefault(grade, 0);
+    }
+
+    private Grade gradeFor(long recentSpend) {
+        if (recentSpend >= VIP_THRESHOLD) {
+            return Grade.VIP;
+        }
+        if (recentSpend >= GOLD_THRESHOLD) {
+            return Grade.GOLD;
+        }
+        if (recentSpend >= SILVER_THRESHOLD) {
+            return Grade.SILVER;
+        }
+        return Grade.NORMAL;
     }
 }

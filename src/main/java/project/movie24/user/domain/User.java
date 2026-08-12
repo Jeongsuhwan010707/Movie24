@@ -51,6 +51,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Grade grade = Grade.NORMAL;
 
+    @Builder.Default
+    private int point = 0;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

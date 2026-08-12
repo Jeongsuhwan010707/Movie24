@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import project.movie24.mypage.dto.NicknameUpdateForm;
 import project.movie24.mypage.dto.ProfileUpdateForm;
+import project.movie24.point.service.PointService;
 import project.movie24.reservation.dto.ReservationResponse;
 import project.movie24.reservation.service.ReservationService;
 import project.movie24.security.SessionAuthenticator;
@@ -32,6 +33,7 @@ public class MyPageController {
     private final ReservationService reservationService;
     private final StoreCheckoutService storeCheckoutService;
     private final UserService userService;
+    private final PointService pointService;
     private final SessionAuthenticator sessionAuthenticator;
 
     @GetMapping("/myPage")
@@ -42,10 +44,22 @@ public class MyPageController {
                 .toList();
         List<StoreOrderResponse> myStoreOrders = storeCheckoutService.findMyOrders(user.getId());
 
+        long recentSpend = reservationService.sumPaidAmountLastYear(user.getId());
+        Integer nextGradeThreshold = userService.nextGradeThreshold(user.getGrade());
+
         model.addAttribute("user", user);
         model.addAttribute("reservations", myReservations);
         model.addAttribute("storeOrders", myStoreOrders);
+        model.addAttribute("recentSpend", recentSpend);
+        model.addAttribute("nextGradeThreshold", nextGradeThreshold);
         return "myPage/index";
+    }
+
+    @GetMapping("/myPage/points")
+    public String points(@AuthenticationPrincipal UserPrincipal principal, Model model) {
+        model.addAttribute("user", principal.getUser());
+        model.addAttribute("pointHistory", pointService.findHistory(principal.getUser().getId()));
+        return "myPage/points";
     }
 
     @GetMapping("/myPage/edit")

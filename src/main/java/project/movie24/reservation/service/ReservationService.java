@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.movie24.common.EntityFinders;
+import project.movie24.point.service.PointService;
 import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.domain.ReservationSeat;
 import project.movie24.reservation.domain.ReservationStatus;
@@ -17,7 +18,9 @@ import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
+import project.movie24.user.service.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +31,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
+    // 결제(현금)로 낸 금액에 대해 적립되는 포인트 비율.
+    private static final double POINT_EARN_RATE = 0.02;
+
     private final ReservationRepository reservationRepository;
     private final ReservationSeatRepository reservationSeatRepository;
     private final SeatService seatService;
     private final ShowtimeService showtimeService;
     private final UserRepository userRepository;
+    private final PointService pointService;
+    private final UserService userService;
 
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds) {
         Showtime showtime = showtimeService.findOne(showtimeId);
@@ -69,6 +77,54 @@ public class ReservationService {
         return reservation;
     }
 
+    /**
+     * 결제 흐름 전용: 좌석 확보에 이어 포인트 사용/적립과 등급 재계산까지 한 트랜잭션 안에서 처리한다.
+     * 좌석 확보와 트랜잭션을 분리하면 포인트 차감 실패 시 이미 커밋된 예매가 롤백되지 않으므로 반드시 같은 메서드에서 처리한다.
+     */
+    public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount) {
+        Reservation reservation = reserve(userId, showtimeId, seatIds);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (usePoint > 0) {
+            user = pointService.use(user, usePoint, reservation.getId());
+        }
+
+        int cashPaid = reservation.getTotalPrice() - gradeDiscountAmount - usePoint;
+        int earnedPoint = (int) Math.floor(cashPaid * POINT_EARN_RATE);
+        pointService.earn(user, earnedPoint, reservation.getId());
+
+        reservation = reservationRepository.save(reservation.toBuilder()
+                .earnedPoint(earnedPoint)
+                .usedPoint(usePoint)
+                .gradeDiscountAmount(gradeDiscountAmount)
+                .build());
+
+        userService.recalculateGrade(userId, sumPaidAmountLastYear(userId));
+
+        return reservation;
+    }
+
+    /**
+     * VIP 등급 판단 기준인 최근 1년 누적 결제금액. 마이페이지의 "다음 등급까지" 표시에도 쓰인다.
+     */
+    @Transactional(readOnly = true)
+    public long sumPaidAmountLastYear(Long userId) {
+        return reservationRepository.sumPaidAmountSince(userId, ReservationStatus.RESERVED, LocalDateTime.now().minusYears(1));
+    }
+
+    /**
+     * 등급 할인은 달력 월 기준 1회만 허용한다. 취소된 예매는 대상에서 빠지므로,
+     * 할인을 쓴 예매를 취소하면 그 달에 다시 쓸 수 있다.
+     */
+    @Transactional(readOnly = true)
+    public boolean hasUsedGradeDiscountThisMonth(Long userId) {
+        LocalDateTime monthStart = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        return reservationRepository.existsByUser_IdAndGradeDiscountAmountGreaterThanAndStatusAndReservedAtAfter(
+                userId, 0, ReservationStatus.RESERVED, monthStart);
+    }
+
     public void cancel(Long reservationId, Long currentUserId) {
         Reservation reservation = getOrThrow(reservationId);
         if (!reservation.getUser().getId().equals(currentUserId)) {
@@ -78,6 +134,17 @@ public class ReservationService {
         // 좌석 점유 기록 자체를 지워야 (showtime_id, seat_id) 유니크 제약에 다시 걸리지 않고
         // 같은 좌석을 재예매할 수 있다.
         reservationSeatRepository.deleteAll(reservationSeatRepository.findByReservationId(reservationId));
+
+        if (reservation.getUsedPoint() > 0 || reservation.getEarnedPoint() > 0) {
+            User user = userRepository.findById(currentUserId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+            if (reservation.getUsedPoint() > 0) {
+                user = pointService.cancelUse(user, reservation.getUsedPoint(), reservationId);
+            }
+            if (reservation.getEarnedPoint() > 0) {
+                pointService.cancelEarn(user, reservation.getEarnedPoint(), reservationId);
+            }
+        }
     }
 
     /**

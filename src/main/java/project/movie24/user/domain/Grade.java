@@ -1,5 +1,5 @@
 package project.movie24.user.domain;
 
 public enum Grade {
-    ADMIN, NORMAL, VIP
+    NORMAL, SILVER, GOLD, VIP, ADMIN
 }

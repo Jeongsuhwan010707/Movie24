@@ -6,6 +6,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.movie.domain.Movie;
+import project.movie24.movie.domain.ScreeningStatus;
+import project.movie24.movie.repository.MovieRepository;
+import project.movie24.screen.domain.Screen;
+import project.movie24.screen.repository.ScreenRepository;
+import project.movie24.showtime.domain.Showtime;
+import project.movie24.showtime.repository.ShowtimeRepository;
 import project.movie24.theater.domain.Theater;
 import project.movie24.theater.repository.TheaterRepository;
 import project.movie24.user.domain.EmailStatus;
@@ -13,13 +20,30 @@ import project.movie24.user.domain.Grade;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class TestDataInit {
+
+    // 예매 화면(movieReservation/time)에서 앞으로 이만큼의 날짜까지 상영시간표를 미리 채워둔다.
+    private static final int SHOWTIME_SEED_DAYS = 15;
+    private static final List<LocalTime> SHOWTIME_SLOTS = List.of(
+            LocalTime.of(10, 0), LocalTime.of(13, 30), LocalTime.of(17, 50), LocalTime.of(20, 30));
+    private static final Map<String, Integer> BASE_PRICE_BY_SCREEN_TYPE = Map.of(
+            "2D", 12000, "3D", 14000, "IMAX", 16000, "4DX", 18000);
+    private static final int DEFAULT_BASE_PRICE = 12000;
+
     private final UserRepository userRepository;
     private final TheaterRepository theaterRepository;
+    private final MovieRepository movieRepository;
+    private final ScreenRepository screenRepository;
+    private final ShowtimeRepository showtimeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -67,5 +91,49 @@ public class TestDataInit {
                     Theater.builder().name("무비24 왕십리점").region("성동구").address("서울특별시 성동구 왕십리로 231").latitude(37.5613).longitude(127.0378).build()
             ));
         }
+
+        seedFutureShowtimes();
+    }
+
+    /**
+     * 예매 화면 테스트용으로, 현재 상영중인 영화 x 모든 극장의 모든 상영관에 대해
+     * 오늘부터 SHOWTIME_SEED_DAYS일치 상영시간표를 하루 1회씩 채운다.
+     * 앞으로 예정된 상영시간이 이미 하나라도 있으면(재기동 등) 중복 생성하지 않는다.
+     */
+    private void seedFutureShowtimes() {
+        LocalDateTime windowStart = LocalDate.now().atStartOfDay();
+        if (showtimeRepository.existsByStartTimeAfter(windowStart)) {
+            return;
+        }
+
+        List<Movie> movies = movieRepository.findByStatus(ScreeningStatus.NOW_SHOWING);
+        List<Theater> theaters = theaterRepository.findAll();
+        if (movies.isEmpty() || theaters.isEmpty()) {
+            return;
+        }
+
+        List<Showtime> showtimes = new ArrayList<>();
+        int movieIndex = 0;
+        for (Theater theater : theaters) {
+            List<Screen> screens = screenRepository.findByTheaterId(theater.getId());
+            for (Screen screen : screens) {
+                int basePrice = BASE_PRICE_BY_SCREEN_TYPE.getOrDefault(screen.getScreenType(), DEFAULT_BASE_PRICE);
+                for (int day = 0; day < SHOWTIME_SEED_DAYS; day++) {
+                    LocalDate date = LocalDate.now().plusDays(day);
+                    LocalTime time = SHOWTIME_SLOTS.get(day % SHOWTIME_SLOTS.size());
+                    Movie movie = movies.get(movieIndex % movies.size());
+                    movieIndex++;
+
+                    showtimes.add(Showtime.builder()
+                            .movie(movie)
+                            .screen(screen)
+                            .startTime(LocalDateTime.of(date, time))
+                            .basePrice(basePrice)
+                            .build());
+                }
+            }
+        }
+
+        showtimeRepository.saveAll(showtimes);
     }
 }
