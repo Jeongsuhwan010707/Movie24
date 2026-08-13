@@ -38,7 +38,7 @@
             <div class="stat-card">
                 <span class="stat-icon stat-icon-coupon">%</span>
                 <h3>My Coupon</h3>
-                <p>준비중인 기능입니다.</p>
+                <p th:text="${unusedCouponCount} + '장'">0장</p>
             </div>
             <div class="stat-card">
                 <span class="stat-icon stat-icon-point">P</span>
@@ -68,6 +68,10 @@
                         <li><a th:href="@{/myPage/edit}">가입정보 수정하기</a></li>
                         <li><a th:href="@{/myPage/nickname}">닉네임 변경하기</a></li>
                         <li><a th:href="@{/terms}">약관 확인</a></li>
+                    </ul>
+                    <h3>나의 쿠폰함</h3>
+                    <ul>
+                        <li><a th:href="@{/myPage/coupons}">쿠폰함</a></li>
                     </ul>
                     <h3>나의 포인트 관리</h3>
                     <ul>

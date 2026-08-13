@@ -16,9 +16,11 @@ public class PendingPayment implements Serializable {
     private final int totalPrice;
     private final int usedPoint;
     private final int gradeDiscountAmount;
+    private final Long userCouponId;
+    private final int couponDiscountAmount;
 
     public PendingPayment(String orderId, Long showtimeId, List<Long> seatIds, int amount, int totalPrice,
-                           int usedPoint, int gradeDiscountAmount) {
+                           int usedPoint, int gradeDiscountAmount, Long userCouponId, int couponDiscountAmount) {
         this.orderId = orderId;
         this.showtimeId = showtimeId;
         this.seatIds = seatIds;
@@ -26,5 +28,7 @@ public class PendingPayment implements Serializable {
         this.totalPrice = totalPrice;
         this.usedPoint = usedPoint;
         this.gradeDiscountAmount = gradeDiscountAmount;
+        this.userCouponId = userCouponId;
+        this.couponDiscountAmount = couponDiscountAmount;
     }
 }

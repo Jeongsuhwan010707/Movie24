@@ -4,6 +4,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.movie24.coupon.domain.CouponApplicableContext;
+import project.movie24.coupon.domain.UserCoupon;
+import project.movie24.coupon.service.UserCouponService;
 import project.movie24.payment.client.TossPaymentClient;
 import project.movie24.payment.domain.PendingPayment;
 import project.movie24.payment.dto.PaymentPrepareRequest;
@@ -36,6 +39,7 @@ public class PaymentService {
     private final TossPaymentClient tossPaymentClient;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserCouponService userCouponService;
 
     @Transactional(readOnly = true)
     public PaymentPrepareResponse prepare(HttpSession session, Long userId, PaymentPrepareRequest request) {
@@ -52,7 +56,15 @@ public class PaymentService {
             throw new IllegalStateException("등급 할인을 사용할 수 없습니다.");
         }
         int gradeDiscountAmount = (request.isUseGradeDiscount() && gradeDiscountEligible) ? totalPrice * discountRate / 100 : 0;
-        int amountAfterDiscount = totalPrice - gradeDiscountAmount;
+        int amountAfterGradeDiscount = totalPrice - gradeDiscountAmount;
+
+        int couponDiscountAmount = 0;
+        Long userCouponId = request.getUserCouponId();
+        if (userCouponId != null) {
+            UserCoupon userCoupon = userCouponService.findOwned(userCouponId, userId);
+            couponDiscountAmount = userCouponService.previewDiscount(userCoupon, amountAfterGradeDiscount, CouponApplicableContext.RESERVATION);
+        }
+        int amountAfterDiscount = amountAfterGradeDiscount - couponDiscountAmount;
 
         int maxUsablePoint = Math.max(0, Math.min(user.getPoint(), amountAfterDiscount - MIN_PAYABLE_AMOUNT));
         if (request.getUsePoint() > maxUsablePoint) {
@@ -64,7 +76,7 @@ public class PaymentService {
         String orderId = "movie24-" + UUID.randomUUID();
 
         session.setAttribute(SESSION_KEY, new PendingPayment(orderId, request.getShowtimeId(), request.getSeatIds(),
-                amount, totalPrice, usedPoint, gradeDiscountAmount));
+                amount, totalPrice, usedPoint, gradeDiscountAmount, userCouponId, couponDiscountAmount));
 
         return PaymentPrepareResponse.builder()
                 .orderId(orderId)
@@ -73,6 +85,7 @@ public class PaymentService {
                 .totalPrice(totalPrice)
                 .usedPoint(usedPoint)
                 .gradeDiscountAmount(gradeDiscountAmount)
+                .couponDiscountAmount(couponDiscountAmount)
                 .build();
     }
 
@@ -94,7 +107,8 @@ public class PaymentService {
 
         try {
             Reservation reservation = reservationService.reserve(userId, pending.getShowtimeId(), pending.getSeatIds(),
-                    pending.getUsedPoint(), pending.getGradeDiscountAmount());
+                    pending.getUsedPoint(), pending.getGradeDiscountAmount(),
+                    pending.getUserCouponId(), pending.getCouponDiscountAmount());
             session.removeAttribute(SESSION_KEY);
             return reservation;
         } catch (RuntimeException e) {

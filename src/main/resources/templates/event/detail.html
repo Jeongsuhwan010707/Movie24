@@ -10,12 +10,14 @@
     <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
     <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/loginModal.css}">
     <link rel="stylesheet" th:href="@{/resources/css/event/detail.css}">
 </head>
 <body>
 <div>
     <div th:replace="fragment/header.html :: header"></div>
     <div th:replace="fragment/nav.html :: nav"></div>
+    <div th:replace="fragment/loginModal.html :: loginModal"></div>
     <main>
         <div class="breadcrumb">
             <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/events}">이벤트</a> <span>&gt;</span>
@@ -43,10 +45,91 @@
             <p th:text="${event.winnerContent}">당첨자 안내 내용</p>
         </div>
 
+        <div id="couponSection" class="couponSection" style="display:none;">
+            <h3>이 이벤트의 쿠폰</h3>
+            <div id="couponCardList"></div>
+        </div>
+
         <a class="listBtn" th:href="@{/events}">목록으로</a>
     </main>
     <div th:replace="fragment/footer.html :: footer"></div>
 </div>
 <script th:src="@{/resources/js/nav.js}"></script>
+<script th:src="@{/resources/js/loginModal.js}"></script>
+<script th:inline="javascript">
+    var eventId = /*[[${event.id}]]*/ 0;
+
+    function discountLabel(coupon) {
+        return coupon.discountType === 'PERCENT'
+            ? coupon.discountValue + '% 할인'
+            : coupon.discountValue.toLocaleString('ko-KR') + '원 할인';
+    }
+
+    function renderCoupons(coupons) {
+        var section = document.getElementById('couponSection');
+        var list = document.getElementById('couponCardList');
+        if (!coupons.length) {
+            return;
+        }
+        section.style.display = '';
+        coupons.forEach(function (coupon) {
+            var card = document.createElement('div');
+            card.className = 'couponCard';
+            card.style.cssText = 'display:flex; align-items:center; justify-content:space-between; ' +
+                'border:1px solid #ddd; border-radius:8px; padding:14px 16px; margin-bottom:10px;';
+
+            var text = document.createElement('span');
+            text.textContent = coupon.name + ' (' + discountLabel(coupon) + ')';
+            card.appendChild(text);
+
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = '쿠폰받기';
+            button.style.cssText = 'padding:8px 16px; border-radius:6px; border:none; background:#2f6fed; color:#fff; cursor:pointer;';
+            button.addEventListener('click', function () {
+                requireLogin(function () {
+                    claimCoupon(coupon.id, button);
+                });
+            });
+            card.appendChild(button);
+
+            list.appendChild(card);
+        });
+    }
+
+    function claimCoupon(couponId, button) {
+        button.disabled = true;
+        var headers = {'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken()};
+
+        fetch('/api/my-coupons/claim/' + couponId, {method: 'POST', headers: headers})
+            .then(function (res) {
+                if (res.status === 401 || res.status === 403) {
+                    alert('로그인이 필요합니다.');
+                    button.disabled = false;
+                    return;
+                }
+                return res.json().then(function (data) {
+                    if (!res.ok) {
+                        alert(data.message || '쿠폰을 받을 수 없습니다.');
+                        button.disabled = false;
+                        return;
+                    }
+                    button.textContent = '발급완료';
+                });
+            })
+            .catch(function () {
+                alert('쿠폰 발급 중 오류가 발생했습니다.');
+                button.disabled = false;
+            });
+    }
+
+    fetch('/api/coupons/claimable?eventId=' + eventId)
+        .then(function (res) {
+            return res.ok ? res.json() : [];
+        })
+        .then(renderCoupons)
+        .catch(function () {
+        });
+</script>
 </body>
 </html>

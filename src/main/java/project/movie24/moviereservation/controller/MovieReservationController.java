@@ -14,6 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import project.movie24.coupon.domain.CouponApplicableContext;
+import project.movie24.coupon.domain.UserCouponStatus;
+import project.movie24.coupon.dto.UserCouponResponse;
+import project.movie24.coupon.service.UserCouponService;
 import project.movie24.movie.domain.Movie;
 import project.movie24.movie.domain.ScreeningStatus;
 import project.movie24.movie.service.MovieService;
@@ -59,6 +63,7 @@ public class MovieReservationController {
     private final ReservationService reservationService;
     private final UserService userService;
     private final PaymentService paymentService;
+    private final UserCouponService userCouponService;
     private final UserRepository userRepository;
     private final SessionAuthenticator sessionAuthenticator;
 
@@ -295,6 +300,15 @@ public class MovieReservationController {
         model.addAttribute("gradeDiscountRate", gradeDiscountRate);
         model.addAttribute("gradeDiscountEligible", principal != null && gradeDiscountRate > 0
                 && !reservationService.hasUsedGradeDiscountThisMonth(principal.getUser().getId()));
+
+        List<UserCouponResponse> usableCoupons = principal == null ? List.of()
+                : userCouponService.findMyCoupons(principal.getUser().getId()).stream()
+                        .filter(uc -> uc.getStatus() == UserCouponStatus.UNUSED
+                                && (uc.getExpiresAt() == null || uc.getExpiresAt().isAfter(LocalDateTime.now()))
+                                && uc.getCoupon().getApplicableContext() != CouponApplicableContext.STORE)
+                        .map(UserCouponResponse::from)
+                        .toList();
+        model.addAttribute("usableCoupons", usableCoupons);
         return "movieReservation/pay";
     }
 

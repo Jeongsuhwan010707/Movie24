@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.movie24.common.EntityFinders;
+import project.movie24.coupon.service.UserCouponService;
 import project.movie24.point.service.PointService;
 import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.domain.ReservationSeat;
@@ -41,6 +42,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final PointService pointService;
     private final UserService userService;
+    private final UserCouponService userCouponService;
 
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds) {
         Showtime showtime = showtimeService.findOne(showtimeId);
@@ -82,16 +84,28 @@ public class ReservationService {
      * 좌석 확보와 트랜잭션을 분리하면 포인트 차감 실패 시 이미 커밋된 예매가 롤백되지 않으므로 반드시 같은 메서드에서 처리한다.
      */
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount) {
+        return reserve(userId, showtimeId, seatIds, usePoint, gradeDiscountAmount, null, 0);
+    }
+
+    /**
+     * 결제 흐름 전용(쿠폰 포함): 좌석 확보에 이어 쿠폰/포인트 사용/적립과 등급 재계산까지 한 트랜잭션 안에서 처리한다.
+     */
+    public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount,
+                                Long userCouponId, int couponDiscountAmount) {
         Reservation reservation = reserve(userId, showtimeId, seatIds);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
+        if (userCouponId != null) {
+            userCouponService.markUsed(userCouponId, userId, couponDiscountAmount, reservation.getId());
+        }
+
         if (usePoint > 0) {
             user = pointService.use(user, usePoint, reservation.getId());
         }
 
-        int cashPaid = reservation.getTotalPrice() - gradeDiscountAmount - usePoint;
+        int cashPaid = reservation.getTotalPrice() - gradeDiscountAmount - couponDiscountAmount - usePoint;
         int earnedPoint = (int) Math.floor(cashPaid * POINT_EARN_RATE);
         pointService.earn(user, earnedPoint, reservation.getId());
 
@@ -99,6 +113,8 @@ public class ReservationService {
                 .earnedPoint(earnedPoint)
                 .usedPoint(usePoint)
                 .gradeDiscountAmount(gradeDiscountAmount)
+                .couponDiscountAmount(couponDiscountAmount)
+                .userCouponId(userCouponId)
                 .build());
 
         userService.recalculateGrade(userId, sumPaidAmountLastYear(userId));
@@ -144,6 +160,10 @@ public class ReservationService {
             if (reservation.getEarnedPoint() > 0) {
                 pointService.cancelEarn(user, reservation.getEarnedPoint(), reservationId);
             }
+        }
+
+        if (reservation.getCouponDiscountAmount() > 0) {
+            userCouponService.cancelUse(reservationId);
         }
     }
 

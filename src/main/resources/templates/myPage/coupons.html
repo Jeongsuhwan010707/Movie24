@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>쿠폰함 - Movie24</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/coupons.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">쿠폰함</span>
+        </div>
+        <h2 class="pageTitle">쿠폰함</h2>
+
+        <div class="couponSummary">
+            <div class="couponSummary-count">
+                <p class="label">사용 가능한 쿠폰</p>
+                <p class="balance" th:text="${unusedCount} + '장'">0장</p>
+            </div>
+            <form class="redeemForm" th:action="@{/myPage/coupons/redeem}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="text" name="code" class="redeemInput" placeholder="쿠폰 코드를 입력해주세요" autocomplete="off">
+                <button type="submit" class="redeemBtn">코드 등록</button>
+            </form>
+        </div>
+        <p class="redeemError" th:if="${error != null}" th:text="${error}"></p>
+
+        <p class="emptyState" th:if="${#lists.isEmpty(myCoupons)}">보유한 쿠폰이 없습니다. 쿠폰 코드를 등록하거나 이벤트에서 쿠폰을 받아보세요.</p>
+
+        <ul class="couponList" th:unless="${#lists.isEmpty(myCoupons)}">
+            <li class="couponCard" th:each="uc : ${myCoupons}"
+                th:classappend="${uc.status.name() != 'UNUSED'} ? 'is-inactive' : ''">
+                <div class="couponCard-badge" th:switch="${uc.coupon.discountType.name()}">
+                    <span th:case="'PERCENT'" class="couponCard-value" th:text="${uc.coupon.discountValue} + '%'">10%</span>
+                    <span th:case="'AMOUNT'" class="couponCard-value" th:text="${#numbers.formatInteger(uc.coupon.discountValue, 0, 'COMMA')}">3,000</span>
+                    <span class="couponCard-unit" th:text="${uc.coupon.discountType.name() == 'AMOUNT'} ? '원 할인' : '할인'">할인</span>
+                </div>
+                <div class="couponCard-divider"></div>
+                <div class="couponCard-body">
+                    <div class="couponCard-top">
+                        <h3 class="couponCard-name" th:text="${uc.coupon.name}">쿠폰명</h3>
+                        <span th:switch="${uc.status.name()}" class="couponStatus">
+                            <span th:case="'UNUSED'" class="couponStatus-badge unused">사용 가능</span>
+                            <span th:case="'USED'" class="couponStatus-badge used">사용완료</span>
+                            <span th:case="'EXPIRED'" class="couponStatus-badge expired">기간만료</span>
+                        </span>
+                    </div>
+                    <p class="couponCard-desc" th:if="${uc.coupon.description != null and !uc.coupon.description.isEmpty()}"
+                       th:text="${uc.coupon.description}">쿠폰 설명</p>
+                    <p class="couponCard-cond" th:if="${uc.coupon.minPurchaseAmount != null and uc.coupon.minPurchaseAmount > 0}"
+                       th:text="${#numbers.formatInteger(uc.coupon.minPurchaseAmount, 0, 'COMMA')} + '원 이상 결제 시 사용 가능'">최소 구매 금액</p>
+                    <div class="couponCard-meta">
+                        <span th:text="'발급일 ' + ${#temporals.format(uc.issuedAt, 'yyyy.MM.dd')}">발급일</span>
+                        <span th:if="${uc.expiresAt != null}" th:text="'· 유효기한 ' + ${#temporals.format(uc.expiresAt, 'yyyy.MM.dd')}">유효기한</span>
+                        <span th:if="${uc.status.name() == 'USED' and uc.usedAt != null}"
+                              th:text="'· 사용일 ' + ${#temporals.format(uc.usedAt, 'yyyy.MM.dd')}">사용일</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+
+<div id="couponConfirmOverlay" class="couponModalOverlay">
+    <div class="couponModal">
+        <div class="couponModal-icon">🎟️</div>
+        <h3 class="couponModal-title" id="couponConfirmTitle">쿠폰 이름</h3>
+        <p class="couponModal-effect" id="couponConfirmEffect">할인 정보</p>
+        <p class="couponModal-message" id="couponConfirmMessage"></p>
+        <div class="couponModal-actions">
+            <button type="button" id="couponConfirmCancel" class="couponModal-btn secondary">취소</button>
+            <button type="button" id="couponConfirmOk" class="couponModal-btn primary">등록하기</button>
+        </div>
+    </div>
+</div>
+
+<div id="couponResultOverlay" class="couponModalOverlay">
+    <div class="couponModal">
+        <div class="couponModal-icon" id="couponResultIcon">🎉</div>
+        <h3 class="couponModal-title" id="couponResultTitle">쿠폰이 등록되었습니다</h3>
+        <p class="couponModal-message" id="couponResultMessage"></p>
+        <div class="couponModal-actions single">
+            <button type="button" id="couponResultOk" class="couponModal-btn primary">확인</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/resources/js/nav.js}"></script>
+<script>
+    (function () {
+        var redeemForm = document.querySelector('.redeemForm');
+        var redeemInput = redeemForm.querySelector('input[name="code"]');
+
+        var confirmOverlay = document.getElementById('couponConfirmOverlay');
+        var confirmTitle = document.getElementById('couponConfirmTitle');
+        var confirmEffect = document.getElementById('couponConfirmEffect');
+        var confirmMessage = document.getElementById('couponConfirmMessage');
+        var confirmCancelBtn = document.getElementById('couponConfirmCancel');
+        var confirmOkBtn = document.getElementById('couponConfirmOk');
+
+        var resultOverlay = document.getElementById('couponResultOverlay');
+        var resultIcon = document.getElementById('couponResultIcon');
+        var resultTitle = document.getElementById('couponResultTitle');
+        var resultMessage = document.getElementById('couponResultMessage');
+        var resultOkBtn = document.getElementById('couponResultOk');
+        var resultWasSuccess = false;
+        var pendingCode = '';
+
+        function discountEffectText(coupon) {
+            if (coupon.discountType === 'PERCENT') {
+                var text = coupon.discountValue + '% 할인';
+                if (coupon.maxDiscountAmount) {
+                    text += ' (최대 ' + coupon.maxDiscountAmount.toLocaleString('ko-KR') + '원)';
+                }
+                return text;
+            }
+            return coupon.discountValue.toLocaleString('ko-KR') + '원 할인';
+        }
+
+        function openConfirm(code, coupon) {
+            pendingCode = code;
+            confirmTitle.textContent = coupon.name;
+            confirmEffect.textContent = discountEffectText(coupon);
+            var notes = [];
+            if (coupon.description) {
+                notes.push(coupon.description);
+            }
+            if (coupon.minPurchaseAmount > 0) {
+                notes.push(coupon.minPurchaseAmount.toLocaleString('ko-KR') + '원 이상 결제 시 사용 가능');
+            }
+            notes.push('이 쿠폰을 쿠폰함에 등록할까요?');
+            confirmMessage.textContent = notes.join(' · ');
+            confirmOverlay.classList.add('open');
+        }
+        function closeConfirm() {
+            confirmOverlay.classList.remove('open');
+        }
+        function openResult(success, title, message) {
+            resultWasSuccess = success;
+            resultIcon.textContent = success ? '🎉' : '😥';
+            resultTitle.textContent = title;
+            resultMessage.textContent = message;
+            resultOverlay.classList.add('open');
+        }
+        function closeResult() {
+            resultOverlay.classList.remove('open');
+            if (resultWasSuccess) {
+                location.reload();
+            }
+        }
+
+        // JS가 막혀 있으면 폼이 그대로 서버(/myPage/coupons/redeem)로 제출되도록,
+        // 여기서는 fetch 흐름을 탈 수 있을 때만 preventDefault로 가로챈다.
+        redeemForm.addEventListener('submit', function (e) {
+            var code = redeemInput.value.trim();
+            if (!code) {
+                return;
+            }
+            e.preventDefault();
+            redeemForm.querySelector('.redeemBtn').disabled = true;
+
+            // 바로 등록하지 않고, 먼저 쿠폰 정보를 조회해 어떤 혜택인지 보여준 뒤 확인을 받는다.
+            fetch('/api/my-coupons/preview?code=' + encodeURIComponent(code))
+                .then(function (res) {
+                    redeemForm.querySelector('.redeemBtn').disabled = false;
+                    if (res.status === 401 || res.status === 403) {
+                        openResult(false, '로그인이 필요합니다', '다시 로그인한 뒤 시도해주세요.');
+                        return;
+                    }
+                    return res.json().then(function (data) {
+                        if (!res.ok) {
+                            openResult(false, '쿠폰을 찾을 수 없어요', data.message || '코드를 다시 확인해주세요.');
+                            return;
+                        }
+                        openConfirm(code, data);
+                    });
+                }).catch(function () {
+                    redeemForm.querySelector('.redeemBtn').disabled = false;
+                    openResult(false, '쿠폰을 찾을 수 없어요', '네트워크 오류가 발생했습니다.');
+                });
+        });
+
+        confirmCancelBtn.addEventListener('click', closeConfirm);
+        confirmOverlay.addEventListener('click', function (e) {
+            if (e.target === confirmOverlay) {
+                closeConfirm();
+            }
+        });
+
+        confirmOkBtn.addEventListener('click', function () {
+            var code = pendingCode;
+            closeConfirm();
+            confirmOkBtn.disabled = true;
+
+            var headers = {'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken()};
+
+            fetch('/api/my-coupons/redeem', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({code: code})
+            }).then(function (res) {
+                confirmOkBtn.disabled = false;
+                if (res.status === 401 || res.status === 403) {
+                    openResult(false, '로그인이 필요합니다', '다시 로그인한 뒤 시도해주세요.');
+                    return;
+                }
+                return res.json().then(function (data) {
+                    if (res.ok) {
+                        openResult(true, '쿠폰이 등록되었습니다', (data.name || '쿠폰') + ' 이(가) 쿠폰함에 추가됐어요.');
+                    } else {
+                        openResult(false, '쿠폰을 등록할 수 없어요', data.message || '잠시 후 다시 시도해주세요.');
+                    }
+                });
+            }).catch(function () {
+                confirmOkBtn.disabled = false;
+                openResult(false, '쿠폰을 등록할 수 없어요', '네트워크 오류가 발생했습니다.');
+            });
+        });
+
+        resultOkBtn.addEventListener('click', closeResult);
+        resultOverlay.addEventListener('click', function (e) {
+            if (e.target === resultOverlay) {
+                closeResult();
+            }
+        });
+    })();
+</script>
+</body>
+</html>

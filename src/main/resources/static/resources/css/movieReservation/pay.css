@@ -168,6 +168,44 @@
         background-color: #362FD9;
         color: #fff;
     }
+    .couponSelectGroup{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .couponSelectWrap{
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+    .couponSelect{
+        width: 220px;
+        height: 38px;
+        padding: 0 34px 0 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Pretendard-Regular';
+        font-size: 14px;
+        color: #222;
+        background-color: #fff;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        transition: border-color 0.15s ease;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+    }
+    .couponSelect:focus{
+        outline: none;
+        border-color: #362FD9;
+    }
+    .couponSelect:disabled{
+        background-color: #f7f7f7;
+        color: #aaa;
+        cursor: not-allowed;
+    }
     .selectsale p {
         float: left;
         padding: 10px 0 0 10px;
@@ -299,18 +337,40 @@
     #price3-3{
         margin: 0 auto;
         width: 90%;
-        height: 60px;
         background-color: #5c5c5c;
         border-radius: 5px;
         font-size: 15px;
         margin-top: 20px;
-        padding-top: 17px;
+        padding: 17px 15px 14px;
+        box-sizing: border-box;
     }
-    #disCount{
-        padding-right: 170px;
+    .discountHeader{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    #price3-3 h3{
+    .discountHeader h3{
+        display: inline;
+        font-weight: 500;
+    }
+    .discountBreakdownList{
+        list-style: none;
+        margin: 10px 0 0;
+        padding: 8px 0 0;
         border-top: 1px solid #787777;
+    }
+    .discountBreakdownList:empty{
+        margin: 0;
+        padding: 0;
+        border-top: none;
+    }
+    .discountBreakdownList li{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #ccc;
+        padding: 3px 0;
     }
     .price4{
         width: 100%;

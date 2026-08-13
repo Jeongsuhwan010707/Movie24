@@ -53,6 +53,12 @@ public class Reservation {
     @Builder.Default
     private int gradeDiscountAmount = 0;
 
+    @Builder.Default
+    private int couponDiscountAmount = 0;
+
+    // UserCoupon 엔티티와 직접 연관관계를 맺지 않고 id만 저장해, reservation 패키지가 coupon에 의존하지 않게 한다.
+    private Long userCouponId;
+
     public void cancel() {
         this.status = ReservationStatus.CANCELLED;
     }

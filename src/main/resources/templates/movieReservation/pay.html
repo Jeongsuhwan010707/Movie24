@@ -50,7 +50,18 @@
                         <button type="button" id="useAllPointBtn" class="useAllPointBtn">전액사용</button>
                     </div>
                 </li>
-                <li><span>쿠폰: 준비중인 기능입니다.</span></li>
+                <li>
+                    <label>보유 쿠폰 <span id="couponCountText" th:text="${usableCoupons.size()} + '장'">0장</span></label>
+                    <div class="couponSelectGroup">
+                        <div class="couponSelectWrap">
+                            <select id="couponSelect" class="couponSelect" th:disabled="${usableCoupons.isEmpty()}">
+                                <option th:if="${usableCoupons.isEmpty()}" value="">사용 가능한 쿠폰이 없어요</option>
+                                <option th:unless="${usableCoupons.isEmpty()}" value="">사용 안함</option>
+                                <option th:each="c : ${usableCoupons}" th:value="${c.userCouponId}" th:text="${c.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
         <div class="selectsale">
@@ -113,8 +124,11 @@
                 <img src="/resources/images/minus (1).png" alt="">
             </div>
             <div id="price3-3">
-                <h3 id="disCount">할인적용</h3>
-                <h3>0원</h3>
+                <div class="discountHeader">
+                    <h3 id="disCount">할인적용</h3>
+                    <h3 id="discountTotalText">0원</h3>
+                </div>
+                <ul id="discountBreakdownList" class="discountBreakdownList"></ul>
             </div>
         </div>
         <div class="price4 price_4">
@@ -144,6 +158,19 @@
     var totalPrice = /*[[${totalPrice}]]*/ 0;
     var pointBalance = /*[[${pointBalance}]]*/ 0;
     var gradeDiscountRate = /*[[${gradeDiscountRate}]]*/ 0;
+    // UserCouponResponse를 통째로 인라이닝하면 LocalDateTime 필드 때문에 Thymeleaf의 기본 JS
+    // 직렬화기(JSR-310 모듈이 없는 순정 ObjectMapper)가 실패할 수 있어, 필요한 스칼라 값만 뽑아 배열을 만든다.
+    var usableCoupons = [
+        /*[# th:each="c : ${usableCoupons}"]*/
+        {
+            userCouponId: /*[[${c.userCouponId}]]*/ 0,
+            discountType: /*[[${c.discountType}]]*/ '',
+            discountValue: /*[[${c.discountValue}]]*/ 0,
+            maxDiscountAmount: /*[[${c.maxDiscountAmount}]]*/ null,
+            minPurchaseAmount: /*[[${c.minPurchaseAmount}]]*/ 0
+        },
+        /*[/]*/
+    ];
     var tossClientKey = /*[[${tossClientKey}]]*/ '';
     // 서버(PaymentService)의 MIN_PAYABLE_AMOUNT와 맞춰, 캐시 결제금액이 최소 100원은 남도록 포인트 사용 한도를 계산한다.
     var MIN_PAYABLE_AMOUNT = 100;
@@ -166,12 +193,55 @@
     var usePointInput = document.getElementById('usePointInput');
     var useGradeDiscountInput = document.getElementById('useGradeDiscountInput');
     var gradeDiscountAmountText = document.getElementById('gradeDiscountAmountText');
+    var couponSelect = document.getElementById('couponSelect');
+    var discountBreakdownList = document.getElementById('discountBreakdownList');
+
+    function renderDiscountBreakdown(gradeAmount, couponAmount, pointAmount) {
+        discountBreakdownList.innerHTML = '';
+        [['등급 할인', gradeAmount], ['쿠폰', couponAmount], ['포인트', pointAmount]]
+            .filter(function (item) { return item[1] > 0; })
+            .forEach(function (item) {
+                var li = document.createElement('li');
+                var label = document.createElement('span');
+                label.textContent = item[0];
+                var value = document.createElement('span');
+                value.textContent = '-' + item[1].toLocaleString('ko-KR') + '원';
+                li.appendChild(label);
+                li.appendChild(value);
+                discountBreakdownList.appendChild(li);
+            });
+    }
 
     function currentGradeDiscountAmount() {
         if (useGradeDiscountInput && useGradeDiscountInput.checked) {
             return Math.floor(totalPrice * gradeDiscountRate / 100);
         }
         return 0;
+    }
+
+    // 서버(UserCouponService.previewDiscount)와 동일한 계산식을 클라이언트에서 미리 보여주는 용도.
+    // 실제 차감 금액은 결제 승인 시 서버가 다시 계산해 신뢰한다.
+    function currentCouponDiscountAmount(amountAfterGradeDiscount) {
+        if (!couponSelect || !couponSelect.value) {
+            return 0;
+        }
+        var selectedId = couponSelect.value;
+        var coupon = usableCoupons.find(function (c) {
+            return String(c.userCouponId) === selectedId;
+        });
+        if (!coupon || amountAfterGradeDiscount < coupon.minPurchaseAmount) {
+            return 0;
+        }
+        var discount;
+        if (coupon.discountType === 'PERCENT') {
+            discount = Math.floor(amountAfterGradeDiscount * coupon.discountValue / 100);
+            if (coupon.maxDiscountAmount) {
+                discount = Math.min(discount, coupon.maxDiscountAmount);
+            }
+        } else {
+            discount = coupon.discountValue;
+        }
+        return Math.max(0, Math.min(discount, amountAfterGradeDiscount));
     }
 
     function currentUsePoint() {
@@ -184,20 +254,23 @@
 
     function updatePriceDisplay() {
         var gradeDiscountAmount = currentGradeDiscountAmount();
-        var amountAfterDiscount = totalPrice - gradeDiscountAmount;
+        var amountAfterGradeDiscount = totalPrice - gradeDiscountAmount;
+        var couponDiscountAmount = currentCouponDiscountAmount(amountAfterGradeDiscount);
+        var amountAfterDiscount = amountAfterGradeDiscount - couponDiscountAmount;
         maxUsablePoint = Math.max(0, Math.min(pointBalance, amountAfterDiscount - MIN_PAYABLE_AMOUNT));
         usePointInput.max = maxUsablePoint;
 
         var usePoint = currentUsePoint();
         usePointInput.value = usePoint;
 
-        var totalDiscount = gradeDiscountAmount + usePoint;
+        var totalDiscount = gradeDiscountAmount + couponDiscountAmount + usePoint;
         var finalPrice = totalPrice - totalDiscount;
-        document.querySelector('#disCount').nextElementSibling.textContent = totalDiscount.toLocaleString('ko-KR') + '원';
+        document.getElementById('discountTotalText').textContent = totalDiscount.toLocaleString('ko-KR') + '원';
         document.getElementById('price-number1').textContent = finalPrice.toLocaleString('ko-KR');
         if (gradeDiscountAmountText) {
             gradeDiscountAmountText.textContent = '-' + gradeDiscountAmount.toLocaleString('ko-KR') + '원';
         }
+        renderDiscountBreakdown(gradeDiscountAmount, couponDiscountAmount, usePoint);
     }
 
     usePointInput.addEventListener('input', updatePriceDisplay);
@@ -207,6 +280,9 @@
     });
     if (useGradeDiscountInput) {
         useGradeDiscountInput.addEventListener('change', updatePriceDisplay);
+    }
+    if (couponSelect) {
+        couponSelect.addEventListener('change', updatePriceDisplay);
     }
 
     updatePriceDisplay();
@@ -224,7 +300,8 @@
                 showtimeId: showtimeId,
                 seatIds: seatIdsCsv.split(',').map(Number),
                 usePoint: currentUsePoint(),
-                useGradeDiscount: !!(useGradeDiscountInput && useGradeDiscountInput.checked)
+                useGradeDiscount: !!(useGradeDiscountInput && useGradeDiscountInput.checked),
+                userCouponId: (couponSelect && couponSelect.value) ? Number(couponSelect.value) : null
             })
         }).then(function (res) {
             if (res.status === 401 || res.status === 403) {

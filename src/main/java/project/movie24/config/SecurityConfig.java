@@ -70,7 +70,8 @@ public class SecurityConfig {
                                 "/api/seats", "/api/seats/**",
                                 "/api/reservations/showtimes/**",
                                 "/api/store/items", "/api/store/items/**",
-                                "/api/events", "/api/events/**"
+                                "/api/events", "/api/events/**",
+                                "/api/coupons/claimable"
                         ).permitAll()
                         // 영화/상영관/상영시간/좌석/스토어 상품/이벤트 데이터 관리는 아직 전용 관리자 화면이 없어 API를 직접 호출해 쓰지만,
                         // 조회(GET) 외 등록/수정/삭제는 ADMIN 등급만 가능하도록 잠가둔다.
@@ -83,6 +84,9 @@ public class SecurityConfig {
                                 "/api/store/items", "/api/store/items/**",
                                 "/api/events", "/api/events/**"
                         ).hasRole("ADMIN")
+                        // 쿠폰은 위와 달리 GET 목록/단건 조회도 공개 대상이 아니라서(관리자 관리용 API),
+                        // "/api/coupons/claimable"(위에서 permitAll 처리)을 제외한 모든 메서드를 ADMIN으로 잠근다.
+                        .requestMatchers("/api/coupons", "/api/coupons/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 // oauth2Login().loginPage("/login")이 전체 필터체인의 기본 AuthenticationEntryPoint가 되어버려서,

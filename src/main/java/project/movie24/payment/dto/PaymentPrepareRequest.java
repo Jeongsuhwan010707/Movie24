@@ -20,4 +20,7 @@ public class PaymentPrepareRequest {
     private int usePoint = 0;
 
     private boolean useGradeDiscount = false;
+
+    // 선택한 보유 쿠폰(UserCoupon) id. null/미지정이면 쿠폰 미사용.
+    private Long userCouponId;
 }
