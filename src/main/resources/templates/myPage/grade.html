@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>등급 혜택 안내 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/grade.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">등급 혜택 안내</span>
+        </div>
+        <h2 class="pageTitle">등급 혜택 안내</h2>
+
+        <div class="gradeSummary">
+            <div class="gradeSummary-top">
+                <span class="gradeChip" th:switch="${user.grade.name()}">
+                    <span th:case="'VIP'">VIP</span>
+                    <span th:case="'GOLD'">GOLD</span>
+                    <span th:case="'SILVER'">SILVER</span>
+                    <span th:case="'ADMIN'">관리자</span>
+                    <span th:case="*">일반회원</span>
+                </span>
+                <p class="gradeSummary-rate" th:if="${discountRate > 0}" th:text="'결제 시 ' + ${discountRate} + '% 할인'">할인율</p>
+                <p class="gradeSummary-rate" th:if="${discountRate == 0}">등급 할인 혜택이 없어요</p>
+            </div>
+            <p class="gradeSummary-status" th:if="${discountRate > 0 and gradeDiscountEligible}">
+                이번 달 등급 할인을 아직 사용하지 않으셨어요. 예매 결제에서 바로 적용해보세요.
+            </p>
+            <p class="gradeSummary-status" th:if="${discountRate > 0 and !gradeDiscountEligible}">
+                이번 달 등급 할인 혜택을 이미 사용하셨어요. 다음 달에 다시 만나요!
+            </p>
+            <p class="gradeSummary-progress" th:if="${nextGradeThreshold != null}"
+               th:text="'최근 1년 누적 결제 ' + ${#numbers.formatInteger(recentSpend, 0, 'COMMA')} + '원 · 다음 등급까지 ' + ${#numbers.formatInteger(nextGradeThreshold - recentSpend, 0, 'COMMA')} + '원 남았어요'">다음 등급까지</p>
+            <p class="gradeSummary-progress" th:if="${nextGradeThreshold == null}">최고 등급입니다. 앞으로도 Movie24와 함께해주세요!</p>
+        </div>
+
+        <h3 class="gradeTierTitle">등급별 혜택</h3>
+        <ul class="gradeTierList">
+            <li class="gradeTierRow" th:each="tier : ${gradeTiers}"
+                th:classappend="${tier.grade.name() == user.grade.name()} ? 'is-current' : ''">
+                <span class="gradeTierRow-name" th:text="${tier.grade.name()}">SILVER</span>
+                <span class="gradeTierRow-condition"
+                      th:text="${tier.minSpend == 0} ? '기본 등급' : ('최근 1년 ' + ${#numbers.formatInteger(tier.minSpend, 0, 'COMMA')} + '원 이상 결제')">조건</span>
+                <span class="gradeTierRow-rate" th:text="${tier.discountRate > 0} ? (${tier.discountRate} + '% 할인') : '-'">할인율</span>
+                <span class="gradeTierRow-badge" th:if="${tier.grade.name() == user.grade.name()}">현재 등급</span>
+            </li>
+        </ul>
+        <p class="gradeNote">등급은 최근 1년간 누적 결제금액을 기준으로 자동으로 산정되며, 한 번 오른 등급은 내려가지 않습니다.
+            등급 할인은 달력 월 기준으로 1회만 사용할 수 있어요.</p>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+<script th:src="@{/resources/js/nav.js}"></script>
+</body>
+</html>

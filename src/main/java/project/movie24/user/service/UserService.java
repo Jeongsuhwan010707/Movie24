@@ -8,6 +8,7 @@ import project.movie24.user.domain.EmailStatus;
 import project.movie24.user.domain.Grade;
 import project.movie24.user.domain.Provider;
 import project.movie24.user.domain.User;
+import project.movie24.user.dto.GradeTierResponse;
 import project.movie24.user.repository.UserRepository;
 
 import java.util.List;
@@ -121,6 +122,18 @@ public class UserService {
      */
     public int discountRateFor(Grade grade) {
         return DISCOUNT_RATE_BY_GRADE.getOrDefault(grade, 0);
+    }
+
+    /**
+     * 마이페이지 "등급 혜택 안내"에서 등급별 할인율/승급 기준을 표로 보여주기 위한 목록.
+     */
+    public List<GradeTierResponse> gradeTiers() {
+        return List.of(
+                GradeTierResponse.builder().grade(Grade.NORMAL).discountRate(discountRateFor(Grade.NORMAL)).minSpend(0).build(),
+                GradeTierResponse.builder().grade(Grade.SILVER).discountRate(discountRateFor(Grade.SILVER)).minSpend(SILVER_THRESHOLD).build(),
+                GradeTierResponse.builder().grade(Grade.GOLD).discountRate(discountRateFor(Grade.GOLD)).minSpend(GOLD_THRESHOLD).build(),
+                GradeTierResponse.builder().grade(Grade.VIP).discountRate(discountRateFor(Grade.VIP)).minSpend(VIP_THRESHOLD).build()
+        );
     }
 
     private Grade gradeFor(long recentSpend) {

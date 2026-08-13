@@ -87,6 +87,22 @@ public class MyPageController {
         return "myPage/coupons";
     }
 
+    @GetMapping("/myPage/grade")
+    public String grade(@AuthenticationPrincipal UserPrincipal principal, Model model) {
+        User user = principal.getUser();
+        long recentSpend = reservationService.sumPaidAmountLastYear(user.getId());
+        int discountRate = userService.discountRateFor(user.getGrade());
+
+        model.addAttribute("user", user);
+        model.addAttribute("recentSpend", recentSpend);
+        model.addAttribute("nextGradeThreshold", userService.nextGradeThreshold(user.getGrade()));
+        model.addAttribute("discountRate", discountRate);
+        model.addAttribute("gradeDiscountEligible", discountRate > 0
+                && !reservationService.hasUsedGradeDiscountThisMonth(user.getId()));
+        model.addAttribute("gradeTiers", userService.gradeTiers());
+        return "myPage/grade";
+    }
+
     @PostMapping("/myPage/coupons/redeem")
     public String redeemCoupon(@AuthenticationPrincipal UserPrincipal principal, @RequestParam String code) {
         if (isBlank(code)) {

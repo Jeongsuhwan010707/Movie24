@@ -1,0 +1,128 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 700px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+/* ---------- 상단 요약 카드 ---------- */
+.gradeSummary {
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff, #f7f7ff);
+}
+.gradeSummary-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.gradeChip {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background-color: #362FD9;
+    color: #fff;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+.gradeSummary-rate {
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 20px;
+    color: #222;
+}
+.gradeSummary-status {
+    margin-top: 14px;
+    color: #666;
+    font-size: 13px;
+}
+.gradeSummary-progress {
+    margin-top: 8px;
+    color: #999;
+    font-size: 13px;
+}
+
+/* ---------- 등급별 혜택 표 ---------- */
+.gradeTierTitle {
+    margin: 28px 2px 12px;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 17px;
+    color: #222;
+}
+.gradeTierList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.gradeTierRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 22px;
+    border-bottom: 1px solid #eee;
+}
+.gradeTierRow:last-child {
+    border-bottom: none;
+}
+.gradeTierRow.is-current {
+    background-color: #f5f4ff;
+}
+.gradeTierRow-name {
+    width: 90px;
+    flex-shrink: 0;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 15px;
+    color: #222;
+}
+.gradeTierRow-condition {
+    flex: 1;
+    color: #888;
+    font-size: 13px;
+}
+.gradeTierRow-rate {
+    flex-shrink: 0;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 15px;
+    color: #362FD9;
+}
+.gradeTierRow-badge {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background-color: #362FD9;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.gradeNote {
+    margin: 16px 2px 0;
+    color: #aaa;
+    font-size: 12px;
+    line-height: 1.6;
+}
