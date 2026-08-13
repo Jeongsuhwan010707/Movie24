@@ -17,6 +17,7 @@ import project.movie24.store.dto.StoreOrderResponse;
 import project.movie24.store.repository.CartItemRepository;
 import project.movie24.store.repository.StoreOrderItemRepository;
 import project.movie24.store.repository.StoreOrderRepository;
+import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class StoreCheckoutService {
     private final StoreOrderItemRepository storeOrderItemRepository;
     private final UserRepository userRepository;
     private final TossPaymentClient tossPaymentClient;
+    private final TicketVoucherService ticketVoucherService;
 
     @Transactional(readOnly = true)
     public CheckoutPrepareResponse prepare(HttpSession session, Long userId, CheckoutPrepareRequest request) {
@@ -75,22 +77,25 @@ public class StoreCheckoutService {
 
         try {
             List<CartItem> cartItems = cartService.findOwnedByIds(userId, pending.getCartItemIds());
+            User user = userRepository.getReferenceById(userId);
 
             StoreOrder order = storeOrderRepository.save(StoreOrder.builder()
-                    .user(userRepository.getReferenceById(userId))
+                    .user(user)
                     .orderUid(orderId)
                     .totalAmount(pending.getAmount())
                     .orderedAt(LocalDateTime.now())
                     .build());
 
             for (CartItem cartItem : cartItems) {
-                storeOrderItemRepository.save(StoreOrderItem.builder()
+                StoreOrderItem orderItem = storeOrderItemRepository.save(StoreOrderItem.builder()
                         .storeOrder(order)
                         .storeItem(cartItem.getStoreItem())
                         .itemName(cartItem.getStoreItem().getName())
                         .unitPrice(cartItem.getStoreItem().getPrice())
                         .quantity(cartItem.getQuantity())
                         .build());
+                // TICKET/GIFT_CARD 상품은 예매 결제에서 바로 쓸 수 있는 관람권/기프티콘으로 발급한다.
+                ticketVoucherService.issueFromOrderItem(user, orderItem);
             }
 
             cartItemRepository.deleteAll(cartItems);

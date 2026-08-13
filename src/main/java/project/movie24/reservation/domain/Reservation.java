@@ -59,6 +59,12 @@ public class Reservation {
     // UserCoupon 엔티티와 직접 연관관계를 맺지 않고 id만 저장해, reservation 패키지가 coupon에 의존하지 않게 한다.
     private Long userCouponId;
 
+    @Builder.Default
+    private int voucherDiscountAmount = 0;
+
+    // TicketVoucher 엔티티와 직접 연관관계를 맺지 않고 id만 저장해, reservation 패키지가 store에 의존하지 않게 한다.
+    private Long ticketVoucherId;
+
     public void cancel() {
         this.status = ReservationStatus.CANCELLED;
     }

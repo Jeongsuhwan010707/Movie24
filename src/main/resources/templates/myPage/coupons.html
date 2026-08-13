@@ -135,15 +135,7 @@
             pendingCode = code;
             confirmTitle.textContent = coupon.name;
             confirmEffect.textContent = discountEffectText(coupon);
-            var notes = [];
-            if (coupon.description) {
-                notes.push(coupon.description);
-            }
-            if (coupon.minPurchaseAmount > 0) {
-                notes.push(coupon.minPurchaseAmount.toLocaleString('ko-KR') + '원 이상 결제 시 사용 가능');
-            }
-            notes.push('이 쿠폰을 쿠폰함에 등록할까요?');
-            confirmMessage.textContent = notes.join(' · ');
+            confirmMessage.textContent = '이 쿠폰을 쿠폰함에 등록할까요?';
             confirmOverlay.classList.add('open');
         }
         function closeConfirm() {

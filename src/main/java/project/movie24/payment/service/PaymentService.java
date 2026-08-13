@@ -17,6 +17,8 @@ import project.movie24.seat.domain.Seat;
 import project.movie24.seat.service.SeatService;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
+import project.movie24.store.domain.TicketVoucher;
+import project.movie24.store.service.TicketVoucherService;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
 import project.movie24.user.service.UserService;
@@ -40,6 +42,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final UserCouponService userCouponService;
+    private final TicketVoucherService ticketVoucherService;
 
     @Transactional(readOnly = true)
     public PaymentPrepareResponse prepare(HttpSession session, Long userId, PaymentPrepareRequest request) {
@@ -50,6 +53,9 @@ public class PaymentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
+        // 등급 할인(%)과 쿠폰(%/금액)은 "할인"이라 원가를 순서대로 줄여가며 계산하고,
+        // 관람권/기프티콘과 포인트는 "결제수단"이라 그 할인이 다 반영된 금액을 무엇으로 낼지 나중에 정한다.
+        // (관람권을 먼저 빼버리면 %쿠폰이 줄어든 금액 기준으로 계산돼 원래 받아야 할 할인보다 적게 받는 문제가 있었다.)
         int discountRate = userService.discountRateFor(user.getGrade());
         boolean gradeDiscountEligible = discountRate > 0 && !reservationService.hasUsedGradeDiscountThisMonth(userId);
         if (request.isUseGradeDiscount() && !gradeDiscountEligible) {
@@ -66,17 +72,29 @@ public class PaymentService {
         }
         int amountAfterDiscount = amountAfterGradeDiscount - couponDiscountAmount;
 
-        int maxUsablePoint = Math.max(0, Math.min(user.getPoint(), amountAfterDiscount - MIN_PAYABLE_AMOUNT));
+        // 관람권/기프티콘 + 포인트를 다 합쳐도 최소 결제금액(MIN_PAYABLE_AMOUNT)은 남겨야
+        // Toss 위젯의 0원 결제라는 별도 케이스를 피할 수 있다.
+        int voucherDiscountAmount = 0;
+        Long ticketVoucherId = request.getTicketVoucherId();
+        if (ticketVoucherId != null) {
+            TicketVoucher voucher = ticketVoucherService.findOwned(ticketVoucherId, userId);
+            int maxVoucherAmount = Math.max(0, amountAfterDiscount - MIN_PAYABLE_AMOUNT);
+            voucherDiscountAmount = ticketVoucherService.previewDiscount(voucher, maxVoucherAmount);
+        }
+        int amountAfterVoucher = amountAfterDiscount - voucherDiscountAmount;
+
+        int maxUsablePoint = Math.max(0, Math.min(user.getPoint(), amountAfterVoucher - MIN_PAYABLE_AMOUNT));
         if (request.getUsePoint() > maxUsablePoint) {
             throw new IllegalStateException("사용 가능한 포인트를 초과했습니다.");
         }
         int usedPoint = request.getUsePoint();
-        int amount = amountAfterDiscount - usedPoint;
+        int amount = amountAfterVoucher - usedPoint;
 
         String orderId = "movie24-" + UUID.randomUUID();
 
         session.setAttribute(SESSION_KEY, new PendingPayment(orderId, request.getShowtimeId(), request.getSeatIds(),
-                amount, totalPrice, usedPoint, gradeDiscountAmount, userCouponId, couponDiscountAmount));
+                amount, totalPrice, usedPoint, gradeDiscountAmount, userCouponId, couponDiscountAmount,
+                ticketVoucherId, voucherDiscountAmount));
 
         return PaymentPrepareResponse.builder()
                 .orderId(orderId)
@@ -86,6 +104,7 @@ public class PaymentService {
                 .usedPoint(usedPoint)
                 .gradeDiscountAmount(gradeDiscountAmount)
                 .couponDiscountAmount(couponDiscountAmount)
+                .voucherDiscountAmount(voucherDiscountAmount)
                 .build();
     }
 
@@ -108,7 +127,8 @@ public class PaymentService {
         try {
             Reservation reservation = reservationService.reserve(userId, pending.getShowtimeId(), pending.getSeatIds(),
                     pending.getUsedPoint(), pending.getGradeDiscountAmount(),
-                    pending.getUserCouponId(), pending.getCouponDiscountAmount());
+                    pending.getUserCouponId(), pending.getCouponDiscountAmount(),
+                    pending.getTicketVoucherId(), pending.getVoucherDiscountAmount());
             session.removeAttribute(SESSION_KEY);
             return reservation;
         } catch (RuntimeException e) {

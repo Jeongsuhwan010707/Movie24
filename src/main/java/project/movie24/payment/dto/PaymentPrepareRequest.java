@@ -23,4 +23,7 @@ public class PaymentPrepareRequest {
 
     // 선택한 보유 쿠폰(UserCoupon) id. null/미지정이면 쿠폰 미사용.
     private Long userCouponId;
+
+    // 선택한 보유 관람권/기프티콘(TicketVoucher) id. null/미지정이면 미사용.
+    private Long ticketVoucherId;
 }

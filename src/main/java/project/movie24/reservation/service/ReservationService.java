@@ -17,6 +17,7 @@ import project.movie24.seat.domain.Seat;
 import project.movie24.seat.service.SeatService;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
+import project.movie24.store.service.TicketVoucherService;
 import project.movie24.user.domain.User;
 import project.movie24.user.repository.UserRepository;
 import project.movie24.user.service.UserService;
@@ -43,6 +44,7 @@ public class ReservationService {
     private final PointService pointService;
     private final UserService userService;
     private final UserCouponService userCouponService;
+    private final TicketVoucherService ticketVoucherService;
 
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds) {
         Showtime showtime = showtimeService.findOne(showtimeId);
@@ -84,7 +86,7 @@ public class ReservationService {
      * 좌석 확보와 트랜잭션을 분리하면 포인트 차감 실패 시 이미 커밋된 예매가 롤백되지 않으므로 반드시 같은 메서드에서 처리한다.
      */
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount) {
-        return reserve(userId, showtimeId, seatIds, usePoint, gradeDiscountAmount, null, 0);
+        return reserve(userId, showtimeId, seatIds, usePoint, gradeDiscountAmount, null, 0, null, 0);
     }
 
     /**
@@ -92,10 +94,24 @@ public class ReservationService {
      */
     public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount,
                                 Long userCouponId, int couponDiscountAmount) {
+        return reserve(userId, showtimeId, seatIds, usePoint, gradeDiscountAmount, userCouponId, couponDiscountAmount, null, 0);
+    }
+
+    /**
+     * 결제 흐름 전용(관람권/기프티콘 포함): 좌석 확보에 이어 관람권/쿠폰/포인트 사용·적립과 등급 재계산까지
+     * 한 트랜잭션 안에서 처리한다.
+     */
+    public Reservation reserve(Long userId, Long showtimeId, List<Long> seatIds, int usePoint, int gradeDiscountAmount,
+                                Long userCouponId, int couponDiscountAmount,
+                                Long ticketVoucherId, int voucherDiscountAmount) {
         Reservation reservation = reserve(userId, showtimeId, seatIds);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (ticketVoucherId != null) {
+            ticketVoucherService.markUsed(ticketVoucherId, userId, reservation.getId());
+        }
 
         if (userCouponId != null) {
             userCouponService.markUsed(userCouponId, userId, couponDiscountAmount, reservation.getId());
@@ -105,7 +121,7 @@ public class ReservationService {
             user = pointService.use(user, usePoint, reservation.getId());
         }
 
-        int cashPaid = reservation.getTotalPrice() - gradeDiscountAmount - couponDiscountAmount - usePoint;
+        int cashPaid = reservation.getTotalPrice() - voucherDiscountAmount - gradeDiscountAmount - couponDiscountAmount - usePoint;
         int earnedPoint = (int) Math.floor(cashPaid * POINT_EARN_RATE);
         pointService.earn(user, earnedPoint, reservation.getId());
 
@@ -115,6 +131,8 @@ public class ReservationService {
                 .gradeDiscountAmount(gradeDiscountAmount)
                 .couponDiscountAmount(couponDiscountAmount)
                 .userCouponId(userCouponId)
+                .voucherDiscountAmount(voucherDiscountAmount)
+                .ticketVoucherId(ticketVoucherId)
                 .build());
 
         userService.recalculateGrade(userId, sumPaidAmountLastYear(userId));
@@ -164,6 +182,10 @@ public class ReservationService {
 
         if (reservation.getCouponDiscountAmount() > 0) {
             userCouponService.cancelUse(reservationId);
+        }
+
+        if (reservation.getVoucherDiscountAmount() > 0) {
+            ticketVoucherService.cancelUse(reservationId);
         }
     }
 

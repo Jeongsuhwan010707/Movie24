@@ -32,6 +32,8 @@ import project.movie24.seat.service.SeatService;
 import project.movie24.security.SessionAuthenticator;
 import project.movie24.showtime.domain.Showtime;
 import project.movie24.showtime.service.ShowtimeService;
+import project.movie24.store.dto.TicketVoucherResponse;
+import project.movie24.store.service.TicketVoucherService;
 import project.movie24.theater.domain.Theater;
 import project.movie24.theater.service.TheaterService;
 import project.movie24.user.domain.User;
@@ -64,6 +66,7 @@ public class MovieReservationController {
     private final UserService userService;
     private final PaymentService paymentService;
     private final UserCouponService userCouponService;
+    private final TicketVoucherService ticketVoucherService;
     private final UserRepository userRepository;
     private final SessionAuthenticator sessionAuthenticator;
 
@@ -309,6 +312,12 @@ public class MovieReservationController {
                         .map(UserCouponResponse::from)
                         .toList();
         model.addAttribute("usableCoupons", usableCoupons);
+
+        List<TicketVoucherResponse> usableVouchers = principal == null ? List.of()
+                : ticketVoucherService.findMyUsable(principal.getUser().getId()).stream()
+                        .map(TicketVoucherResponse::from)
+                        .toList();
+        model.addAttribute("usableVouchers", usableVouchers);
         return "movieReservation/pay";
     }
 

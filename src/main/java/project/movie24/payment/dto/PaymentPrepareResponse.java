@@ -14,4 +14,5 @@ public class PaymentPrepareResponse {
     private int usedPoint;
     private int gradeDiscountAmount;
     private int couponDiscountAmount;
+    private int voucherDiscountAmount;
 }

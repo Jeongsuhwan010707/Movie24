@@ -30,10 +30,15 @@
         </div>
         <div class="selectsaleContent">
             <ul class="saleOptionList">
-                <li><label><input type="radio" name="ticketSale" checked>사용 안함</label><span>0원</span></li>
-                <li><label><input type="radio" name="ticketSale">Movie24 관람권 1매</label><span>-14,000원</span></li>
-                <li><label><input type="radio" name="ticketSale">모바일 기프티콘</label><span>-10,000원</span></li>
+                <li><label><input type="radio" name="ticketVoucher" value="" checked>사용 안함</label></li>
+                <li th:each="v : ${usableVouchers}">
+                    <label>
+                        <input type="radio" name="ticketVoucher" th:value="${v.id}">
+                        <span th:text="${v.itemName}">Movie24 관람권 1매</span>
+                    </label>
+                </li>
             </ul>
+            <p th:if="${usableVouchers.isEmpty()}" class="couponEmptyHint">보유한 관람권/기프티콘이 없습니다. 스토어에서 구매하면 여기서 바로 쓸 수 있어요.</p>
         </div>
         <div class="selectsale">
             <p>Movie24 포인트</p><img src="/resources/images/down-arrow.png" alt="">
@@ -171,6 +176,8 @@
         },
         /*[/]*/
     ];
+    // TicketVoucherResponse에는 LocalDateTime 필드가 없어 통째로 인라이닝해도 안전하다.
+    var usableVouchers = /*[[${usableVouchers}]]*/ [];
     var tossClientKey = /*[[${tossClientKey}]]*/ '';
     // 서버(PaymentService)의 MIN_PAYABLE_AMOUNT와 맞춰, 캐시 결제금액이 최소 100원은 남도록 포인트 사용 한도를 계산한다.
     var MIN_PAYABLE_AMOUNT = 100;
@@ -194,11 +201,16 @@
     var useGradeDiscountInput = document.getElementById('useGradeDiscountInput');
     var gradeDiscountAmountText = document.getElementById('gradeDiscountAmountText');
     var couponSelect = document.getElementById('couponSelect');
+    var voucherRadios = document.querySelectorAll('input[name="ticketVoucher"]');
     var discountBreakdownList = document.getElementById('discountBreakdownList');
 
-    function renderDiscountBreakdown(gradeAmount, couponAmount, pointAmount) {
+    function renderDiscountBreakdown(voucherAmount, voucherLabel, gradeAmount, couponAmount, pointAmount) {
         discountBreakdownList.innerHTML = '';
-        [['등급 할인', gradeAmount], ['쿠폰', couponAmount], ['포인트', pointAmount]]
+        // th:inline="javascript"가 선두의 "[[" 을 자신의 인라인 표현식 문법으로 오인하지 않도록,
+        // 배열 리터럴을 변수에 먼저 담아 대괄호 두 개가 줄 시작에 바로 붙지 않게 한다.
+        var items = [voucherLabel, voucherAmount];
+        var rows = [items, ['등급 할인', gradeAmount], ['쿠폰', couponAmount], ['포인트', pointAmount]];
+        rows
             .filter(function (item) { return item[1] > 0; })
             .forEach(function (item) {
                 var li = document.createElement('li');
@@ -210,6 +222,27 @@
                 li.appendChild(value);
                 discountBreakdownList.appendChild(li);
             });
+    }
+
+    function selectedVoucher() {
+        var checked = document.querySelector('input[name="ticketVoucher"]:checked');
+        if (!checked || !checked.value) {
+            return null;
+        }
+        return usableVouchers.find(function (v) {
+            return String(v.id) === checked.value;
+        }) || null;
+    }
+
+    // 관람권/기프티콘은 액면가만큼 "결제수단"으로 최종 금액을 채우는 역할이라, 등급 할인/쿠폰 같은
+    // %/금액 "할인"이 다 반영된 이후 금액을 기준으로 계산한다. 서버(PaymentService.prepare)와 동일한 순서.
+    function currentVoucherDiscountAmount(amountAfterDiscount) {
+        var voucher = selectedVoucher();
+        if (!voucher) {
+            return 0;
+        }
+        var maxVoucherAmount = Math.max(0, amountAfterDiscount - MIN_PAYABLE_AMOUNT);
+        return Math.max(0, Math.min(voucher.faceValue, maxVoucherAmount));
     }
 
     function currentGradeDiscountAmount() {
@@ -252,25 +285,35 @@
         return Math.min(raw, maxUsablePoint);
     }
 
+    function voucherCategoryLabel(voucher) {
+        return voucher.category === 'GIFT_CARD' ? '기프티콘' : '관람권';
+    }
+
     function updatePriceDisplay() {
         var gradeDiscountAmount = currentGradeDiscountAmount();
         var amountAfterGradeDiscount = totalPrice - gradeDiscountAmount;
         var couponDiscountAmount = currentCouponDiscountAmount(amountAfterGradeDiscount);
         var amountAfterDiscount = amountAfterGradeDiscount - couponDiscountAmount;
-        maxUsablePoint = Math.max(0, Math.min(pointBalance, amountAfterDiscount - MIN_PAYABLE_AMOUNT));
+
+        var voucher = selectedVoucher();
+        var voucherDiscountAmount = currentVoucherDiscountAmount(amountAfterDiscount);
+        var amountAfterVoucher = amountAfterDiscount - voucherDiscountAmount;
+
+        maxUsablePoint = Math.max(0, Math.min(pointBalance, amountAfterVoucher - MIN_PAYABLE_AMOUNT));
         usePointInput.max = maxUsablePoint;
 
         var usePoint = currentUsePoint();
         usePointInput.value = usePoint;
 
-        var totalDiscount = gradeDiscountAmount + couponDiscountAmount + usePoint;
+        var totalDiscount = voucherDiscountAmount + gradeDiscountAmount + couponDiscountAmount + usePoint;
         var finalPrice = totalPrice - totalDiscount;
         document.getElementById('discountTotalText').textContent = totalDiscount.toLocaleString('ko-KR') + '원';
         document.getElementById('price-number1').textContent = finalPrice.toLocaleString('ko-KR');
         if (gradeDiscountAmountText) {
             gradeDiscountAmountText.textContent = '-' + gradeDiscountAmount.toLocaleString('ko-KR') + '원';
         }
-        renderDiscountBreakdown(gradeDiscountAmount, couponDiscountAmount, usePoint);
+        renderDiscountBreakdown(voucherDiscountAmount, voucher ? voucherCategoryLabel(voucher) : '',
+                gradeDiscountAmount, couponDiscountAmount, usePoint);
     }
 
     usePointInput.addEventListener('input', updatePriceDisplay);
@@ -284,6 +327,9 @@
     if (couponSelect) {
         couponSelect.addEventListener('change', updatePriceDisplay);
     }
+    voucherRadios.forEach(function (radio) {
+        radio.addEventListener('change', updatePriceDisplay);
+    });
 
     updatePriceDisplay();
 
@@ -301,7 +347,8 @@
                 seatIds: seatIdsCsv.split(',').map(Number),
                 usePoint: currentUsePoint(),
                 useGradeDiscount: !!(useGradeDiscountInput && useGradeDiscountInput.checked),
-                userCouponId: (couponSelect && couponSelect.value) ? Number(couponSelect.value) : null
+                userCouponId: (couponSelect && couponSelect.value) ? Number(couponSelect.value) : null,
+                ticketVoucherId: (function () { var v = selectedVoucher(); return v ? v.id : null; })()
             })
         }).then(function (res) {
             if (res.status === 401 || res.status === 403) {
