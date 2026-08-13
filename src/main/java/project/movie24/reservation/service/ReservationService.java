@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.movie24.common.EntityFinders;
+import project.movie24.common.RandomCodeGenerator;
 import project.movie24.coupon.service.UserCouponService;
 import project.movie24.point.service.PointService;
 import project.movie24.reservation.domain.Reservation;
@@ -62,6 +63,7 @@ public class ReservationService {
                 .totalPrice(showtime.priceFor(seats.size()))
                 .status(ReservationStatus.RESERVED)
                 .reservedAt(LocalDateTime.now())
+                .entryCode(generateEntryCode())
                 .build());
 
         // 좌석마다 즉시 flush해서, 동시에 같은 좌석을 예매하려는 다른 요청이 있으면
@@ -164,6 +166,10 @@ public class ReservationService {
         if (!reservation.getUser().getId().equals(currentUserId)) {
             throw new IllegalStateException("본인의 예매만 취소할 수 있습니다.");
         }
+        // 가드가 없으면 같은 예매를 두 번 취소했을 때 포인트/쿠폰/관람권 환불이 중복 실행된다.
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new IllegalStateException("이미 취소된 예매입니다.");
+        }
         reservation.cancel();
         // 좌석 점유 기록 자체를 지워야 (showtime_id, seat_id) 유니크 제약에 다시 걸리지 않고
         // 같은 좌석을 재예매할 수 있다.
@@ -247,5 +253,19 @@ public class ReservationService {
 
     private Reservation getOrThrow(Long reservationId) {
         return EntityFinders.getOrThrow(reservationRepository, reservationId, "예매");
+    }
+
+    /**
+     * 상영관 키오스크에서 직접 입력할 코드. 충돌 가능성은 극히 낮지만 유니크 제약을 신뢰하기보다
+     * 미리 존재 여부를 확인해 재시도한다.
+     */
+    private String generateEntryCode() {
+        for (int attempt = 0; attempt < 5; attempt++) {
+            String code = RandomCodeGenerator.generateGrouped(4, 4);
+            if (!reservationRepository.existsByEntryCode(code)) {
+                return code;
+            }
+        }
+        throw new IllegalStateException("입장 코드를 생성하지 못했습니다. 다시 시도해주세요.");
     }
 }

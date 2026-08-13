@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.movie24.common.EntityFinders;
+import project.movie24.common.RandomCodeGenerator;
 import project.movie24.payment.client.TossPaymentClient;
 import project.movie24.store.domain.CartItem;
 import project.movie24.store.domain.PendingStoreOrder;
@@ -84,6 +85,7 @@ public class StoreCheckoutService {
                     .orderUid(orderId)
                     .totalAmount(pending.getAmount())
                     .orderedAt(LocalDateTime.now())
+                    .entryCode(generateEntryCode())
                     .build());
 
             for (CartItem cartItem : cartItems) {
@@ -137,6 +139,20 @@ public class StoreCheckoutService {
         return orders.stream()
                 .map(order -> StoreOrderResponse.from(order, itemsByOrderId.getOrDefault(order.getId(), List.of())))
                 .toList();
+    }
+
+    /**
+     * 매장 키오스크에서 직접 입력할 코드. 충돌 가능성은 극히 낮지만 유니크 제약을 신뢰하기보다
+     * 미리 존재 여부를 확인해 재시도한다.
+     */
+    private String generateEntryCode() {
+        for (int attempt = 0; attempt < 5; attempt++) {
+            String code = RandomCodeGenerator.generateGrouped(4, 4);
+            if (!storeOrderRepository.existsByEntryCode(code)) {
+                return code;
+            }
+        }
+        throw new IllegalStateException("입장 코드를 생성하지 못했습니다. 다시 시도해주세요.");
     }
 
     private String buildOrderName(List<CartItem> cartItems) {

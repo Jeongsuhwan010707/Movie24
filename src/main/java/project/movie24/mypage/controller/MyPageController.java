@@ -3,12 +3,15 @@ package project.movie24.mypage.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.movie24.coupon.domain.UserCoupon;
@@ -17,9 +20,11 @@ import project.movie24.coupon.service.UserCouponService;
 import project.movie24.mypage.dto.NicknameUpdateForm;
 import project.movie24.mypage.dto.ProfileUpdateForm;
 import project.movie24.point.service.PointService;
+import project.movie24.reservation.domain.Reservation;
 import project.movie24.reservation.dto.ReservationResponse;
 import project.movie24.reservation.service.ReservationService;
 import project.movie24.security.SessionAuthenticator;
+import project.movie24.store.domain.StoreOrder;
 import project.movie24.store.dto.StoreOrderResponse;
 import project.movie24.store.service.StoreCheckoutService;
 import project.movie24.user.domain.EmailStatus;
@@ -101,6 +106,32 @@ public class MyPageController {
                 && !reservationService.hasUsedGradeDiscountThisMonth(user.getId()));
         model.addAttribute("gradeTiers", userService.gradeTiers());
         return "myPage/grade";
+    }
+
+    @GetMapping("/myPage/reservations/{reservationId}")
+    public String reservationDetail(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long reservationId, Model model) {
+        Reservation reservation;
+        try {
+            reservation = reservationService.findOwned(reservationId, principal.getUser().getId());
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("seatLabels", reservationService.findSeatLabels(reservationId));
+        return "myPage/reservationDetail";
+    }
+
+    @GetMapping("/myPage/orders/{storeOrderId}")
+    public String orderDetail(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long storeOrderId, Model model) {
+        StoreOrder order;
+        try {
+            order = storeCheckoutService.findOwned(storeOrderId, principal.getUser().getId());
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+        model.addAttribute("order", order);
+        model.addAttribute("orderItems", storeCheckoutService.findOrderItems(storeOrderId));
+        return "myPage/orderDetail";
     }
 
     @PostMapping("/myPage/coupons/redeem")

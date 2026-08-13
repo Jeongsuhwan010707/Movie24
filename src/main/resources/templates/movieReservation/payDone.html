@@ -42,13 +42,21 @@
                 <span class="receiptLabel">등급 할인</span>
                 <span class="receiptValue" th:text="'-' + ${#numbers.formatInteger(reservation.gradeDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
             </div>
+            <div class="receiptRow" th:if="${reservation.couponDiscountAmount > 0}">
+                <span class="receiptLabel">쿠폰 할인</span>
+                <span class="receiptValue" th:text="'-' + ${#numbers.formatInteger(reservation.couponDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
+            </div>
+            <div class="receiptRow" th:if="${reservation.voucherDiscountAmount > 0}">
+                <span class="receiptLabel">관람권/기프티콘</span>
+                <span class="receiptValue" th:text="'-' + ${#numbers.formatInteger(reservation.voucherDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
+            </div>
             <div class="receiptRow" th:if="${reservation.usedPoint > 0}">
                 <span class="receiptLabel">사용 포인트</span>
                 <span class="receiptValue" th:text="'-' + ${#numbers.formatInteger(reservation.usedPoint, 0, 'COMMA')} + 'P'">-0P</span>
             </div>
             <div class="receiptRow receiptTotal">
                 <span class="receiptLabel">결제금액</span>
-                <span class="receiptValue" th:text="${#numbers.formatInteger(reservation.totalPrice - reservation.gradeDiscountAmount - reservation.usedPoint, 0, 'COMMA')} + '원'">14,000원</span>
+                <span class="receiptValue" th:text="${#numbers.formatInteger(reservation.totalPrice - reservation.gradeDiscountAmount - reservation.couponDiscountAmount - reservation.voucherDiscountAmount - reservation.usedPoint, 0, 'COMMA')} + '원'">14,000원</span>
             </div>
             <div class="receiptRow" th:if="${reservation.earnedPoint > 0}">
                 <span class="receiptLabel">적립 포인트</span>
@@ -57,6 +65,7 @@
         </div>
         <p id="guideText">마이페이지에서 구매내역을 확인해보세요~</p>
         <div id="button">
+            <a th:if="${reservation != null}" th:href="@{/myPage/reservations/{id}(id=${reservation.id})}">예매 상세보기</a>
             <a href="/">Home</a>
         </div>
 </main>

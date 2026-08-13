@@ -16,6 +16,7 @@ public class StoreOrderResponse {
     private Integer totalAmount;
     private LocalDateTime orderedAt;
     private List<StoreOrderItemResponse> items;
+    private String entryCode;
 
     public static StoreOrderResponse from(StoreOrder order, List<StoreOrderItemResponse> items) {
         return StoreOrderResponse.builder()
@@ -24,6 +25,7 @@ public class StoreOrderResponse {
                 .totalAmount(order.getTotalAmount())
                 .orderedAt(order.getOrderedAt())
                 .items(items)
+                .entryCode(order.getEntryCode())
                 .build();
     }
 }

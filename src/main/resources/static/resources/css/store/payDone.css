@@ -98,6 +98,34 @@
         font-size: 22px;
         color: #362FD9;
     }
+    #pickupCodeBanner{
+        margin-top: 18px;
+        padding: 14px 18px;
+        border: 2px dashed #362FD9;
+        border-radius: 12px;
+        background-color: #f5f4ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        text-align: center;
+    }
+    #pickupCodeBanner span{
+        color: #666;
+        font-size: 13px;
+    }
+    #pickupCodeBanner strong{
+        font-family: 'LINESeedKR-Bd';
+        font-weight: 400;
+        font-size: 18px;
+        letter-spacing: 1px;
+        color: #362FD9;
+    }
+    #homeBtnGroup{
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
     #main_logo{
         width: 100%;
         height: 220px;

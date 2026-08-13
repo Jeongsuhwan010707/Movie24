@@ -11,4 +11,6 @@ public interface StoreOrderRepository extends JpaRepository<StoreOrder, Long> {
 
     @Query("select o from StoreOrder o where o.user.id = :userId order by o.orderedAt desc")
     List<StoreOrder> findByUserIdOrderByOrderedAtDesc(@Param("userId") Long userId);
+
+    boolean existsByEntryCode(String entryCode);
 }

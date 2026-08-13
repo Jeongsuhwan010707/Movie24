@@ -109,12 +109,14 @@
                     <p th:if="${#lists.isEmpty(reservations)}">고객님의 최근 예매내역이 존재하지 않습니다.</p>
                     <ul id="reservationList" th:unless="${#lists.isEmpty(reservations)}">
                         <li th:each="r : ${reservations}">
-                            <span th:text="${r.movieTitle}"></span> ·
-                            <span th:text="${r.theaterName} + ' ' + ${r.screenName}"></span> ·
-                            <span th:text="${#temporals.format(r.startTime, 'yyyy-MM-dd HH:mm')}"></span> ·
-                            <span th:text="${#strings.listJoin(r.seatLabels, ', ')}"></span> ·
-                            <span th:text="${#numbers.formatInteger(r.totalPrice, 0, 'COMMA')} + '원'"></span> ·
-                            <span th:text="${r.status.name() == 'CANCELLED'} ? '취소됨' : '예매완료'"></span>
+                            <a th:href="@{/myPage/reservations/{id}(id=${r.id})}">
+                                <span th:text="${r.movieTitle}"></span> ·
+                                <span th:text="${r.theaterName} + ' ' + ${r.screenName}"></span> ·
+                                <span th:text="${#temporals.format(r.startTime, 'yyyy-MM-dd HH:mm')}"></span> ·
+                                <span th:text="${#strings.listJoin(r.seatLabels, ', ')}"></span> ·
+                                <span th:text="${#numbers.formatInteger(r.totalPrice, 0, 'COMMA')} + '원'"></span> ·
+                                <span th:text="${r.status.name() == 'CANCELLED'} ? '취소됨' : '예매완료'"></span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -123,9 +125,11 @@
                     <p th:if="${#lists.isEmpty(storeOrders)}">고객님의 스토어 구매내역이 존재하지 않습니다.</p>
                     <ul id="storeOrderList" th:unless="${#lists.isEmpty(storeOrders)}">
                         <li th:each="o : ${storeOrders}">
-                            <span th:text="${#temporals.format(o.orderedAt, 'yyyy-MM-dd HH:mm')}"></span> ·
-                            <span th:text="${#strings.listJoin(o.items.![itemName], ', ')}"></span> ·
-                            <span th:text="${#numbers.formatInteger(o.totalAmount, 0, 'COMMA')} + '원'"></span>
+                            <a th:href="@{/myPage/orders/{id}(id=${o.id})}">
+                                <span th:text="${#temporals.format(o.orderedAt, 'yyyy-MM-dd HH:mm')}"></span> ·
+                                <span th:text="${#strings.listJoin(o.items.![itemName], ', ')}"></span> ·
+                                <span th:text="${#numbers.formatInteger(o.totalAmount, 0, 'COMMA')} + '원'"></span>
+                            </a>
                         </li>
                     </ul>
                 </div>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>구매 상세 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/ticketDetail.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">구매 상세</span>
+        </div>
+        <h2 class="pageTitle">구매 상세</h2>
+
+        <div class="ticketCard">
+            <div class="ticketCard-header">
+                <h3 class="ticketCard-movie">스토어 구매</h3>
+                <span class="ticketStatus reserved" th:text="${#temporals.format(order.orderedAt, 'yyyy.MM.dd HH:mm')}">주문일시</span>
+            </div>
+
+            <div class="codeSection">
+                <div class="codeSection-header">
+                    <span class="codeSection-label">수령 코드</span>
+                    <span class="codeSection-orderNo" th:text="'주문번호 #' + ${order.id}">주문번호 #0</span>
+                </div>
+                <p class="codeSection-desc">
+                    매장 키오스크에 아래 코드를 입력하시면 상품을 받으실 수 있어요. 온라인에서는 확인용으로만 쓰이고,
+                    실제 수령은 매장 키오스크에서 코드를 직접 입력해야 완료돼요.
+                </p>
+                <div class="codeBody" th:if="${order.entryCode != null}">
+                    <div id="qrcode"></div>
+                    <div class="codeValueRow">
+                        <div class="codeValue" id="entryCodeValue" th:text="${order.entryCode}">XXXX-XXXX-XXXX-XXXX</div>
+                        <button type="button" id="codeCopyBtn" class="codeCopyBtn" aria-label="코드 복사">
+                            <svg class="icon-copy" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M4.5 13V5.5C4.5 4.67157 5.17157 4 6 4H13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                            <svg class="icon-check" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 10.5L8 14.5L16 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="codeCopyToast">복사됨</span>
+                        </button>
+                    </div>
+                    <p class="codeHint">QR코드를 스캔해도 같은 코드를 확인할 수 있어요</p>
+                </div>
+            </div>
+
+            <div class="ticketDivider"></div>
+
+            <div class="orderItemList">
+                <h4 class="orderItemList-title">주문 상품</h4>
+                <div class="orderItemRow" th:each="i : ${orderItems}">
+                    <span th:text="${i.itemName} + ' x ' + ${i.quantity}">상품명 x 1</span>
+                    <span th:text="${#numbers.formatInteger(i.lineTotal, 0, 'COMMA')} + '원'">0원</span>
+                </div>
+            </div>
+
+            <div class="ticketDivider"></div>
+
+            <div class="priceBreakdown">
+                <div class="priceRow priceRow-total">
+                    <span>총 결제금액</span>
+                    <span th:text="${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')} + '원'">0원</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticketActions">
+            <a th:href="@{/myPage}" class="ticketActionBtn secondary">목록으로</a>
+        </div>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+
+<script th:src="@{/resources/js/nav.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script th:inline="javascript">
+    var entryCode = /*[[${order.entryCode}]]*/ '';
+    var qrcodeEl = document.getElementById('qrcode');
+    if (qrcodeEl && entryCode && typeof QRCode !== 'undefined') {
+        new QRCode(qrcodeEl, {
+            text: entryCode,
+            width: 140,
+            height: 140,
+            colorDark: '#222222',
+            colorLight: '#ffffff'
+        });
+    }
+
+    var codeCopyBtn = document.getElementById('codeCopyBtn');
+    if (codeCopyBtn) {
+        codeCopyBtn.addEventListener('click', function () {
+            if (!entryCode) return;
+            navigator.clipboard.writeText(entryCode).then(function () {
+                codeCopyBtn.classList.add('copied');
+                setTimeout(function () {
+                    codeCopyBtn.classList.remove('copied');
+                }, 1500);
+            });
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'LINESeedKR-Bd';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    width: 640px;
+    margin: 0 auto;
+    font-family: 'Pretendard-Regular';
+    padding-bottom: 80px;
+}
+
+/* ---------- 티켓/영수증 카드 ---------- */
+.ticketCard {
+    border: 1px solid #222;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+}
+.ticketCard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 26px;
+    background: linear-gradient(135deg, #362FD9, #5850ee);
+}
+.ticketCard-movie {
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 19px;
+    color: #fff;
+}
+.ticketStatus {
+    flex-shrink: 0;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.ticketStatus.reserved {
+    background-color: rgba(255, 255, 255, 0.92);
+    color: #362FD9;
+}
+.ticketStatus.cancelled {
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #fff;
+}
+
+.ticketCard-body {
+    display: flex;
+    gap: 20px;
+    padding: 24px 26px;
+}
+.ticketPoster {
+    width: 96px;
+    height: 136px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background-color: #eee;
+}
+.ticketInfoList {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+.ticketInfoRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+}
+.ticketInfoLabel {
+    color: #999;
+    flex-shrink: 0;
+}
+.ticketInfoValue {
+    color: #222;
+    font-weight: 600;
+    text-align: right;
+}
+
+.ticketDivider {
+    border-top: 1px dashed #ddd;
+    margin: 0 26px;
+}
+
+/* ---------- 가격 상세 / 주문 상품 목록 (공용) ---------- */
+.priceBreakdown, .orderItemList {
+    padding: 20px 26px;
+}
+.priceRow, .orderItemRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    color: #666;
+}
+.priceRow-total {
+    margin-top: 8px;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 17px;
+    color: #222;
+}
+.priceRow-total span:last-child {
+    color: #362FD9;
+}
+.orderItemRow span:first-child {
+    color: #333;
+}
+.orderItemRow span:last-child {
+    font-weight: 600;
+    color: #222;
+}
+
+/* ---------- 입장/수령 코드 섹션 (예매·구매 공용) ---------- */
+.codeSection {
+    padding: 24px 26px 28px;
+    background: linear-gradient(180deg, #f7f7ff, #fff);
+}
+.codeSection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.codeSection-label {
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 15px;
+    color: #222;
+}
+.codeSection-orderNo {
+    color: #999;
+    font-size: 12px;
+}
+.codeSection-desc {
+    margin-top: 8px;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+}
+.codeBody {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+#qrcode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(54, 47, 217, 0.08);
+}
+.codeValueRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.codeValue {
+    padding: 12px 30px;
+    border-radius: 999px;
+    background-color: #362FD9;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: #fff;
+}
+.codeCopyBtn {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #e2e0ff;
+    background-color: #fff;
+    color: #362FD9;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, color 0.15s ease;
+}
+.codeCopyBtn:hover {
+    background-color: #f4f3ff;
+}
+.codeCopyBtn:active {
+    transform: scale(0.92);
+}
+.codeCopyBtn svg {
+    width: 18px;
+    height: 18px;
+}
+.codeCopyBtn .icon-check {
+    display: none;
+}
+.codeCopyBtn.copied {
+    background-color: #362FD9;
+    border-color: #362FD9;
+    color: #fff;
+}
+.codeCopyBtn.copied .icon-copy {
+    display: none;
+}
+.codeCopyBtn.copied .icon-check {
+    display: block;
+}
+.codeCopyToast {
+    position: absolute;
+    bottom: calc(100% + 9px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: #222;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.codeCopyToast::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #222;
+}
+.codeCopyBtn.copied .codeCopyToast {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+.codeHint {
+    color: #999;
+    font-size: 12px;
+}
+.orderItemList-title {
+    margin: 0 0 12px;
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 14px;
+    color: #888;
+}
+
+/* ---------- 하단 액션 버튼 ---------- */
+.ticketActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+.ticketActionBtn {
+    flex: 1;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 10px;
+    font-family: 'Pretendard-Regular';
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    box-sizing: border-box;
+}
+a.ticketActionBtn:link, a.ticketActionBtn:visited {
+    text-decoration: none;
+}
+.ticketActionBtn.secondary {
+    background-color: #f2f2f2;
+    color: #444;
+}
+.ticketActionBtn.secondary:hover {
+    background-color: #e9e9e9;
+}
+.ticketActionBtn.danger {
+    background-color: #fff;
+    color: #d8362a;
+    border: 1px solid #d8362a;
+}
+.ticketActionBtn.danger:hover {
+    background-color: #fff5f4;
+}
+
+/* ---------- 취소 확인/결과 팝업 (쿠폰함 팝업과 동일한 톤) ---------- */
+.ticketModalOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 35, 0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.ticketModalOverlay.open {
+    display: flex;
+}
+.ticketModal {
+    width: 340px;
+    max-width: calc(100vw - 40px);
+    background: #fff;
+    border-radius: 16px;
+    padding: 34px 28px 26px;
+    text-align: center;
+    box-shadow: 0 16px 40px rgba(20, 20, 40, 0.2);
+}
+.ticketModal-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.ticketModal-title {
+    font-family: 'LINESeedKR-Bd';
+    font-weight: 400;
+    font-size: 18px;
+    color: #222;
+}
+.ticketModal-message {
+    margin-top: 10px;
+    color: #888;
+    font-size: 13px;
+    line-height: 1.6;
+}
+.ticketModal-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 8px;
+}
+.ticketModal-actions.single {
+    justify-content: center;
+}
+.ticketModal-actions.single .ticketModal-btn {
+    flex: none;
+    width: 150px;
+}
+.ticketModal-btn {
+    flex: 1;
+    height: 44px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.ticketModal-btn.primary {
+    background-color: #362FD9;
+    color: #fff;
+}
+.ticketModal-btn.secondary {
+    background-color: #f2f2f2;
+    color: #555;
+}
+.ticketModal-btn.danger {
+    background-color: #d8362a;
+    color: #fff;
+}
+.ticketModal-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

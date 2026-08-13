@@ -30,4 +30,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     // 예매가 취소되면 자연히 대상에서 빠져 그 달에 다시 할인을 쓸 수 있다.
     boolean existsByUser_IdAndGradeDiscountAmountGreaterThanAndStatusAndReservedAtAfter(
             Long userId, int threshold, ReservationStatus status, LocalDateTime monthStart);
+
+    boolean existsByEntryCode(String entryCode);
 }

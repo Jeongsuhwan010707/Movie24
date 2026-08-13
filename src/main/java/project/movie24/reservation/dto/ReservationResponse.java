@@ -23,6 +23,7 @@ public class ReservationResponse {
     private Integer totalPrice;
     private ReservationStatus status;
     private LocalDateTime reservedAt;
+    private String entryCode;
 
     public static ReservationResponse from(Reservation reservation, List<String> seatLabels) {
         Showtime showtime = reservation.getShowtime();
@@ -37,6 +38,7 @@ public class ReservationResponse {
                 .totalPrice(reservation.getTotalPrice())
                 .status(reservation.getStatus())
                 .reservedAt(reservation.getReservedAt())
+                .entryCode(reservation.getEntryCode())
                 .build();
     }
 }

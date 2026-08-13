@@ -65,6 +65,9 @@ public class Reservation {
     // TicketVoucher 엔티티와 직접 연관관계를 맺지 않고 id만 저장해, reservation 패키지가 store에 의존하지 않게 한다.
     private Long ticketVoucherId;
 
+    // 상영관 키오스크에서 직접 입력하는 코드("XXXX-XXXX-XXXX-XXXX"). 예매 시 한 번 생성되면 바뀌지 않는다.
+    private String entryCode;
+
     public void cancel() {
         this.status = ReservationStatus.CANCELLED;
     }

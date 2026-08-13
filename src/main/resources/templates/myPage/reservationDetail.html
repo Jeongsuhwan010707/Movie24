@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/resources/images/logo/movie24-favicon.png}">
+    <title>예매 상세 - Movie24</title>
+    <link rel="stylesheet" th:href="@{/resources/css/include/header.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/nav.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/footer.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/include/breadcrumb.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/myPage/ticketDetail.css}">
+</head>
+<body>
+<div>
+    <div th:replace="fragment/header.html :: header"></div>
+    <div th:replace="fragment/nav.html :: nav"></div>
+    <main>
+        <div class="breadcrumb">
+            <a th:href="@{/}">홈</a> <span>&gt;</span> <a th:href="@{/myPage}">마이페이지</a> <span>&gt;</span>
+            <span class="current">예매 상세</span>
+        </div>
+        <h2 class="pageTitle">예매 상세</h2>
+
+        <div class="ticketCard">
+            <div class="ticketCard-header">
+                <h3 class="ticketCard-movie" th:text="${reservation.showtime.movie.title}">영화 제목</h3>
+                <span class="ticketStatus" th:classappend="${reservation.status.name() == 'CANCELLED'} ? 'cancelled' : 'reserved'"
+                      th:text="${reservation.status.name() == 'CANCELLED'} ? '취소됨' : '예매완료'">예매완료</span>
+            </div>
+
+            <div class="codeSection">
+                <div class="codeSection-header">
+                    <span class="codeSection-label"
+                          th:text="${reservation.status.name() == 'CANCELLED'} ? '취소된 예매' : '입장 코드'">입장 코드</span>
+                    <span class="codeSection-orderNo" th:text="'예매번호 #' + ${reservation.id}">예매번호 #0</span>
+                </div>
+                <p class="codeSection-desc" th:if="${reservation.status.name() != 'CANCELLED' and reservation.entryCode != null}">
+                    상영관 키오스크에 아래 코드를 입력하시면 발권할 수 있어요. 온라인에서는 확인용으로만 쓰이고,
+                    실제 발권은 매장 키오스크에서 코드를 직접 입력해야 완료돼요.
+                </p>
+                <div class="codeBody" th:if="${reservation.status.name() != 'CANCELLED' and reservation.entryCode != null}">
+                    <div id="qrcode"></div>
+                    <div class="codeValueRow">
+                        <div class="codeValue" id="entryCodeValue" th:text="${reservation.entryCode}">XXXX-XXXX-XXXX-XXXX</div>
+                        <button type="button" id="codeCopyBtn" class="codeCopyBtn" aria-label="코드 복사">
+                            <svg class="icon-copy" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M4.5 13V5.5C4.5 4.67157 5.17157 4 6 4H13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                            <svg class="icon-check" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 10.5L8 14.5L16 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="codeCopyToast">복사됨</span>
+                        </button>
+                    </div>
+                    <p class="codeHint">QR코드를 스캔해도 같은 코드를 확인할 수 있어요</p>
+                </div>
+            </div>
+
+            <div class="ticketDivider"></div>
+
+            <div class="ticketCard-body">
+                <img class="ticketPoster" th:src="${reservation.showtime.movie.posterImageUrl}" th:alt="${reservation.showtime.movie.title}">
+                <div class="ticketInfoList">
+                    <div class="ticketInfoRow">
+                        <span class="ticketInfoLabel">극장</span>
+                        <span class="ticketInfoValue" th:text="${reservation.showtime.screen.theater.name} + ' ' + ${reservation.showtime.screen.name} + ' (' + ${reservation.showtime.screen.screenType} + ')'">극장 관</span>
+                    </div>
+                    <div class="ticketInfoRow">
+                        <span class="ticketInfoLabel">일시</span>
+                        <span class="ticketInfoValue" th:text="${#temporals.format(reservation.showtime.startTime, 'yyyy.MM.dd (E) HH:mm')}">일시</span>
+                    </div>
+                    <div class="ticketInfoRow">
+                        <span class="ticketInfoLabel">좌석</span>
+                        <span class="ticketInfoValue" th:text="${#strings.listJoin(seatLabels, ', ')}">A1, A2</span>
+                    </div>
+                    <div class="ticketInfoRow">
+                        <span class="ticketInfoLabel">예매일시</span>
+                        <span class="ticketInfoValue" th:text="${#temporals.format(reservation.reservedAt, 'yyyy.MM.dd HH:mm')}">예매일시</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticketDivider"></div>
+
+            <div class="priceBreakdown">
+                <div class="priceRow">
+                    <span>티켓 금액</span>
+                    <span th:text="${#numbers.formatInteger(reservation.totalPrice, 0, 'COMMA')} + '원'">0원</span>
+                </div>
+                <div class="priceRow" th:if="${reservation.gradeDiscountAmount > 0}">
+                    <span>등급 할인</span>
+                    <span th:text="'-' + ${#numbers.formatInteger(reservation.gradeDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
+                </div>
+                <div class="priceRow" th:if="${reservation.couponDiscountAmount > 0}">
+                    <span>쿠폰 할인</span>
+                    <span th:text="'-' + ${#numbers.formatInteger(reservation.couponDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
+                </div>
+                <div class="priceRow" th:if="${reservation.voucherDiscountAmount > 0}">
+                    <span>관람권/기프티콘</span>
+                    <span th:text="'-' + ${#numbers.formatInteger(reservation.voucherDiscountAmount, 0, 'COMMA')} + '원'">-0원</span>
+                </div>
+                <div class="priceRow" th:if="${reservation.usedPoint > 0}">
+                    <span>사용 포인트</span>
+                    <span th:text="'-' + ${#numbers.formatInteger(reservation.usedPoint, 0, 'COMMA')} + 'P'">-0P</span>
+                </div>
+                <div class="priceRow priceRow-total">
+                    <span>결제금액</span>
+                    <span th:text="${#numbers.formatInteger(reservation.totalPrice - reservation.gradeDiscountAmount - reservation.couponDiscountAmount - reservation.voucherDiscountAmount - reservation.usedPoint, 0, 'COMMA')} + '원'">0원</span>
+                </div>
+                <div class="priceRow" th:if="${reservation.earnedPoint > 0}">
+                    <span>적립 포인트</span>
+                    <span th:text="'+' + ${#numbers.formatInteger(reservation.earnedPoint, 0, 'COMMA')} + 'P'">+0P</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ticketActions">
+            <a th:href="@{/myPage}" class="ticketActionBtn secondary">목록으로</a>
+            <button type="button" id="cancelReservationBtn" class="ticketActionBtn danger"
+                    th:if="${reservation.status.name() != 'CANCELLED'}">예매 취소</button>
+        </div>
+    </main>
+    <div th:replace="fragment/footer.html :: footer"></div>
+</div>
+
+<div id="cancelConfirmOverlay" class="ticketModalOverlay">
+    <div class="ticketModal">
+        <div class="ticketModal-icon">🎬</div>
+        <h3 class="ticketModal-title">예매를 취소할까요?</h3>
+        <p class="ticketModal-message">취소하면 사용한 쿠폰/포인트/관람권이 모두 환불되고, 좌석이 다시 풀려요.</p>
+        <div class="ticketModal-actions">
+            <button type="button" id="cancelConfirmNo" class="ticketModal-btn secondary">아니요</button>
+            <button type="button" id="cancelConfirmYes" class="ticketModal-btn danger">취소할게요</button>
+        </div>
+    </div>
+</div>
+
+<div id="cancelResultOverlay" class="ticketModalOverlay">
+    <div class="ticketModal">
+        <div class="ticketModal-icon" id="cancelResultIcon">✅</div>
+        <h3 class="ticketModal-title" id="cancelResultTitle">예매가 취소되었습니다</h3>
+        <p class="ticketModal-message" id="cancelResultMessage"></p>
+        <div class="ticketModal-actions single">
+            <button type="button" id="cancelResultOk" class="ticketModal-btn primary">확인</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/resources/js/nav.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script th:inline="javascript">
+    var reservationId = /*[[${reservation.id}]]*/ 0;
+    var entryCode = /*[[${reservation.entryCode}]]*/ '';
+
+    var qrcodeEl = document.getElementById('qrcode');
+    if (qrcodeEl && entryCode && typeof QRCode !== 'undefined') {
+        new QRCode(qrcodeEl, {
+            text: entryCode,
+            width: 140,
+            height: 140,
+            colorDark: '#222222',
+            colorLight: '#ffffff'
+        });
+    }
+
+    var codeCopyBtn = document.getElementById('codeCopyBtn');
+    if (codeCopyBtn) {
+        codeCopyBtn.addEventListener('click', function () {
+            if (!entryCode) return;
+            navigator.clipboard.writeText(entryCode).then(function () {
+                codeCopyBtn.classList.add('copied');
+                setTimeout(function () {
+                    codeCopyBtn.classList.remove('copied');
+                }, 1500);
+            });
+        });
+    }
+
+    var cancelBtn = document.getElementById('cancelReservationBtn');
+    var cancelConfirmOverlay = document.getElementById('cancelConfirmOverlay');
+    var cancelConfirmYes = document.getElementById('cancelConfirmYes');
+    var cancelConfirmNo = document.getElementById('cancelConfirmNo');
+    var cancelResultOverlay = document.getElementById('cancelResultOverlay');
+    var cancelResultIcon = document.getElementById('cancelResultIcon');
+    var cancelResultTitle = document.getElementById('cancelResultTitle');
+    var cancelResultMessage = document.getElementById('cancelResultMessage');
+    var cancelResultOk = document.getElementById('cancelResultOk');
+    var cancelSucceeded = false;
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+            cancelConfirmOverlay.classList.add('open');
+        });
+    }
+    cancelConfirmNo.addEventListener('click', function () {
+        cancelConfirmOverlay.classList.remove('open');
+    });
+    cancelConfirmOverlay.addEventListener('click', function (e) {
+        if (e.target === cancelConfirmOverlay) {
+            cancelConfirmOverlay.classList.remove('open');
+        }
+    });
+
+    cancelConfirmYes.addEventListener('click', function () {
+        cancelConfirmOverlay.classList.remove('open');
+        cancelConfirmYes.disabled = true;
+
+        var headers = {'X-CSRF-TOKEN': getCsrfToken()};
+        fetch('/api/reservations/' + reservationId, {method: 'DELETE', headers: headers})
+            .then(function (res) {
+                cancelConfirmYes.disabled = false;
+                if (res.status === 401 || res.status === 403) {
+                    openCancelResult(false, '로그인이 필요합니다', '다시 로그인한 뒤 시도해주세요.');
+                    return;
+                }
+                if (res.ok) {
+                    openCancelResult(true, '예매가 취소되었습니다', '쿠폰/포인트/관람권을 사용했다면 함께 환불됐어요.');
+                    return;
+                }
+                return res.json().then(function (data) {
+                    openCancelResult(false, '예매를 취소할 수 없어요', data.message || '잠시 후 다시 시도해주세요.');
+                });
+            }).catch(function () {
+                cancelConfirmYes.disabled = false;
+                openCancelResult(false, '예매를 취소할 수 없어요', '네트워크 오류가 발생했습니다.');
+            });
+    });
+
+    function openCancelResult(success, title, message) {
+        cancelSucceeded = success;
+        cancelResultIcon.textContent = success ? '✅' : '😥';
+        cancelResultTitle.textContent = title;
+        cancelResultMessage.textContent = message;
+        cancelResultOverlay.classList.add('open');
+    }
+    cancelResultOk.addEventListener('click', function () {
+        cancelResultOverlay.classList.remove('open');
+        if (cancelSucceeded) {
+            location.reload();
+        }
+    });
+</script>
+</body>
+</html>

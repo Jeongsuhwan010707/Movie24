@@ -226,12 +226,24 @@ main li a:link, main li a:visited{
     margin: 0;
 }
 #reservationList li{
-    padding: 12px 10px;
     border-bottom: 1px solid #eee;
     font-size: 15px;
 }
 #reservationList li:last-child{
     border-bottom: none;
+}
+#reservationList li a, #storeOrderList li a{
+    display: block;
+    padding: 12px 10px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+#reservationList li a:link, #reservationList li a:visited,
+#storeOrderList li a:link, #storeOrderList li a:visited{
+    color: inherit;
+}
+#reservationList li a:hover, #storeOrderList li a:hover{
+    background-color: #f5f4ff;
 }
 main a.disabled{
     color: #bbb;
@@ -256,7 +268,6 @@ main a.disabled{
     margin: 0;
 }
 #storeOrderList li{
-    padding: 12px 10px;
     border-bottom: 1px solid #eee;
     font-size: 15px;
 }
